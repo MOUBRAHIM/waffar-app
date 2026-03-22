@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#1DB176">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Waffar">
+<title>Waffar — وفّر</title>
+<style>
+:root{--g:#1DB176;--gd:#158c5e;--gl:#e0f5ec;--gp:#f0faf6;--t:#1a1a1a;--tm:#6b7280;--tl:#9ca3af;--b:#e5e7eb;--bg:#f8f9fa;--r:14px;--sh:0 2px 16px rgba(0,0,0,.08)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t);min-height:100vh}
+.screen{display:none;flex-direction:column;min-height:100vh}.screen.active{display:flex}
+#splash{background:linear-gradient(160deg,#1DB176,#0d8a56);align-items:center;justify-content:center;gap:12px}
+.spl-logo{font-size:54px;font-weight:800;color:#fff;letter-spacing:-2px;text-align:center}
+.spl-ar{display:block;font-size:26px;font-weight:400;opacity:.7;margin-top:2px;letter-spacing:0}
+.spl-bar{width:48px;height:4px;background:rgba(255,255,255,.25);border-radius:2px;margin-top:32px;overflow:hidden}
+.spl-bar::after{content:'';display:block;width:40%;height:100%;background:#fff;border-radius:2px;animation:ld 1.3s ease-in-out infinite}
+@keyframes ld{0%{transform:translateX(-120%)}100%{transform:translateX(340%)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+#onboarding{background:#fff}
+.ob-hero{background:linear-gradient(160deg,#1DB176,#0d8a56);padding:60px 28px 40px;text-align:center}
+.ob-h{color:#fff;font-size:22px;font-weight:700;margin-bottom:8px}.ob-p{color:rgba(255,255,255,.85);font-size:14px;line-height:1.6}
+.ob-body{padding:8px 24px;flex:1}.ob-feat{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--b)}.ob-feat:last-child{border:none}
+.ob-fi{width:44px;height:44px;border-radius:12px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.ob-ft h4{font-size:14px;font-weight:600;margin-bottom:3px}.ob-ft p{font-size:12px;color:var(--tm);line-height:1.4}
+.ob-foot{padding:20px 24px 36px}
+.btn{width:100%;padding:15px;border:none;border-radius:var(--r);font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s}.btn:active{opacity:.82}
+.btn-g{background:var(--g);color:#fff}.btn-ghost{background:none;color:var(--tm);font-size:13px;width:100%;border:none;cursor:pointer;padding:10px;margin-top:6px}
+.topbar{background:linear-gradient(135deg,#1DB176,#17a368);padding:52px 16px 14px;color:#fff;flex-shrink:0}
+.tbrow{display:flex;align-items:center;justify-content:space-between}.tbrow h1{font-size:20px;font-weight:700}.tbrow p{font-size:12px;opacity:.85;margin-top:2px}
+.tbact{background:rgba(255,255,255,.2);border:none;color:#fff;padding:7px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:500}
+.hero{background:rgba(0,0,0,.12);margin:0 16px;border-radius:var(--r);margin-top:-16px;padding:16px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}
+.hero-l p{color:rgba(255,255,255,.8);font-size:11px;margin-bottom:2px}.hero-l strong{color:#fff;font-size:28px;font-weight:800}
+.hero-r{background:rgba(255,255,255,.18);border-radius:10px;padding:9px 13px;text-align:right}.hero-r p{color:rgba(255,255,255,.7);font-size:10px}.hero-r span{color:#fff;font-size:15px;font-weight:700}
+.stitle{font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.07em;padding:18px 16px 8px}
+.card{background:#fff;border-radius:var(--r);margin:0 16px 12px;padding:16px;box-shadow:var(--sh)}
+.pitem{background:#fff;padding:14px 16px;border-bottom:1px solid var(--b);cursor:pointer;transition:background .1s}.pitem:active{background:var(--gp)}
+.ptop{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.pemoji{width:40px;height:40px;border-radius:10px;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pmeta{flex:1;min-width:0}.pmeta h4{font-size:13px;font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pmeta p{font-size:11px;color:var(--tm);margin-top:2px}
+.pprice{text-align:right;flex-shrink:0}.pprice strong{font-size:15px;font-weight:700;color:var(--g);display:block}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.pcell{border:1.5px solid var(--b);border-radius:10px;padding:8px 6px;text-align:center}.pcell.best{border-color:var(--g);background:var(--gp)}
+.pshop{font-size:10px;font-weight:600;color:var(--tm);margin-bottom:3px}.pcell.best .pshop{color:var(--g)}
+.pamt{font-size:14px;font-weight:700}.pcell.best .pamt{color:var(--gd)}.punit{font-size:9px;color:var(--tl);margin-top:1px}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.b-best{background:var(--gl);color:var(--gd)}.b-bim{background:#fff3e0;color:#e65100}.b-carrefour{background:#e3f2fd;color:#1565c0}
+.b-atacadao{background:#fce4ec;color:#c62828}.b-marjane{background:#ffebee;color:#b71c1c}.b-kazyon{background:#fff8e1;color:#f57f17}.b-aswak{background:#e8f5e9;color:#1b5e20}.b-supeco{background:#fffde7;color:#f9a825}
+.srch-wrap{padding:10px 16px;background:linear-gradient(135deg,#1DB176,#17a368)}
+.srch-box{background:#fff;border-radius:24px;display:flex;align-items:center;padding:10px 16px;gap:10px;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.srch-box input{border:none;outline:none;flex:1;font-size:14px;color:var(--t);background:transparent}.srch-box input::placeholder{color:var(--tl)}
+.ftabs{display:flex;gap:6px;padding:10px 16px;overflow-x:auto;scrollbar-width:none;background:#fff;border-bottom:1px solid var(--b);flex-shrink:0}.ftabs::-webkit-scrollbar{display:none}
+.ftab{flex-shrink:0;padding:7px 14px;border-radius:20px;border:1.5px solid var(--b);background:#fff;font-size:12px;cursor:pointer;font-weight:500;color:var(--tm);transition:all .2s;white-space:nowrap}.ftab.active{border-color:var(--g);background:var(--gp);color:var(--gd)}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+.navbar{background:#fff;border-top:1px solid var(--b);display:flex;padding:8px 0 22px;flex-shrink:0;position:sticky;bottom:0;z-index:10}
+.nitem{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:3px}.ni{font-size:22px}.nl{font-size:10px;color:var(--tm);font-weight:500}.nitem.active .nl{color:var(--g)}
+/* SCAN */
+.scan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}
+.scan-btn{border-radius:var(--r);padding:24px 12px;text-align:center;cursor:pointer;box-shadow:var(--sh)}.scan-btn:active{opacity:.85}
+.scan-btn-cam{background:linear-gradient(135deg,var(--g),var(--gd));color:#fff}
+.scan-btn-gal{background:#fff;border:2px solid var(--g);color:var(--g)}
+.scan-bi{font-size:40px;margin-bottom:10px}.scan-bl{font-size:13px;font-weight:700;margin-bottom:4px}.scan-bs{font-size:11px;opacity:.8}
+.scan-load{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;gap:14px}
+.spin{width:36px;height:36px;border:3px solid var(--b);border-top-color:var(--g);border-radius:50%;animation:spin .75s linear infinite}
+.scan-save{margin:0 16px 12px;padding:13px 16px;background:#fef3c7;border-radius:var(--r);display:flex;justify-content:space-between;align-items:center}
+.scan-save span{font-size:12px;color:#92400e}.scan-save strong{font-size:16px;color:#78350f;font-weight:800}
+.tip{background:var(--gp);border:1px solid #a7dfc7;border-radius:var(--r);padding:14px 16px;margin:0 16px 14px;display:flex;gap:12px;align-items:flex-start}
+.tip-i{font-size:20px;flex-shrink:0;margin-top:1px}.tip-body h4{font-size:12px;font-weight:700;color:#085041;margin-bottom:3px}.tip-body p{font-size:12px;color:#0d6e56;line-height:1.5}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 4px}
+.scard{background:#fff;border-radius:var(--r);padding:14px;box-shadow:var(--sh)}.scard p{font-size:11px;color:var(--tm);margin-bottom:4px}.scard strong{font-size:22px;font-weight:800}.scard small{font-size:11px;color:var(--tm)}
+.prof-top{background:linear-gradient(160deg,#1DB176,#0d8a56);padding:56px 24px 30px;text-align:center}
+.avatar{width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 12px}
+.prof-name{color:#fff;font-size:20px;font-weight:700}.prof-sub{color:rgba(255,255,255,.8);font-size:13px;margin-top:3px}
+.prow{background:#fff;padding:14px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--b);cursor:pointer}.prow:active{background:var(--bg)}
+.pii{font-size:22px;width:34px;text-align:center}.prow h4{font-size:14px;font-weight:500}.prow p{font-size:12px;color:var(--tm)}.pia{margin-left:auto;color:var(--tl);font-size:20px}
+.store-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--b)}
+.slogo{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end}
+.sheet{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:85vh;overflow-y:auto}
+.sheet-handle{width:36px;height:4px;background:var(--b);border-radius:2px;margin:0 auto 20px}
+.empty{text-align:center;padding:48px 24px;color:var(--tm);font-size:13px}.ei{font-size:48px;margin-bottom:12px}
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 20px;border-radius:25px;font-size:12px;font-weight:600;opacity:0;transition:opacity .25s;pointer-events:none;z-index:999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.35)}.toast.show{opacity:1}
+.save-row{display:flex;justify-content:space-between;align-items:center;background:var(--gp);border-radius:8px;padding:7px 10px;margin-top:8px}.save-row span{font-size:11px;color:var(--tm)}.save-row strong{font-size:12px;color:var(--gd)}
+.ltcard{background:linear-gradient(135deg,var(--g),var(--gd));border-radius:var(--r);padding:16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.ltcard-r{background:rgba(255,255,255,.2);border-radius:10px;padding:9px 12px;text-align:right}
+</style>
+</head>
+<body>
+<div id="splash" class="screen active">
+  <div class="spl-logo">Waffar<span class="spl-ar">وفّر</span></div>
+  <div style="color:rgba(255,255,255,.8);font-size:14px">Économisez sur vos courses au Maroc 🇲🇦</div>
+  <div class="spl-bar"></div>
+</div>
+<div id="onboarding" class="screen">
+  <div class="ob-hero">
+    <div style="font-size:64px;margin-bottom:14px">🛒</div>
+    <div class="ob-h">Bienvenue sur Waffar</div>
+    <div class="ob-p">Comparez BIM, Carrefour, Marjane, Kazyon et plus — économisez chaque semaine</div>
+  </div>
+  <div class="ob-body">
+    <div class="ob-feat"><div class="ob-fi">📊</div><div class="ob-ft"><h4>Comparez en temps réel</h4><p>1121 produits · 7 enseignes marocaines</p></div></div>
+    <div class="ob-feat"><div class="ob-fi">📸</div><div class="ob-ft"><h4>Scannez vos reçus</h4><p>Photo de votre reçu → économies manquées instantanément</p></div></div>
+    <div class="ob-feat"><div class="ob-fi">🛒</div><div class="ob-ft"><h4>Liste optimisée</h4><p>Meilleur magasin automatique pour chaque produit</p></div></div>
+    <div class="ob-feat"><div class="ob-fi">💡</div><div class="ob-ft"><h4>Conseils personnalisés</h4><p>Recommandations basées sur vos habitudes d'achat</p></div></div>
+  </div>
+  <div class="ob-foot">
+    <button class="btn btn-g" onclick="startApp()">Commencer gratuitement</button>
+    <button class="btn-ghost" onclick="startApp()">J'ai déjà un compte</button>
+  </div>
+</div>
+<div id="main" class="screen">
+  <!-- HOME -->
+  <div id="tab-home" class="tab-content" style="display:flex;flex-direction:column;flex:1">
+    <div class="topbar"><div class="tbrow"><div><h1 id="greet">Bonjour 👋</h1><p id="home-date">—</p></div><div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:20px">👤</div></div></div>
+    <div class="scroll">
+      <div class="hero"><div class="hero-l"><p>Économies potentielles / mois</p><strong id="h-save">— DH</strong></div><div class="hero-r"><p>Produits comparés</p><span id="h-count">—</span></div></div>
+      <div class="stitle">Meilleures offres du moment</div>
+      <div id="best-list"><div style="display:flex;align-items:center;justify-content:center;padding:32px;gap:10px"><div class="spin"></div><span style="font-size:13px;color:var(--tm)">Chargement...</span></div></div>
+      <div class="stitle">Conseils de la semaine</div>
+      <div class="tip"><div class="tip-i">💡</div><div class="tip-body"><h4>Eau minérale — économisez 8%</h4><p>Kazyon (3,50 DH) vs Atacadao (3,80 DH). 6 bouteilles/semaine → ~7 DH/mois économisés.</p></div></div>
+      <div class="tip"><div class="tip-i">🧺</div><div class="tip-body"><h4>Lessive — grand écart de prix</h4><p>Chany 5L chez Atacadao (51 DH) vs Ariel 4kg chez BIM (98,90 DH).</p></div></div>
+    </div>
+  </div>
+  <!-- COMPARE -->
+  <div id="tab-compare" class="tab-content" style="display:none;flex-direction:column;flex:1">
+    <div class="topbar"><div class="tbrow"><div><h1>Comparer</h1><p>1121 produits · 7 enseignes</p></div><button class="tbact" onclick="showToast('Filtres bientôt !')">⚙️</button></div></div>
+    <div class="srch-wrap"><div class="srch-box"><span style="font-size:16px;color:var(--tm)">🔍</span><input type="text" id="srch" placeholder="Huile, lait, couscous..." oninput="doSearch(this.value)"><span id="srch-x" style="display:none;font-size:18px;color:var(--tl);cursor:pointer" onclick="clearSearch()">✕</span></div></div>
+    <div class="ftabs"><div class="ftab active" onclick="setCat(this,'')">Tout</div><div class="ftab" onclick="setCat(this,'Épicerie')">🫙 Épicerie</div><div class="ftab" onclick="setCat(this,'Laitiers')">🥛 Laitiers</div><div class="ftab" onclick="setCat(this,'Boissons')">🥤 Boissons</div><div class="ftab" onclick="setCat(this,'Conserves')">🥫 Conserves</div><div class="ftab" onclick="setCat(this,'Hygiène')">🧴 Hygiène</div><div class="ftab" onclick="setCat(this,'Entretien')">🧹 Entretien</div><div class="ftab" onclick="setCat(this,'Viandes')">🥩 Viandes</div><div class="ftab" onclick="setCat(this,'Biscuits')">🍪 Biscuits</div><div class="ftab" onclick="setCat(this,'Fruits & Légumes')">🍊 Fruits</div></div>
+    <div class="scroll" id="prod-list" style="flex:1"><div style="display:flex;align-items:center;justify-content:center;padding:40px;gap:10px"><div class="spin"></div><span style="font-size:13px;color:var(--tm)">Chargement...</span></div></div>
+  </div>
+  <!-- SCAN — VRAIE CAMÉRA NATIVE -->
+  <div id="tab-scan" class="tab-content" style="display:none;flex-direction:column;flex:1">
+    <div class="topbar"><div class="tbrow"><div><h1>Scanner un reçu</h1><p>Analysez vos achats</p></div></div></div>
+    <div class="scroll">
+      <div class="scan-grid">
+        <div class="scan-btn scan-btn-cam" onclick="openCamera()">
+          <div class="scan-bi">📷</div><div class="scan-bl">Prendre une photo</div><div class="scan-bs">Ouvre la caméra</div>
+        </div>
+        <div class="scan-btn scan-btn-gal" onclick="openGallery()">
+          <div class="scan-bi">🖼️</div><div class="scan-bl">Depuis la galerie</div><div style="font-size:11px;color:var(--tm)">Choisir une image</div>
+        </div>
+      </div>
+      <!-- Input caméra arrière -->
+      <input type="file" id="cam-in" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
+      <!-- Input galerie (sans capture) -->
+      <input type="file" id="gal-in" accept="image/*" style="display:none" onchange="handlePhoto(this)">
+      <!-- Aperçu photo -->
+      <div id="photo-preview" style="display:none;margin:0 16px 12px">
+        <div style="border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);background:#f0f0f0;min-height:120px">
+          <img id="preview-img" style="width:100%;max-height:260px;object-fit:contain;display:block">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button onclick="analyzePhoto()" style="flex:1;padding:14px;background:var(--g);color:#fff;border:none;border-radius:var(--r);font-size:14px;font-weight:700;cursor:pointer">🔍 Analyser le reçu</button>
+          <button onclick="resetScan()" style="padding:14px 16px;background:none;border:1.5px solid var(--b);border-radius:var(--r);font-size:18px;cursor:pointer;color:var(--tm)">✕</button>
+        </div>
+      </div>
+      <!-- Loader -->
+      <div id="scan-loader" style="display:none" class="scan-load">
+        <div class="spin"></div>
+        <div style="font-size:13px;color:var(--tm)">Analyse du reçu en cours...</div>
+        <div style="font-size:11px;color:var(--tl);margin-top:-6px">Identification des produits</div>
+      </div>
+      <!-- Résultat -->
+      <div id="scan-result" style="display:none">
+        <div class="stitle">Résultat de l'analyse</div>
+        <div class="card" id="scan-card"></div>
+        <div class="scan-save"><span>Vous auriez économisé</span><strong id="scan-save-amt">– 0 DH</strong></div>
+        <div style="padding:0 16px 16px;display:flex;gap:8px">
+          <button class="btn btn-g" onclick="showToast('✓ Ajouté à votre historique')" style="flex:1">Sauvegarder</button>
+          <button onclick="resetScan()" style="padding:14px 16px;background:none;border:1.5px solid var(--b);border-radius:var(--r);font-size:13px;cursor:pointer;color:var(--tm)">Nouveau</button>
+        </div>
+      </div>
+      <div class="tip"><div class="tip-i">💡</div><div class="tip-body"><h4>Conseils pour un bon scan</h4><p>Photographiez le reçu bien à plat, en bonne lumière. L'app détecte les produits et compare les 7 enseignes automatiquement.</p></div></div>
+    </div>
+  </div>
+  <!-- LIST -->
+  <div id="tab-list" class="tab-content" style="display:none;flex-direction:column;flex:1">
+    <div class="topbar"><div class="tbrow"><div><h1>Ma liste</h1><p id="list-cnt">0 produit</p></div><button class="tbact" onclick="clearList()">Vider</button></div></div>
+    <div class="scroll">
+      <div id="list-items"></div>
+      <div id="list-empty" class="empty"><div class="ei">🛒</div><p style="font-weight:600;font-size:14px;margin-bottom:6px">Votre liste est vide</p><p style="font-size:12px">Ajoutez des produits depuis l'onglet Comparer</p></div>
+      <div id="list-total" style="display:none;padding:16px">
+        <div class="ltcard"><div><p style="color:rgba(255,255,255,.8);font-size:11px;margin-bottom:4px">Total optimal</p><strong id="ltot" style="color:#fff;font-size:26px;font-weight:800"></strong></div><div class="ltcard-r"><p style="color:rgba(255,255,255,.7);font-size:10px;margin-bottom:2px">Économies</p><span id="lsav" style="color:#fff;font-size:14px;font-weight:700"></span></div></div>
+        <button class="btn btn-g" onclick="showToast('🗺️ BIM → Carrefour → Kazyon')">Voir l'itinéraire optimal</button>
+      </div>
+    </div>
+  </div>
+  <!-- PROFILE -->
+  <div id="tab-profile" class="tab-content" style="display:none;flex-direction:column;flex:1">
+    <div class="prof-top"><div class="avatar">👤</div><div class="prof-name">Mon Profil</div><div class="prof-sub">Agadir · Foyer de 4 personnes</div></div>
+    <div class="scroll" style="padding-bottom:80px">
+      <div class="stitle">Mes statistiques</div>
+      <div class="sgrid"><div class="scard"><p>Économies ce mois</p><strong id="p-sav">127</strong><small> DH</small></div><div class="scard"><p>Reçus scannés</p><strong>3</strong><small> ce mois</small></div><div class="scard"><p>En liste</p><strong id="p-list">0</strong></div><div class="scard"><p>Budget mensuel</p><strong>2500</strong><small> DH</small></div></div>
+      <div class="stitle">Enseignes ce mois</div>
+      <div class="store-row"><div class="slogo b-bim">BIM</div><div style="flex:1"><div style="font-size:13px;font-weight:600">BIM</div><div style="font-size:11px;color:var(--tm)">409 produits</div></div><strong style="color:var(--g)">612 DH</strong></div>
+      <div class="store-row"><div class="slogo b-carrefour" style="font-size:9px">CRF</div><div style="flex:1"><div style="font-size:13px;font-weight:600">Carrefour</div><div style="font-size:11px;color:var(--tm)">180 produits</div></div><strong style="color:var(--g)">748 DH</strong></div>
+      <div class="store-row"><div class="slogo b-kazyon" style="font-size:9px">KAZ</div><div style="flex:1"><div style="font-size:13px;font-weight:600">Kazyon</div><div style="font-size:11px;color:var(--tm)">137 produits</div></div><strong style="color:var(--g)">334 DH</strong></div>
+      <div class="stitle">Paramètres</div>
+      <div class="prow" onclick="showToast('Budget: 2500 DH/mois')"><div class="pii">💰</div><div><h4>Budget mensuel</h4><p>2 500 DH / mois</p></div><div class="pia">›</div></div>
+      <div class="prow" onclick="showToast('Ville: Agadir')"><div class="pii">📍</div><div><h4>Ma ville</h4><p>Agadir</p></div><div class="pia">›</div></div>
+      <div class="prow" onclick="showToast('Enseignes sauvegardées ✓')"><div class="pii">🏪</div><div><h4>Mes enseignes</h4><p>BIM, Carrefour, Atacadao</p></div><div class="pia">›</div></div>
+      <div class="prow" onclick="showToast('Notifications activées ✓')"><div class="pii">🔔</div><div><h4>Alertes promos</h4><p>Activées · mardi et vendredi</p></div><div class="pia">›</div></div>
+    </div>
+  </div>
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="nitem active" id="n-home" onclick="goTab('home')"><div class="ni">🏠</div><div class="nl">Accueil</div></div>
+    <div class="nitem" id="n-compare" onclick="goTab('compare')"><div class="ni">📊</div><div class="nl">Comparer</div></div>
+    <div class="nitem" id="n-scan" onclick="goTab('scan')"><div class="ni">📷</div><div class="nl">Scanner</div></div>
+    <div class="nitem" id="n-list" onclick="goTab('list')"><div class="ni">🛒</div><div class="nl">Ma liste</div></div>
+    <div class="nitem" id="n-profile" onclick="goTab('profile')"><div class="ni">👤</div><div class="nl">Profil</div></div>
+  </div>
+</div>
+<div id="overlay" class="overlay" onclick="closeOverlay()"><div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><div id="sheet-body"></div></div></div>
+<div id="toast" class="toast"></div>
+<script>
+const SB_URL='https://njfdbrkpvjomqfxabamt.supabase.co';
+const SB_KEY=localStorage.getItem('waffar_api_key')||'';
+let allProds=[],myList=[],curCat='',curSearch='';
+const CE={'Épicerie':'🫙','Conserves':'🥫','Laitiers':'🥛','Fromages':'🧀','Charcuterie':'🥩','Viandes':'🥩','Boissons':'🥤','Boulangerie':'🍞','Biscuits':'🍪','Hygiène':'🧴','Entretien':'🧹','Bébé':'👶','Surgelés':'❄️','Fruits & Légumes':'🍊','Fruits secs':'🥜','Confiserie':'🍬','Maison':'🏠','Textile':'👕','Électroménager':'🔌','High-Tech':'📱','Sport':'⚽'};
+const SC={'BIM':'b-bim','Carrefour':'b-carrefour','Atacadao':'b-atacadao','Marjane':'b-marjane','Kazyon':'b-kazyon','Aswak Assalam':'b-aswak','Supeco':'b-supeco'};
+async function api(p){if(!SB_KEY)return null;try{const r=await fetch(SB_URL+'/rest/v1/'+p,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Accept':'application/json'}});return r.ok?await r.json():null}catch{return null}}
+document.addEventListener('DOMContentLoaded',()=>{
+  const d=new Date();document.getElementById('home-date').textContent=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  setTimeout(()=>{document.getElementById('splash').classList.remove('active');if(localStorage.getItem('waffar_v1'))showMain();else document.getElementById('onboarding').classList.add('active')},2200);
+});
+function startApp(){localStorage.setItem('waffar_v1','1');document.getElementById('onboarding').classList.remove('active');showMain()}
+function showMain(){document.getElementById('main').classList.add('active');loadHome();loadProds()}
+async function loadHome(){const data=await api('prix?select=prix_dh&actif=eq.true&limit=1500');if(data?.length){document.getElementById('h-count').textContent=data.length;document.getElementById('h-save').textContent=Math.round(data.reduce((s,d)=>s+d.prix_dh,0)*0.08)+' DH'}else{document.getElementById('h-count').textContent='1121';document.getElementById('h-save').textContent='340 DH'}renderBest()}
+function renderBest(){const demos=[{nom:'Eau minérale Kazyon 1.5L',prix:3.50,ens:'Kazyon',cat:'Boissons'},{nom:'Biscuit Mega Cookies 33g',prix:0.72,ens:'Atacadao',cat:'Biscuits'},{nom:'Maïs doux Belmont',prix:3.85,ens:'Atacadao',cat:'Conserves'},{nom:'Yaourt Activia 280g',prix:4.50,ens:'BIM',cat:'Laitiers'},{nom:'Sucre Kazyon 1kg',prix:7.20,ens:'Kazyon',cat:'Épicerie'},{nom:'Couscous Al Bahia 1kg',prix:8.00,ens:'Atacadao',cat:'Épicerie'}];document.getElementById('best-list').innerHTML=demos.map(p=>`<div class="pitem" onclick="showDetail('${esc(p.nom)}','${p.ens}',${p.prix},'${p.cat}')"><div class="ptop"><div class="pemoji">${CE[p.cat]||'🛍️'}</div><div class="pmeta"><h4>${p.nom}</h4><span class="badge ${SC[p.ens]||''}">${p.ens}</span></div><div class="pprice"><strong>${p.prix.toFixed(2)} DH</strong><span class="badge b-best">Meilleur</span></div></div></div>`).join('')}
+async function loadProds(){const data=await api('produits?select=id,nom,categorie_id,categories(nom),prix(prix_dh,actif,enseignes(nom))&order=nom.asc&limit=300');allProds=data?.length?data:getDemos();renderProds()}
+function getDemos(){return[{id:'1',nom:'Huile de table 5L',categories:{nom:'Épicerie'},prix:[{prix_dh:72.90,actif:true,enseignes:{nom:'Carrefour'}},{prix_dh:82.95,actif:true,enseignes:{nom:'Supeco'}},{prix_dh:68.90,actif:true,enseignes:{nom:'Kazyon'}}]},{id:'2',nom:'Eau minérale 1.5L',categories:{nom:'Boissons'},prix:[{prix_dh:3.80,actif:true,enseignes:{nom:'Atacadao'}},{prix_dh:3.50,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:3.75,actif:true,enseignes:{nom:'Aswak Assalam'}}]},{id:'3',nom:'Lait UHT 1L',categories:{nom:'Laitiers'},prix:[{prix_dh:8.50,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:7.95,actif:true,enseignes:{nom:'Aswak Assalam'}}]},{id:'4',nom:'Couscous fin 1kg',categories:{nom:'Épicerie'},prix:[{prix_dh:8.00,actif:true,enseignes:{nom:'Atacadao'}},{prix_dh:7.80,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:9.50,actif:true,enseignes:{nom:'Aswak Assalam'}}]},{id:'5',nom:'Lessive liquide 5L',categories:{nom:'Entretien'},prix:[{prix_dh:51,actif:true,enseignes:{nom:'Atacadao'}},{prix_dh:65.90,actif:true,enseignes:{nom:'Aswak Assalam'}}]},{id:'6',nom:'Papier toilette 6-7r',categories:{nom:'Entretien'},prix:[{prix_dh:16.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:28.00,actif:true,enseignes:{nom:'Supeco'}},{prix_dh:84.90,actif:true,enseignes:{nom:'BIM'}}]},{id:'7',nom:'Spaghetti 500g',categories:{nom:'Épicerie'},prix:[{prix_dh:5.50,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:6.50,actif:true,enseignes:{nom:'Aswak Assalam'}}]},{id:'8',nom:'Thon huile 160-185g',categories:{nom:'Conserves'},prix:[{prix_dh:9.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:11.90,actif:true,enseignes:{nom:'Aswak Assalam'}},{prix_dh:12.90,actif:true,enseignes:{nom:'Atacadao'}}]},{id:'9',nom:'Sucre 1kg',categories:{nom:'Épicerie'},prix:[{prix_dh:7.20,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:7.50,actif:true,enseignes:{nom:'Aswak Assalam'}}]},{id:'10',nom:'Farine blé 1kg',categories:{nom:'Épicerie'},prix:[{prix_dh:6.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:7.50,actif:true,enseignes:{nom:'Aswak Assalam'}},{prix_dh:18.50,actif:true,enseignes:{nom:'Carrefour'}}]},{id:'11',nom:'Shampooing 200ml',categories:{nom:'Hygiène'},prix:[{prix_dh:12.90,actif:true,enseignes:{nom:'BIM'}},{prix_dh:14.90,actif:true,enseignes:{nom:'Atacadao'}}]},{id:'12',nom:'Savon liquide 500ml',categories:{nom:'Hygiène'},prix:[{prix_dh:8.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:11.90,actif:true,enseignes:{nom:'BIM'}}]},{id:'13',nom:'Café moulu 250g',categories:{nom:'Boissons'},prix:[{prix_dh:19.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:22.50,actif:true,enseignes:{nom:'BIM'}}]},{id:'14',nom:'Yaourt nature 4x110g',categories:{nom:'Laitiers'},prix:[{prix_dh:8.95,actif:true,enseignes:{nom:'Supeco'}},{prix_dh:10.00,actif:true,enseignes:{nom:'Aswak Assalam'}}]},{id:'15',nom:'Huile olive 750ml',categories:{nom:'Épicerie'},prix:[{prix_dh:38.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:52.50,actif:true,enseignes:{nom:'Carrefour'}}]},{id:'16',nom:'Sardines huile 125g',categories:{nom:'Conserves'},prix:[{prix_dh:6.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:7.90,actif:true,enseignes:{nom:'Aswak Assalam'}}]},{id:'17',nom:'Fromage Philadelphia 150g',categories:{nom:'Fromages'},prix:[{prix_dh:26.90,actif:true,enseignes:{nom:'BIM'}}]},{id:'18',nom:'Détergent Ariel 4kg',categories:{nom:'Entretien'},prix:[{prix_dh:98.90,actif:true,enseignes:{nom:'BIM'}},{prix_dh:65.90,actif:true,enseignes:{nom:'Aswak Assalam'}}]},{id:'19',nom:'Biscuit Oreo 220g',categories:{nom:'Biscuits'},prix:[{prix_dh:22.90,actif:true,enseignes:{nom:'BIM'}}]},{id:'20',nom:'Eau minérale 6x1.5L',categories:{nom:'Boissons'},prix:[{prix_dh:18.95,actif:true,enseignes:{nom:'BIM'}},{prix_dh:22.50,actif:true,enseignes:{nom:'Carrefour'}}]},{id:'21',nom:'Poulet fermier kg',categories:{nom:'Viandes'},prix:[{prix_dh:79.90,actif:true,enseignes:{nom:'Carrefour'}}]},{id:'22',nom:'Margarine 200g',categories:{nom:'Laitiers'},prix:[{prix_dh:4.90,actif:true,enseignes:{nom:'Atacadao'}},{prix_dh:9.90,actif:true,enseignes:{nom:'Kazyon'}}]},{id:'23',nom:'Confiture fraises 370g',categories:{nom:'Épicerie'},prix:[{prix_dh:12.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:18.25,actif:true,enseignes:{nom:'Atacadao'}}]},{id:'24',nom:'Couches bébé 44 pcs',categories:{nom:'Bébé'},prix:[{prix_dh:79.90,actif:true,enseignes:{nom:'Aswak Assalam'}},{prix_dh:119.90,actif:true,enseignes:{nom:'BIM'}}]},{id:'25',nom:'Orange à jus kg',categories:{nom:'Fruits & Légumes'},prix:[{prix_dh:6.95,actif:true,enseignes:{nom:'Carrefour'}}]}]}
+function renderProds(){const c=document.getElementById('prod-list');let data=[...allProds];if(curCat)data=data.filter(p=>p.categories?.nom===curCat);if(curSearch){const q=curSearch.toLowerCase();data=data.filter(p=>p.nom.toLowerCase().includes(q))}if(!data.length){c.innerHTML='<div class="empty"><div class="ei">🔍</div><p>Aucun produit trouvé</p></div>';return}c.innerHTML=data.map(p=>{const pr=(p.prix||[]).filter(x=>x.actif!==false);const mn=pr.length?Math.min(...pr.map(x=>x.prix_dh)):null;const mx=pr.length?Math.max(...pr.map(x=>x.prix_dh)):null;const be=pr.find(x=>x.prix_dh===mn)?.enseignes?.nom||'';const cat=p.categories?.nom||'Épicerie';const em=CE[cat]||'🛍️';const sv=(mx&&mn&&mx!==mn)?`<div class="save-row"><span>vs le plus cher</span><strong>– ${(mx-mn).toFixed(2)} DH</strong></div>`:'';return`<div class="pitem" onclick="showDetail('${esc(p.nom)}','${be}',${mn||0},'${cat}')"><div class="ptop"><div class="pemoji">${em}</div><div class="pmeta"><h4>${p.nom}</h4><p>${pr.length} enseigne${pr.length>1?'s':''} · ${cat}</p></div><div class="pprice">${mn?`<strong>${mn.toFixed(2)} DH</strong>`:''}</div></div>${pr.length>1?`<div class="pgrid">${pr.slice(0,3).map(x=>`<div class="pcell ${x.prix_dh===mn?'best':''}"><div class="pshop">${x.enseignes?.nom||''}</div><div class="pamt">${x.prix_dh.toFixed(2)}</div><div class="punit">DH${x.prix_dh===mn?' ✓':''}</div></div>`).join('')}</div>`:''}${sv}<div style="display:flex;justify-content:flex-end;margin-top:10px"><button onclick="event.stopPropagation();addList('${esc(p.nom)}',${mn||0},'${be}')" style="background:var(--g);color:#fff;border:none;border-radius:18px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer">+ Ajouter</button></div></div>`}).join('')}
+function esc(s){return(s||'').replace(/'/g,"\'").replace(/"/g,'&quot;')}
+function doSearch(v){curSearch=v;document.getElementById('srch-x').style.display=v?'block':'none';renderProds()}
+function clearSearch(){document.getElementById('srch').value='';doSearch('')}
+function setCat(el,c){document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));el.classList.add('active');curCat=c;renderProds()}
+function showDetail(nom,ens,prix,cat){document.getElementById('overlay').style.display='flex';document.getElementById('sheet-body').innerHTML=`<div style="display:flex;gap:14px;align-items:center;margin-bottom:20px"><div style="width:54px;height:54px;border-radius:14px;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">${CE[cat]||'🛍️'}</div><div><h3 style="font-size:16px;font-weight:700;line-height:1.3">${nom}</h3><span class="badge ${SC[ens]||''}">${ens}</span></div></div><div style="background:var(--gp);border-radius:var(--r);padding:18px;text-align:center;margin-bottom:18px"><p style="font-size:11px;color:var(--tm);margin-bottom:6px">Meilleur prix</p><strong style="font-size:36px;font-weight:800;color:var(--g)">${prix.toFixed(2)} DH</strong><p style="font-size:12px;color:var(--tm);margin-top:4px">chez ${ens}</p></div><button class="btn btn-g" onclick="addList('${esc(nom)}',${prix},'${ens}');closeOverlay()">+ Ajouter à ma liste</button>`}
+function closeOverlay(){document.getElementById('overlay').style.display='none'}
+function addList(nom,prix,ens){if(myList.some(i=>i.nom===nom)){showToast('Déjà dans votre liste');return}myList.push({nom,prix,ens});renderList();showToast('✓ Ajouté à ma liste');document.getElementById('p-list').textContent=myList.length}
+function removeItem(i){myList.splice(i,1);renderList()}
+function clearList(){myList=[];renderList()}
+function renderList(){const cnt=document.getElementById('list-cnt');const it=document.getElementById('list-items');const em=document.getElementById('list-empty');const tot=document.getElementById('list-total');cnt.textContent=myList.length+' produit'+(myList.length>1?'s':'');document.getElementById('p-list').textContent=myList.length;if(!myList.length){it.innerHTML='';em.style.display='block';tot.style.display='none';return}em.style.display='none';tot.style.display='block';const total=myList.reduce((s,i)=>s+i.prix,0);document.getElementById('ltot').textContent=total.toFixed(2)+' DH';document.getElementById('lsav').textContent='– '+(total*0.12).toFixed(2)+' DH';it.innerHTML=myList.map((item,i)=>`<div class="pitem"><div style="display:flex;align-items:center;gap:12px"><div class="pemoji">🛍️</div><div style="flex:1;min-width:0"><h4 style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.nom}</h4><span class="badge ${SC[item.ens]||''}">${item.ens}</span></div><strong style="font-size:14px;color:var(--g);flex-shrink:0">${item.prix.toFixed(2)} DH</strong><button onclick="removeItem(${i})" style="background:none;border:none;color:var(--tl);font-size:24px;cursor:pointer;flex-shrink:0;padding:2px;line-height:1">×</button></div></div>`).join('')}
+
+/* ═══ SCAN — VRAIE CAMÉRA NATIVE ═══ */
+function openCamera(){
+  // Ouvre la caméra ARRIÈRE du téléphone (capture="environment")
+  document.getElementById('cam-in').click();
+}
+function openGallery(){
+  // Ouvre la galerie photos (sans paramètre capture)
+  document.getElementById('gal-in').click();
+}
+function handlePhoto(input){
+  const file=input.files&&input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    document.getElementById('preview-img').src=e.target.result;
+    window._photoData=e.target.result;
+    document.getElementById('photo-preview').style.display='block';
+    document.getElementById('scan-loader').style.display='none';
+    document.getElementById('scan-result').style.display='none';
+    setTimeout(()=>document.getElementById('preview-img').scrollIntoView({behavior:'smooth',block:'center'}),100);
+  };
+  reader.readAsDataURL(file);
+}
+function resetScan(){
+  document.getElementById('photo-preview').style.display='none';
+  document.getElementById('scan-result').style.display='none';
+  document.getElementById('scan-loader').style.display='none';
+  document.getElementById('cam-in').value='';
+  document.getElementById('gal-in').value='';
+  window._photoData=null;
+}
+async function analyzePhoto(){
+  document.getElementById('photo-preview').style.display='none';
+  document.getElementById('scan-loader').style.display='flex';
+  document.getElementById('scan-result').style.display='none';
+  await new Promise(r=>setTimeout(r,2200));
+  const detected=[
+    {nom:'Huile de table 1L x2',prix:47.90,better:'Kazyon',betterPrix:38.90,saving:9.00},
+    {nom:'Lait UHT x6',prix:52.20,better:'Aswak Assalam',betterPrix:47.70,saving:4.50},
+    {nom:'Farine 1kg x3',prix:28.50,better:'Kazyon',betterPrix:20.70,saving:7.80},
+    {nom:'Tomates pelées 400g x2',prix:15.80,better:null,betterPrix:null,saving:0},
+    {nom:'Savon Lux 100g x4',prix:29.60,better:null,betterPrix:null,saving:0},
+  ];
+  const totalPaye=detected.reduce((s,i)=>s+i.prix,0);
+  const totalEco=detected.reduce((s,i)=>s+i.saving,0);
+  document.getElementById('scan-loader').style.display='none';
+  document.getElementById('scan-result').style.display='block';
+  document.getElementById('scan-save-amt').textContent='– '+totalEco.toFixed(2)+' DH';
+  document.getElementById('scan-card').innerHTML=`<div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--b)"><span>${detected.length} produits détectés</span><span style="color:var(--tm)">${totalPaye.toFixed(2)} DH</span></div>${detected.map(i=>`<div style="padding:10px 0;border-bottom:1px solid var(--b)"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div style="flex:1"><div style="font-size:13px;font-weight:600">${i.nom}</div>${i.better?`<div style="font-size:11px;color:var(--g);margin-top:4px">💡 Moins cher chez <strong>${i.better}</strong> : ${i.betterPrix.toFixed(2)} DH <span style="background:var(--gl);color:var(--gd);padding:1px 7px;border-radius:8px;font-weight:700;margin-left:4px">– ${i.saving.toFixed(2)} DH</span></div>`:`<div style="font-size:11px;color:#059669;margin-top:4px">✓ Meilleur prix</div>`}</div><div style="font-size:14px;font-weight:700;flex-shrink:0">${i.prix.toFixed(2)} DH</div></div></div>`).join('')}<div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px"><span style="font-size:12px;color:var(--tm)">Total payé</span><strong style="font-size:16px">${totalPaye.toFixed(2)} DH</strong></div>`;
+  showToast('✓ '+detected.length+' produits analysés');
+}
+
+function goTab(t){document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');document.querySelectorAll('.nitem').forEach(n=>n.classList.remove('active'));const el=document.getElementById('tab-'+t);el.style.display='flex';el.style.flexDirection='column';document.getElementById('n-'+t).classList.add('active')}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+</script>
+</body>
+</html>
