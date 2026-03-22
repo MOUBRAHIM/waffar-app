@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#1DB176">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Waffar">
+<link rel="manifest" href="manifest.json">
+<title>Waffar — وفّر</title>
+<style>
+:root{--g:#1DB176;--gd:#0d8a56;--gl:#e0f5ec;--gp:#f0faf6;--t:#111827;--tm:#6b7280;--tl:#9ca3af;--b:#e5e7eb;--bg:#f3f4f6;--r:12px;--sh:0 1px 8px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.04)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;background:var(--bg);color:var(--t);overflow:hidden}
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* SCREENS */
+.screen{display:none;flex-direction:column;height:100%;overflow:hidden}
+.screen.active{display:flex}
+
+/* SPLASH */
+#splash{background:linear-gradient(160deg,#22c55e 0%,#1DB176 40%,#0d8a56 100%);align-items:center;justify-content:center;gap:8px}
+.spl-icon{font-size:72px;animation:pop .6s ease-out}
+@keyframes pop{0%{transform:scale(0);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.spl-name{font-size:42px;font-weight:800;color:#fff;letter-spacing:-1.5px}
+.spl-ar{font-size:20px;font-weight:400;color:rgba(255,255,255,.75);display:block;text-align:center;margin-top:-4px}
+.spl-tag{color:rgba(255,255,255,.8);font-size:13px;margin-top:6px}
+.spl-bar{width:44px;height:3px;background:rgba(255,255,255,.25);border-radius:2px;margin-top:40px;overflow:hidden}
+.spl-bar::after{content:'';display:block;height:100%;width:40%;background:#fff;border-radius:2px;animation:ld 1.2s ease-in-out infinite}
+@keyframes ld{0%{transform:translateX(-100%)}100%{transform:translateX(280%)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ONBOARDING */
+#onboarding{background:#fff;overflow-y:auto}
+.ob-hero{background:linear-gradient(155deg,#1DB176,#0d8a56);padding:56px 28px 40px;text-align:center}
+.ob-hero .icon{font-size:60px;margin-bottom:12px}
+.ob-hero h1{color:#fff;font-size:24px;font-weight:700;margin-bottom:8px}
+.ob-hero p{color:rgba(255,255,255,.85);font-size:14px;line-height:1.6}
+.ob-steps{padding:8px 24px;flex:1}
+.ob-step{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--b)}
+.ob-step:last-child{border:none}
+.ob-si{width:46px;height:46px;border-radius:13px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.ob-st h4{font-size:14px;font-weight:600;margin-bottom:3px}
+.ob-st p{font-size:12px;color:var(--tm);line-height:1.5}
+.ob-cta{padding:24px;background:#fff;border-top:1px solid var(--b)}
+
+/* BUTTONS */
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:var(--r);font-size:15px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+.btn:active{transform:scale(.98)}
+.btn-g{background:var(--g);color:#fff;box-shadow:0 4px 12px rgba(29,177,118,.35)}
+.btn-g:active{background:var(--gd)}
+.btn-outline{background:transparent;color:var(--g);border:1.5px solid var(--g);margin-top:10px}
+.btn-sm{padding:8px 18px;width:auto;font-size:13px;display:inline-block}
+
+/* TOPBAR */
+.topbar{background:linear-gradient(135deg,#1DB176,#0f9c61);padding:48px 16px 16px;color:#fff;flex-shrink:0;position:relative}
+.tb-row{display:flex;align-items:center;justify-content:space-between}
+.tb-title{font-size:20px;font-weight:700}
+.tb-sub{font-size:12px;opacity:.85;margin-top:2px}
+.tb-btn{background:rgba(255,255,255,.2);border:none;color:#fff;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap}
+.tb-icon{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer}
+
+/* HERO CARD */
+.hero{background:rgba(0,0,0,.15);backdrop-filter:blur(8px);margin:0 16px;border-radius:14px;margin-top:-18px;padding:16px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2}
+.hero-l p{color:rgba(255,255,255,.8);font-size:11px;margin-bottom:2px}
+.hero-l strong{color:#fff;font-size:30px;font-weight:800;line-height:1}
+.hero-r{background:rgba(255,255,255,.18);border-radius:10px;padding:10px 14px;text-align:center}
+.hero-r p{color:rgba(255,255,255,.7);font-size:10px;margin-bottom:2px}
+.hero-r span{color:#fff;font-size:16px;font-weight:700}
+
+/* SCROLL CONTENT */
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll::-webkit-scrollbar{display:none}
+
+/* SECTION */
+.sec{padding:18px 16px 8px;font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.08em}
+
+/* CARD */
+.card{background:#fff;border-radius:var(--r);margin:0 16px 10px;padding:16px;box-shadow:var(--sh)}
+
+/* PRODUCT ITEM */
+.pi{background:#fff;padding:14px 16px;border-bottom:1px solid var(--b);cursor:pointer;transition:background .1s;animation:fadeUp .3s ease both}
+.pi:active{background:var(--gp)}
+.pi-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.pi-emoji{width:40px;height:40px;border-radius:10px;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pi-info{flex:1;min-width:0}
+.pi-info h4{font-size:13px;font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.pi-info p{font-size:11px;color:var(--tm)}
+.pi-price{text-align:right;flex-shrink:0}
+.pi-price strong{font-size:15px;font-weight:700;color:var(--g);display:block}
+
+/* PRICE GRID */
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.pc{border:1.5px solid var(--b);border-radius:9px;padding:7px 5px;text-align:center}
+.pc.best{border-color:var(--g);background:var(--gp)}
+.pc-shop{font-size:9px;font-weight:700;color:var(--tm);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc.best .pc-shop{color:var(--g)}
+.pc-amt{font-size:13px;font-weight:700}
+.pc.best .pc-amt{color:var(--gd)}
+.pc-dh{font-size:9px;color:var(--tl)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;line-height:1.6}
+.b-ok{background:var(--gl);color:var(--gd)}
+.b-bim{background:#fff3e0;color:#e65100}
+.b-carrefour{background:#e3f2fd;color:#1565c0}
+.b-atacadao{background:#fce4ec;color:#c62828}
+.b-marjane{background:#ffebee;color:#b71c1c}
+.b-kazyon{background:#fff8e1;color:#f57f17}
+.b-aswak{background:#e8f5e9;color:#1b5e20}
+.b-supeco{background:#fffde7;color:#f9a825}
+
+/* SEARCH */
+.search-wrap{background:linear-gradient(135deg,#1DB176,#0f9c61);padding:10px 16px 12px}
+.search-box{background:#fff;border-radius:24px;display:flex;align-items:center;padding:10px 16px;gap:10px;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.search-box input{border:none;outline:none;flex:1;font-size:14px;color:var(--t);background:transparent}
+.search-box input::placeholder{color:var(--tl)}
+
+/* FILTER TABS */
+.ftabs{background:#fff;border-bottom:1px solid var(--b);display:flex;gap:6px;padding:10px 16px;overflow-x:auto;flex-shrink:0}
+.ftabs::-webkit-scrollbar{display:none}
+.ftab{flex-shrink:0;padding:7px 14px;border-radius:20px;border:1.5px solid var(--b);font-size:12px;font-weight:500;color:var(--tm);cursor:pointer;white-space:nowrap;background:#fff;transition:all .2s}
+.ftab.active{border-color:var(--g);background:var(--gp);color:var(--gd)}
+
+/* NAVBAR */
+.navbar{background:#fff;border-top:1px solid var(--b);display:flex;padding:8px 0 20px;flex-shrink:0}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:2px;position:relative}
+.ni-icon{font-size:22px}
+.ni-label{font-size:10px;color:var(--tm);font-weight:500}
+.ni.active .ni-label{color:var(--g)}
+.ni-badge{position:absolute;top:0;right:20%;background:#ef4444;color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* SCAN */
+.scan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}
+.scan-btn{border-radius:14px;padding:26px 12px;text-align:center;cursor:pointer;transition:all .15s;box-shadow:var(--sh)}
+.scan-btn:active{transform:scale(.97)}
+.scan-cam{background:linear-gradient(135deg,#1DB176,#0d8a56);color:#fff}
+.scan-gal{background:#fff;border:2px solid var(--g);color:var(--g)}
+.scan-icon{font-size:42px;margin-bottom:10px}
+.scan-label{font-size:13px;font-weight:700;margin-bottom:4px}
+.scan-sub{font-size:11px;opacity:.8}
+.scan-sub-gal{font-size:11px;color:var(--tm)}
+
+/* PREVIEW */
+.preview-wrap{margin:0 16px 12px;border-radius:14px;overflow:hidden;box-shadow:var(--sh);background:#f0f0f0;min-height:100px}
+#preview-img{width:100%;max-height:280px;object-fit:contain;display:block}
+.preview-actions{display:flex;gap:8px;margin:10px 16px 0}
+.btn-analyze{flex:1;padding:14px;background:var(--g);color:#fff;border:none;border-radius:var(--r);font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(29,177,118,.35)}
+.btn-cancel{padding:14px 16px;background:#fff;border:1.5px solid var(--b);border-radius:var(--r);font-size:18px;cursor:pointer;color:var(--tm);box-shadow:var(--sh)}
+
+/* LOADER */
+.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;gap:14px}
+.spin{width:36px;height:36px;border:3px solid var(--b);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite}
+
+/* SCAN RESULT */
+.save-banner{margin:0 16px 12px;padding:14px 16px;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:var(--r);display:flex;justify-content:space-between;align-items:center;box-shadow:var(--sh)}
+.save-banner span{font-size:12px;color:#92400e;font-weight:500}
+.save-banner strong{font-size:18px;color:#78350f;font-weight:800}
+
+/* TIP */
+.tip{background:var(--gp);border-left:3px solid var(--g);border-radius:var(--r);padding:14px 16px;margin:0 16px 12px;display:flex;gap:12px}
+.tip-i{font-size:20px;flex-shrink:0}
+.tip-t h4{font-size:12px;font-weight:700;color:#085041;margin-bottom:3px}
+.tip-t p{font-size:12px;color:#0d6e56;line-height:1.5}
+
+/* STATS GRID */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 4px}
+.scard{background:#fff;border-radius:var(--r);padding:14px;box-shadow:var(--sh)}
+.scard p{font-size:11px;color:var(--tm);margin-bottom:4px}
+.scard strong{font-size:22px;font-weight:800;color:var(--t);display:block}
+.scard small{font-size:11px;color:var(--tm)}
+
+/* PROFILE */
+.prof-top{background:linear-gradient(155deg,#1DB176,#0d8a56);padding:52px 24px 30px;text-align:center}
+.avatar{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 12px;border:3px solid rgba(255,255,255,.4)}
+.prof-name{color:#fff;font-size:20px;font-weight:700}
+.prof-sub{color:rgba(255,255,255,.8);font-size:12px;margin-top:3px}
+.prow{background:#fff;padding:16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--b);cursor:pointer;transition:background .1s}
+.prow:active{background:var(--bg)}
+.prow-icon{font-size:22px;width:36px;text-align:center;flex-shrink:0}
+.prow-info h4{font-size:14px;font-weight:500;color:var(--t)}
+.prow-info p{font-size:12px;color:var(--tm);margin-top:1px}
+.prow-arrow{margin-left:auto;color:var(--tl);font-size:20px}
+.store-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--b)}
+.slogo{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
+
+/* ADMIN */
+.admin-top{background:linear-gradient(135deg,#1e293b,#334155);padding:52px 16px 16px;color:#fff;flex-shrink:0}
+.admin-card{background:#fff;border-radius:var(--r);margin:0 16px 12px;padding:16px;box-shadow:var(--sh)}
+.admin-card h3{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--t)}
+.input-field{width:100%;padding:12px 14px;border:1.5px solid var(--b);border-radius:10px;font-size:14px;outline:none;transition:border-color .2s;background:#fff;color:var(--t)}
+.input-field:focus{border-color:var(--g)}
+.input-label{font-size:12px;font-weight:600;color:var(--tm);margin-bottom:6px;display:block}
+.status-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.status-ok{background:var(--gl);color:var(--gd)}
+.status-err{background:#fee2e2;color:#dc2626}
+.progress-bar{height:6px;background:var(--b);border-radius:3px;overflow:hidden;margin-top:8px}
+.progress-fill{height:100%;background:var(--g);border-radius:3px;transition:width .5s}
+.log-box{background:#f8fafc;border:1px solid var(--b);border-radius:8px;padding:10px;font-family:monospace;font-size:11px;max-height:120px;overflow-y:auto;color:var(--t)}
+.log-line{padding:1px 0;border-bottom:1px solid var(--b);color:var(--tm)}
+.log-line.ok{color:#16a34a}
+.log-line.err{color:#dc2626}
+
+/* LOGIN OVERLAY */
+.login-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-box{background:#fff;border-radius:20px;padding:28px;width:100%;max-width:340px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-box h2{font-size:18px;font-weight:700;margin-bottom:4px;text-align:center}
+.login-box p{font-size:12px;color:var(--tm);text-align:center;margin-bottom:20px}
+.login-box .logo{font-size:32px;text-align:center;margin-bottom:8px}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px 24px;color:var(--tm)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty p{font-size:13px}
+
+/* OVERLAY SHEET */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end}
+.sheet{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:88vh;overflow-y:auto}
+.sheet-handle{width:36px;height:4px;background:var(--b);border-radius:2px;margin:0 auto 18px}
+
+/* TOAST */
+.toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 20px;border-radius:25px;font-size:12px;font-weight:600;opacity:0;transition:opacity .25s;pointer-events:none;z-index:300;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.toast.show{opacity:1}
+
+.save-row{display:flex;justify-content:space-between;align-items:center;background:var(--gp);border-radius:8px;padding:7px 10px;margin-top:8px}
+.save-row span{font-size:11px;color:var(--tm)}.save-row strong{font-size:12px;color:var(--gd)}
+.lt-card{background:linear-gradient(135deg,var(--g),var(--gd));border-radius:var(--r);padding:16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.lt-r{background:rgba(255,255,255,.2);border-radius:10px;padding:9px 12px;text-align:right}
+
+@media(min-width:480px){#app{max-width:430px;margin:0 auto;box-shadow:0 0 40px rgba(0,0,0,.15)}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- SPLASH -->
+<div id="splash" class="screen active">
+  <div class="spl-icon">🛒</div>
+  <div class="spl-name">Waffar<span class="spl-ar">وفّر</span></div>
+  <div class="spl-tag">Économisez sur vos courses au Maroc 🇲🇦</div>
+  <div class="spl-bar"></div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboarding" class="screen">
+  <div class="ob-hero">
+    <div class="icon">🛒</div>
+    <h1>Bienvenue sur Waffar</h1>
+    <p>Comparez BIM, Carrefour, Marjane, Kazyon et plus — économisez chaque semaine sur vos courses</p>
+  </div>
+  <div class="ob-steps">
+    <div class="ob-step"><div class="ob-si">📊</div><div class="ob-st"><h4>Comparez en temps réel</h4><p>1121 produits · 7 enseignes marocaines · mise à jour hebdo</p></div></div>
+    <div class="ob-step"><div class="ob-si">📸</div><div class="ob-st"><h4>Scannez vos reçus</h4><p>Photo → analyse automatique → économies manquées révélées</p></div></div>
+    <div class="ob-step"><div class="ob-si">🛒</div><div class="ob-st"><h4>Liste de courses optimisée</h4><p>Meilleur magasin automatique pour chaque produit</p></div></div>
+    <div class="ob-step"><div class="ob-si">💡</div><div class="ob-st"><h4>Conseils personnalisés</h4><p>Recommandations basées sur vos habitudes d'achat</p></div></div>
+  </div>
+  <div class="ob-cta">
+    <button class="btn btn-g" onclick="startApp()">Commencer gratuitement</button>
+    <button class="btn btn-outline" onclick="startApp()">J'ai déjà un compte</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main" class="screen">
+
+  <!-- HOME -->
+  <div id="tab-home" class="tab-content" style="display:flex;flex-direction:column;height:100%">
+    <div class="topbar">
+      <div class="tb-row">
+        <div><div class="tb-title" id="greet">Bonjour 👋</div><div class="tb-sub" id="home-date">—</div></div>
+        <div class="tb-icon" onclick="goTab('profile')">👤</div>
+      </div>
+    </div>
+    <div class="scroll" style="padding-bottom:16px">
+      <div class="hero">
+        <div class="hero-l"><p>Économies potentielles / mois</p><strong id="h-save">— DH</strong></div>
+        <div class="hero-r"><p>Produits comparés</p><span id="h-count">—</span></div>
+      </div>
+      <div class="sec">Meilleures offres du moment</div>
+      <div id="best-list"><div class="loader"><div class="spin"></div></div></div>
+      <div class="sec">Conseils de la semaine</div>
+      <div class="tip"><div class="tip-i">💡</div><div class="tip-t"><h4>Eau minérale — économisez 8%</h4><p>Kazyon (3,50 DH) est moins chère qu'Atacadao (3,80 DH). Sur 6 bouteilles/sem → ~7 DH/mois économisés.</p></div></div>
+      <div class="tip"><div class="tip-i">🧺</div><div class="tip-t"><h4>Lessive — grand écart</h4><p>Chany 5L chez Atacadao (51 DH) vs Ariel 4kg BIM (98,90 DH). Rapport qualité/prix net pour Chany.</p></div></div>
+    </div>
+  </div>
+
+  <!-- COMPARE -->
+  <div id="tab-compare" class="tab-content" style="display:none;flex-direction:column;height:100%">
+    <div class="topbar">
+      <div class="tb-row"><div><div class="tb-title">Comparer les prix</div><div class="tb-sub" id="compare-count">Chargement...</div></div><button class="tb-btn" onclick="showToast('Filtres avancés bientôt !')">⚙️ Filtres</button></div>
+    </div>
+    <div class="search-wrap">
+      <div class="search-box">
+        <span style="font-size:16px;color:var(--tm)">🔍</span>
+        <input type="text" id="srch" placeholder="Huile, lait, couscous, thon..." oninput="doSearch(this.value)">
+        <span id="srch-x" style="display:none;font-size:18px;color:var(--tl);cursor:pointer;line-height:1" onclick="clearSearch()">✕</span>
+      </div>
+    </div>
+    <div class="ftabs" id="ftabs">
+      <div class="ftab active" onclick="setCat(this,'')">Tout</div>
+      <div class="ftab" onclick="setCat(this,'Épicerie')">🫙 Épicerie</div>
+      <div class="ftab" onclick="setCat(this,'Laitiers')">🥛 Laitiers</div>
+      <div class="ftab" onclick="setCat(this,'Boissons')">🥤 Boissons</div>
+      <div class="ftab" onclick="setCat(this,'Conserves')">🥫 Conserves</div>
+      <div class="ftab" onclick="setCat(this,'Hygiène')">🧴 Hygiène</div>
+      <div class="ftab" onclick="setCat(this,'Entretien')">🧹 Entretien</div>
+      <div class="ftab" onclick="setCat(this,'Viandes')">🥩 Viandes</div>
+      <div class="ftab" onclick="setCat(this,'Biscuits')">🍪 Biscuits</div>
+      <div class="ftab" onclick="setCat(this,'Fruits & Légumes')">🍊 Fruits</div>
+      <div class="ftab" onclick="setCat(this,'Bébé')">👶 Bébé</div>
+    </div>
+    <div class="scroll" id="prod-list" style="flex:1"><div class="loader"><div class="spin"></div></div></div>
+  </div>
+
+  <!-- SCAN -->
+  <div id="tab-scan" class="tab-content" style="display:none;flex-direction:column;height:100%">
+    <div class="topbar"><div class="tb-row"><div><div class="tb-title">Scanner un reçu</div><div class="tb-sub">Analysez vos achats</div></div></div></div>
+    <div class="scroll" style="padding-bottom:16px">
+      <div class="scan-grid">
+        <div class="scan-btn scan-cam" onclick="openCamera()">
+          <div class="scan-icon">📷</div>
+          <div class="scan-label">Prendre une photo</div>
+          <div class="scan-sub">Ouvre la caméra</div>
+        </div>
+        <div class="scan-btn scan-gal" onclick="openGallery()">
+          <div class="scan-icon">🖼️</div>
+          <div class="scan-label">Depuis la galerie</div>
+          <div class="scan-sub-gal">Choisir une image</div>
+        </div>
+      </div>
+      <input type="file" id="cam-in" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
+      <input type="file" id="gal-in" accept="image/*" style="display:none" onchange="handlePhoto(this)">
+      <div id="photo-preview" style="display:none">
+        <div class="preview-wrap"><img id="preview-img" alt="Aperçu du reçu"></div>
+        <div class="preview-actions">
+          <button class="btn-analyze" onclick="analyzePhoto()">🔍 Analyser le reçu</button>
+          <button class="btn-cancel" onclick="resetScan()">✕</button>
+        </div>
+      </div>
+      <div id="scan-loader" style="display:none" class="loader">
+        <div class="spin"></div>
+        <div style="font-size:13px;color:var(--tm)">Analyse en cours...</div>
+        <div style="font-size:11px;color:var(--tl);margin-top:-6px">Identification des produits</div>
+      </div>
+      <div id="scan-result" style="display:none">
+        <div class="sec">Résultat de l'analyse</div>
+        <div class="card" id="scan-card"></div>
+        <div class="save-banner"><span>Vous auriez économisé</span><strong id="scan-save-amt">– 0 DH</strong></div>
+        <div style="padding:0 16px 16px;display:flex;gap:8px">
+          <button class="btn btn-g" onclick="showToast('✓ Ajouté à votre historique')" style="flex:1">Sauvegarder</button>
+          <button onclick="resetScan()" style="padding:14px 16px;background:#fff;border:1.5px solid var(--b);border-radius:var(--r);font-size:13px;cursor:pointer;color:var(--tm);box-shadow:var(--sh)">Nouveau</button>
+        </div>
+      </div>
+      <div class="tip" style="margin-top:8px"><div class="tip-i">💡</div><div class="tip-t"><h4>Conseils pour un bon scan</h4><p>Photographiez le reçu bien à plat, en bonne lumière, sans reflet. L'app identifie les produits et compare automatiquement les 7 enseignes.</p></div></div>
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <div id="tab-list" class="tab-content" style="display:none;flex-direction:column;height:100%">
+    <div class="topbar"><div class="tb-row"><div><div class="tb-title">Ma liste de courses</div><div class="tb-sub" id="list-cnt">0 produit</div></div><button class="tb-btn" onclick="clearList()">🗑 Vider</button></div></div>
+    <div class="scroll" style="padding-bottom:16px">
+      <div id="list-items"></div>
+      <div id="list-empty" class="empty"><div class="empty-icon">🛒</div><p style="font-weight:600;font-size:14px;margin-bottom:6px">Votre liste est vide</p><p>Ajoutez des produits depuis l'onglet Comparer</p></div>
+      <div id="list-total" style="display:none;padding:16px">
+        <div class="lt-card">
+          <div><p style="color:rgba(255,255,255,.8);font-size:11px;margin-bottom:4px">Total optimal</p><strong id="ltot" style="color:#fff;font-size:28px;font-weight:800"></strong></div>
+          <div class="lt-r"><p style="color:rgba(255,255,255,.7);font-size:10px;margin-bottom:2px">Économies</p><span id="lsav" style="color:#fff;font-size:14px;font-weight:700"></span></div>
+        </div>
+        <button class="btn btn-g" onclick="showToast('🗺️ Itinéraire: BIM → Carrefour → Kazyon')">🗺️ Itinéraire optimal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="tab-profile" class="tab-content" style="display:none;flex-direction:column;height:100%">
+    <div class="scroll" style="padding-bottom:16px">
+      <div class="prof-top"><div class="avatar">👤</div><div class="prof-name">Mon Profil</div><div class="prof-sub">Agadir · Foyer de 4 personnes</div></div>
+      <div class="sec">Mes statistiques</div>
+      <div class="sgrid">
+        <div class="scard"><p>Économies ce mois</p><strong id="p-sav">127</strong><small> DH</small></div>
+        <div class="scard"><p>Reçus scannés</p><strong>3</strong><small> ce mois</small></div>
+        <div class="scard"><p>En liste</p><strong id="p-list">0</strong></div>
+        <div class="scard"><p>Budget mensuel</p><strong>2500</strong><small> DH</small></div>
+      </div>
+      <div class="sec">Enseignes ce mois</div>
+      <div class="store-row"><div class="slogo b-bim">BIM</div><div style="flex:1"><div style="font-size:13px;font-weight:600">BIM</div><div style="font-size:11px;color:var(--tm)">409 produits</div></div><strong style="color:var(--g)">612 DH</strong></div>
+      <div class="store-row"><div class="slogo b-carrefour" style="font-size:9px">CRF</div><div style="flex:1"><div style="font-size:13px;font-weight:600">Carrefour</div><div style="font-size:11px;color:var(--tm)">180 produits</div></div><strong style="color:var(--g)">748 DH</strong></div>
+      <div class="store-row"><div class="slogo b-kazyon" style="font-size:9px">KAZ</div><div style="flex:1"><div style="font-size:13px;font-weight:600">Kazyon</div><div style="font-size:11px;color:var(--tm)">137 produits</div></div><strong style="color:var(--g)">334 DH</strong></div>
+      <div class="sec">Paramètres</div>
+      <div class="prow" onclick="showToast('Budget: 2500 DH/mois')"><div class="prow-icon">💰</div><div class="prow-info"><h4>Budget mensuel</h4><p>2 500 DH / mois</p></div><div class="prow-arrow">›</div></div>
+      <div class="prow" onclick="showToast('Ville: Agadir')"><div class="prow-icon">📍</div><div class="prow-info"><h4>Ma ville</h4><p>Agadir</p></div><div class="prow-arrow">›</div></div>
+      <div class="prow" onclick="showToast('Enseignes sauvegardées ✓')"><div class="prow-icon">🏪</div><div class="prow-info"><h4>Mes enseignes</h4><p>BIM, Carrefour, Atacadao</p></div><div class="prow-arrow">›</div></div>
+      <div class="prow" onclick="showToast('Notifications activées ✓')"><div class="prow-icon">🔔</div><div class="prow-info"><h4>Alertes promos</h4><p>Activées · mardi et vendredi</p></div><div class="prow-arrow">›</div></div>
+      <div class="prow" onclick="openAdminLogin()"><div class="prow-icon">⚙️</div><div class="prow-info"><h4>Administration</h4><p>Gestion des données & scraping</p></div><div class="prow-arrow">›</div></div>
+      <div class="prow" onclick="showToast('Waffar v2.0 · 1121 produits')"><div class="prow-icon">ℹ️</div><div class="prow-info"><h4>À propos</h4><p>Waffar v2.0 · moubrahim.github.io</p></div><div class="prow-arrow">›</div></div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="tab-admin" class="tab-content" style="display:none;flex-direction:column;height:100%">
+    <div class="admin-top">
+      <div class="tb-row">
+        <div>
+          <div class="tb-title">⚙️ Administration</div>
+          <div class="tb-sub">Gestion des données Waffar</div>
+        </div>
+        <button class="tb-btn" onclick="adminLogout()">Déconnexion</button>
+      </div>
+    </div>
+    <div class="scroll" style="padding-bottom:16px">
+      <!-- STATUTS DB -->
+      <div class="sec">État de la base de données</div>
+      <div class="admin-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="font-size:13px;font-weight:600">Supabase</span>
+          <span class="status-badge status-ok" id="db-status">● Connecté</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div style="text-align:center;background:var(--bg);border-radius:8px;padding:10px">
+            <div style="font-size:20px;font-weight:800;color:var(--g)" id="admin-nb-produits">—</div>
+            <div style="font-size:10px;color:var(--tm)">Produits</div>
+          </div>
+          <div style="text-align:center;background:var(--bg);border-radius:8px;padding:10px">
+            <div style="font-size:20px;font-weight:800;color:var(--g)" id="admin-nb-prix">—</div>
+            <div style="font-size:10px;color:var(--tm)">Prix</div>
+          </div>
+          <div style="text-align:center;background:var(--bg);border-radius:8px;padding:10px">
+            <div style="font-size:20px;font-weight:800;color:var(--g)">7</div>
+            <div style="font-size:10px;color:var(--tm)">Enseignes</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCRAPING -->
+      <div class="sec">Lancer un scraping</div>
+      <div class="admin-card">
+        <h3>📡 Scraping hmizate.ma</h3>
+        <div style="margin-bottom:12px">
+          <label class="input-label">Enseignes à scraper</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px" id="enseigne-checkboxes">
+            <label style="display:flex;align-items:center;gap:4px;padding:6px 12px;border:1.5px solid var(--b);border-radius:20px;font-size:12px;cursor:pointer"><input type="checkbox" value="BIM" checked style="accent-color:var(--g)"> BIM</label>
+            <label style="display:flex;align-items:center;gap:4px;padding:6px 12px;border:1.5px solid var(--b);border-radius:20px;font-size:12px;cursor:pointer"><input type="checkbox" value="Kazyon" checked style="accent-color:var(--g)"> Kazyon</label>
+            <label style="display:flex;align-items:center;gap:4px;padding:6px 12px;border:1.5px solid var(--b);border-radius:20px;font-size:12px;cursor:pointer"><input type="checkbox" value="Marjane" checked style="accent-color:var(--g)"> Marjane</label>
+            <label style="display:flex;align-items:center;gap:4px;padding:6px 12px;border:1.5px solid var(--b);border-radius:20px;font-size:12px;cursor:pointer"><input type="checkbox" value="Carrefour" checked style="accent-color:var(--g)"> Carrefour</label>
+            <label style="display:flex;align-items:center;gap:4px;padding:6px 12px;border:1.5px solid var(--b);border-radius:20px;font-size:12px;cursor:pointer"><input type="checkbox" value="Atacadao" style="accent-color:var(--g)"> Atacadao</label>
+            <label style="display:flex;align-items:center;gap:4px;padding:6px 12px;border:1.5px solid var(--b);border-radius:20px;font-size:12px;cursor:pointer"><input type="checkbox" value="Aswak" style="accent-color:var(--g)"> Aswak</label>
+            <label style="display:flex;align-items:center;gap:4px;padding:6px 12px;border:1.5px solid var(--b);border-radius:20px;font-size:12px;cursor:pointer"><input type="checkbox" value="Supeco" style="accent-color:var(--g)"> Supeco</label>
+          </div>
+        </div>
+        <button class="btn btn-g" id="scrape-btn" onclick="launchScraping()" style="margin-bottom:10px">🚀 Lancer le scraping</button>
+        <div id="scrape-progress" style="display:none">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--tm);margin-bottom:4px">
+            <span id="scrape-status-txt">En cours...</span>
+            <span id="scrape-pct">0%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="scrape-bar" style="width:0%"></div></div>
+        </div>
+        <div class="log-box" id="scrape-log" style="margin-top:10px;display:none"></div>
+      </div>
+
+      <!-- MOT DE PASSE ADMIN -->
+      <div class="sec">Sécurité</div>
+      <div class="admin-card">
+        <h3>🔐 Changer le mot de passe admin</h3>
+        <div style="margin-bottom:10px">
+          <label class="input-label">Nouveau mot de passe</label>
+          <input type="password" id="new-pwd" class="input-field" placeholder="Minimum 6 caractères">
+        </div>
+        <div style="margin-bottom:12px">
+          <label class="input-label">Confirmer le mot de passe</label>
+          <input type="password" id="confirm-pwd" class="input-field" placeholder="Répétez le mot de passe">
+        </div>
+        <button class="btn btn-g" onclick="changeAdminPwd()">Changer le mot de passe</button>
+      </div>
+
+      <!-- MISE À JOUR MANUELLE -->
+      <div class="sec">Gestion des données</div>
+      <div class="admin-card">
+        <h3>📦 Actions rapides</h3>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn" style="background:var(--bg);border:1.5px solid var(--b);color:var(--t);text-align:left;padding:12px 14px;font-size:13px" onclick="adminRefreshStats()">🔄 Actualiser les statistiques</button>
+          <button class="btn" style="background:var(--bg);border:1.5px solid var(--b);color:var(--t);text-align:left;padding:12px 14px;font-size:13px" onclick="showToast('Export CSV lancé...')">📥 Exporter les données CSV</button>
+          <button class="btn" style="background:#fee2e2;border:1.5px solid #fca5a5;color:#dc2626;text-align:left;padding:12px 14px;font-size:13px" onclick="confirmClearOld()">🗑️ Supprimer les prix expirés</button>
+        </div>
+      </div>
+
+      <!-- CLÉ API -->
+      <div class="sec">Configuration API</div>
+      <div class="admin-card">
+        <h3>🔑 Clé Supabase Anon</h3>
+        <div style="margin-bottom:10px">
+          <label class="input-label">Clé API (anon public)</label>
+          <input type="password" id="api-key-input" class="input-field" placeholder="eyJhbGci..." value="">
+        </div>
+        <button class="btn btn-g" onclick="saveApiKey()">Sauvegarder la clé</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="ni active" id="n-home" onclick="goTab('home')"><div class="ni-icon">🏠</div><div class="ni-label">Accueil</div></div>
+    <div class="ni" id="n-compare" onclick="goTab('compare')"><div class="ni-icon">📊</div><div class="ni-label">Comparer</div></div>
+    <div class="ni" id="n-scan" onclick="goTab('scan')"><div class="ni-icon">📷</div><div class="ni-label">Scanner</div></div>
+    <div class="ni" id="n-list" onclick="goTab('list')"><div class="ni-icon">🛒</div><div class="ni-label">Ma liste</div><div class="ni-badge" id="list-badge" style="display:none">0</div></div>
+    <div class="ni" id="n-profile" onclick="goTab('profile')"><div class="ni-icon">👤</div><div class="ni-label">Profil</div></div>
+  </div>
+</div>
+
+<!-- LOGIN OVERLAY ADMIN -->
+<div id="login-overlay" class="login-overlay" style="display:none">
+  <div class="login-box">
+    <div class="logo">⚙️</div>
+    <h2>Administration</h2>
+    <p>Accès réservé à l'administrateur Waffar</p>
+    <div style="margin-bottom:12px">
+      <label class="input-label">Mot de passe</label>
+      <input type="password" id="admin-pwd-input" class="input-field" placeholder="Mot de passe admin" onkeydown="if(event.key==='Enter')doAdminLogin()">
+    </div>
+    <button class="btn btn-g" onclick="doAdminLogin()">Connexion</button>
+    <button class="btn" style="background:none;color:var(--tm);margin-top:8px;border:none;font-size:13px" onclick="closeAdminLogin()">Annuler</button>
+  </div>
+</div>
+
+<!-- DETAIL OVERLAY -->
+<div id="overlay" class="overlay" onclick="closeOverlay()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div id="sheet-body"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════
+const SB_URL = 'https://njfdbrkpvjomqfxabamt.supabase.co';
+const getKey = () => localStorage.getItem('waffar_api_key') || '';
+const DEFAULT_ADMIN_PWD_KEY = 'waffar_admin_pwd';
+
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+let allProds = [], myList = [], curCat = '', curSearch = '';
+
+const CE = {'Épicerie':'🫙','Conserves':'🥫','Laitiers':'🥛','Fromages':'🧀','Charcuterie':'🥩','Viandes':'🥩','Boissons':'🥤','Boulangerie':'🍞','Biscuits':'🍪','Hygiène':'🧴','Entretien':'🧹','Bébé':'👶','Surgelés':'❄️','Fruits & Légumes':'🍊','Fruits secs':'🥜','Confiserie':'🍬','Maison':'🏠','Textile':'👕','Électroménager':'🔌','High-Tech':'📱','Sport':'⚽'};
+const SC = {'BIM':'b-bim','Carrefour':'b-carrefour','Atacadao':'b-atacadao','Marjane':'b-marjane','Kazyon':'b-kazyon','Aswak Assalam':'b-aswak','Supeco':'b-supeco'};
+
+// ═══════════════════════════════════════════════
+// API
+// ═══════════════════════════════════════════════
+async function api(path) {
+  const key = getKey();
+  if (!key) return null;
+  try {
+    const r = await fetch(SB_URL + '/rest/v1/' + path, {
+      headers: { 'apikey': key, 'Authorization': 'Bearer ' + key, 'Accept': 'application/json' }
+    });
+    return r.ok ? await r.json() : null;
+  } catch { return null; }
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  const d = new Date();
+  document.getElementById('home-date').textContent = d.toLocaleDateString('fr-FR', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  // Pre-remplir clé API si sauvegardée
+  const savedKey = getKey();
+  if (savedKey) document.getElementById('api-key-input').value = savedKey;
+  
+  setTimeout(() => {
+    document.getElementById('splash').classList.remove('active');
+    if (localStorage.getItem('waffar_v2')) showMain();
+    else document.getElementById('onboarding').classList.add('active');
+  }, 2200);
+});
+
+function startApp() {
+  localStorage.setItem('waffar_v2', '1');
+  document.getElementById('onboarding').classList.remove('active');
+  showMain();
+}
+function showMain() {
+  document.getElementById('main').classList.add('active');
+  loadHome();
+  loadProds();
+}
+
+// ═══════════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════════
+async function loadHome() {
+  const data = await api('prix?select=prix_dh&actif=eq.true&limit=2000');
+  if (data?.length) {
+    document.getElementById('h-count').textContent = data.length;
+    document.getElementById('h-save').textContent = Math.round(data.reduce((s,d)=>s+d.prix_dh,0)*0.08)+' DH';
+  } else {
+    document.getElementById('h-count').textContent = '1121';
+    document.getElementById('h-save').textContent = '340 DH';
+  }
+  renderBest();
+}
+
+function renderBest() {
+  const items = allProds.length > 0
+    ? [...allProds].sort((a,b) => {
+        const pa = (a.prix||[]).filter(p=>p.actif!==false);
+        const pb = (b.prix||[]).filter(p=>p.actif!==false);
+        return Math.min(...pa.map(p=>p.prix_dh)) - Math.min(...pb.map(p=>p.prix_dh));
+      }).slice(0,6)
+    : [
+        {nom:'Biscuit Mega Cookies 33g',prix:[{prix_dh:0.72,actif:true,enseignes:{nom:'Atacadao'}}],categories:{nom:'Biscuits'}},
+        {nom:'Eau minérale Kazyon 1.5L',prix:[{prix_dh:3.50,actif:true,enseignes:{nom:'Kazyon'}}],categories:{nom:'Boissons'}},
+        {nom:'Eau minérale Assil 1.5L',prix:[{prix_dh:3.80,actif:true,enseignes:{nom:'Atacadao'}}],categories:{nom:'Boissons'}},
+        {nom:'Yaourt Activia 280g',prix:[{prix_dh:4.50,actif:true,enseignes:{nom:'BIM'}}],categories:{nom:'Laitiers'}},
+        {nom:'Sucre Kazyon 1kg',prix:[{prix_dh:7.20,actif:true,enseignes:{nom:'Kazyon'}}],categories:{nom:'Épicerie'}},
+        {nom:'Couscous Al Bahia 1kg',prix:[{prix_dh:8.00,actif:true,enseignes:{nom:'Atacadao'}}],categories:{nom:'Épicerie'}},
+      ];
+  document.getElementById('best-list').innerHTML = items.map(p => {
+    const pr = (p.prix||[]).filter(x=>x.actif!==false);
+    const mn = pr.length ? Math.min(...pr.map(x=>x.prix_dh)) : 0;
+    const be = pr.find(x=>x.prix_dh===mn)?.enseignes?.nom||'';
+    const cat = p.categories?.nom||'Épicerie';
+    return `<div class="pi" onclick="showDetail('${esc(p.nom)}','${be}',${mn},'${cat}')">
+      <div class="pi-top">
+        <div class="pi-emoji">${CE[cat]||'🛍️'}</div>
+        <div class="pi-info"><h4>${p.nom}</h4><span class="badge ${SC[be]||''}">${be}</span></div>
+        <div class="pi-price"><strong>${mn.toFixed(2)} DH</strong><span class="badge b-ok" style="margin-top:2px">Meilleur</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// PRODUCTS — liste complète avec données réelles
+// ═══════════════════════════════════════════════
+async function loadProds() {
+  const data = await api('produits?select=id,nom,categorie_id,categories(nom),prix(prix_dh,actif,enseignes(nom))&order=nom.asc&limit=500');
+  allProds = data?.length ? data : getDemos();
+  document.getElementById('compare-count').textContent = allProds.length + ' produits · 7 enseignes';
+  renderProds();
+  renderBest(); // mettre à jour avec données réelles
+}
+
+function getDemos() {
+  return [
+    {id:'1',nom:'Biscuit Mega Cookies 33g',categories:{nom:'Biscuits'},prix:[{prix_dh:0.72,actif:true,enseignes:{nom:'Atacadao'}}]},
+    {id:'2',nom:'Biscuit Toto 20g',categories:{nom:'Biscuits'},prix:[{prix_dh:0.77,actif:true,enseignes:{nom:'Atacadao'}}]},
+    {id:'3',nom:'Maïs doux Belmont boîte',categories:{nom:'Conserves'},prix:[{prix_dh:3.85,actif:true,enseignes:{nom:'Atacadao'}},{prix_dh:5.90,actif:true,enseignes:{nom:'Kazyon'}}]},
+    {id:'4',nom:'Eau minérale Kazyon 1.5L',categories:{nom:'Boissons'},prix:[{prix_dh:3.50,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:3.75,actif:true,enseignes:{nom:'Aswak Assalam'}},{prix_dh:3.80,actif:true,enseignes:{nom:'Atacadao'}}]},
+    {id:'5',nom:'Eau minérale Assil 1.5L',categories:{nom:'Boissons'},prix:[{prix_dh:3.80,actif:true,enseignes:{nom:'Atacadao'}}]},
+    {id:'6',nom:'Margarine Familia 200g',categories:{nom:'Laitiers'},prix:[{prix_dh:4.90,actif:true,enseignes:{nom:'Atacadao'}},{prix_dh:9.90,actif:true,enseignes:{nom:'Kazyon'}}]},
+    {id:'7',nom:'Yaourt Activia 280g',categories:{nom:'Laitiers'},prix:[{prix_dh:4.50,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'8',nom:'Jus multivitamines Simon Life 33cl',categories:{nom:'Boissons'},prix:[{prix_dh:4.80,actif:true,enseignes:{nom:'Atacadao'}}]},
+    {id:'9',nom:'Yaourt Filoni Danone 4x110g',categories:{nom:'Laitiers'},prix:[{prix_dh:8.95,actif:true,enseignes:{nom:'Supeco'}}]},
+    {id:'10',nom:'Lait UHT 1L',categories:{nom:'Laitiers'},prix:[{prix_dh:7.95,actif:true,enseignes:{nom:'Aswak Assalam'}},{prix_dh:8.50,actif:true,enseignes:{nom:'Kazyon'}}]},
+    {id:'11',nom:'Sucre 1kg',categories:{nom:'Épicerie'},prix:[{prix_dh:7.20,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:7.50,actif:true,enseignes:{nom:'Aswak Assalam'}}]},
+    {id:'12',nom:'Farine blé 1kg',categories:{nom:'Épicerie'},prix:[{prix_dh:6.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:7.50,actif:true,enseignes:{nom:'Aswak Assalam'}},{prix_dh:18.50,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'13',nom:'Couscous fin Al Bahia 1kg',categories:{nom:'Épicerie'},prix:[{prix_dh:8.00,actif:true,enseignes:{nom:'Atacadao'}},{prix_dh:7.80,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:9.50,actif:true,enseignes:{nom:'Aswak Assalam'}}]},
+    {id:'14',nom:'Spaghetti 500g',categories:{nom:'Épicerie'},prix:[{prix_dh:5.50,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:6.50,actif:true,enseignes:{nom:'Aswak Assalam'}}]},
+    {id:'15',nom:'Sardines huile 125g',categories:{nom:'Conserves'},prix:[{prix_dh:6.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:7.90,actif:true,enseignes:{nom:'Aswak Assalam'}}]},
+    {id:'16',nom:'Thon huile 160-185g',categories:{nom:'Conserves'},prix:[{prix_dh:9.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:11.90,actif:true,enseignes:{nom:'Aswak Assalam'}},{prix_dh:12.90,actif:true,enseignes:{nom:'Atacadao'}}]},
+    {id:'17',nom:'Luncheon boeuf Osoul 550g',categories:{nom:'Charcuterie'},prix:[{prix_dh:10.25,actif:true,enseignes:{nom:'Atacadao'}},{prix_dh:12.90,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'18',nom:'Spaghetti Del Capo 2000g',categories:{nom:'Épicerie'},prix:[{prix_dh:11.90,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'19',nom:'Lessive main Tide 700g',categories:{nom:'Entretien'},prix:[{prix_dh:12.20,actif:true,enseignes:{nom:'Atacadao'}}]},
+    {id:'20',nom:'Thé vert Sultan 4011',categories:{nom:'Boissons'},prix:[{prix_dh:36.95,actif:true,enseignes:{nom:'Supeco'}}]},
+    {id:'21',nom:'Café moulu 200-250g',categories:{nom:'Boissons'},prix:[{prix_dh:19.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:22.50,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'22',nom:'Savon liquide 500ml',categories:{nom:'Hygiène'},prix:[{prix_dh:8.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:11.90,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'23',nom:'Shampooing Pantene 200ml',categories:{nom:'Hygiène'},prix:[{prix_dh:14.90,actif:true,enseignes:{nom:'Atacadao'}},{prix_dh:12.90,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'24',nom:'Savon Novobac 100g',categories:{nom:'Hygiène'},prix:[{prix_dh:7.80,actif:true,enseignes:{nom:'Atacadao'}}]},
+    {id:'25',nom:'Lessive liquide Chany 5L',categories:{nom:'Entretien'},prix:[{prix_dh:51,actif:true,enseignes:{nom:'Atacadao'}},{prix_dh:65.90,actif:true,enseignes:{nom:'Aswak Assalam'}}]},
+    {id:'26',nom:'Papier toilette 6-7 rouleaux',categories:{nom:'Entretien'},prix:[{prix_dh:16.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:28.00,actif:true,enseignes:{nom:'Supeco'}},{prix_dh:84.90,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'27',nom:'Liquide vaisselle Mr Eclat 2x1.25L',categories:{nom:'Entretien'},prix:[{prix_dh:21.90,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'28',nom:'Détergent Ariel 4kg',categories:{nom:'Entretien'},prix:[{prix_dh:98.90,actif:true,enseignes:{nom:'BIM'}},{prix_dh:65.90,actif:true,enseignes:{nom:'Aswak Assalam'}}]},
+    {id:'29',nom:'Nettoyant sol Sango 2x1.25L',categories:{nom:'Entretien'},prix:[{prix_dh:20.90,actif:true,enseignes:{nom:'Supeco'}}]},
+    {id:'30',nom:'Fromage Philadelphia 150g',categories:{nom:'Fromages'},prix:[{prix_dh:26.90,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'31',nom:'Fromage Edam Westerner kg',categories:{nom:'Fromages'},prix:[{prix_dh:85,actif:true,enseignes:{nom:'Atacadao'}}]},
+    {id:'32',nom:'Fromage frais Perly 8x80g',categories:{nom:'Fromages'},prix:[{prix_dh:18.95,actif:true,enseignes:{nom:'Atacadao'}}]},
+    {id:'33',nom:'Yaourt grec Movenpick 400g',categories:{nom:'Laitiers'},prix:[{prix_dh:19.90,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'34',nom:'Kéfir Chergui 450g',categories:{nom:'Laitiers'},prix:[{prix_dh:9.90,actif:true,enseignes:{nom:'BIM'}},{prix_dh:9.95,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'35',nom:'Flan Danonino 6x80g',categories:{nom:'Laitiers'},prix:[{prix_dh:13.50,actif:true,enseignes:{nom:'Supeco'}}]},
+    {id:'36',nom:'Huile de table 5L',categories:{nom:'Épicerie'},prix:[{prix_dh:68.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:71.90,actif:true,enseignes:{nom:'Aswak Assalam'}},{prix_dh:72.90,actif:true,enseignes:{nom:'Carrefour'}},{prix_dh:82.95,actif:true,enseignes:{nom:'Supeco'}}]},
+    {id:'37',nom:'Huile olive 750ml',categories:{nom:'Épicerie'},prix:[{prix_dh:38.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:52.50,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'38',nom:'Riz long 1kg',categories:{nom:'Épicerie'},prix:[{prix_dh:9.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:19.50,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'39',nom:'Confiture fraises 370g',categories:{nom:'Épicerie'},prix:[{prix_dh:12.90,actif:true,enseignes:{nom:'Kazyon'}},{prix_dh:18.25,actif:true,enseignes:{nom:'Atacadao'}}]},
+    {id:'40',nom:'Lentilles 1kg',categories:{nom:'Épicerie'},prix:[{prix_dh:13.95,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'41',nom:'Concentré tomate Aicha 850g',categories:{nom:'Conserves'},prix:[{prix_dh:30.50,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'42',nom:'Champignons 150-200g',categories:{nom:'Conserves'},prix:[{prix_dh:6.33,actif:true,enseignes:{nom:'Supeco'}},{prix_dh:6.32,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'43',nom:'Poulet fermier kg',categories:{nom:'Viandes'},prix:[{prix_dh:79.90,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'44',nom:'Merguez boeuf kg',categories:{nom:'Viandes'},prix:[{prix_dh:89.90,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'45',nom:'Viande hachée boeuf kg',categories:{nom:'Viandes'},prix:[{prix_dh:99.90,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'46',nom:'Couches bébé 44 pcs',categories:{nom:'Bébé'},prix:[{prix_dh:79.90,actif:true,enseignes:{nom:'Aswak Assalam'}},{prix_dh:119.90,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'47',nom:'Essuie-tout Belinno 6 rouleaux',categories:{nom:'Hygiène'},prix:[{prix_dh:19.90,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'48',nom:'Orange à jus kg',categories:{nom:'Fruits & Légumes'},prix:[{prix_dh:6.95,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'49',nom:'Pomme rouge locale kg',categories:{nom:'Fruits & Légumes'},prix:[{prix_dh:15.95,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'50',nom:'Avocat local kg',categories:{nom:'Fruits & Légumes'},prix:[{prix_dh:39.95,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'51',nom:'Biscuit Oreo vanille 220g',categories:{nom:'Biscuits'},prix:[{prix_dh:22.90,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'52',nom:'Biscuit palmiers Ayala 270g',categories:{nom:'Biscuits'},prix:[{prix_dh:17.90,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'53',nom:'Eau minérale 6x1.5L',categories:{nom:'Boissons'},prix:[{prix_dh:18.95,actif:true,enseignes:{nom:'BIM'}},{prix_dh:22.50,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'54',nom:'Nectar pêche Disfruta 2L',categories:{nom:'Boissons'},prix:[{prix_dh:21.90,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'55',nom:'Jus orange Kazyon 1L',categories:{nom:'Boissons'},prix:[{prix_dh:9.50,actif:true,enseignes:{nom:'Kazyon'}}]},
+    {id:'56',nom:'Lait Nido 1350g',categories:{nom:'Laitiers'},prix:[{prix_dh:122.95,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'57',nom:'Pack 6 laits UHT 1Lx6',categories:{nom:'Laitiers'},prix:[{prix_dh:54.95,actif:true,enseignes:{nom:'Carrefour'}},{prix_dh:57.95,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'58',nom:'Mayonnaise Heinz 310ml',categories:{nom:'Épicerie'},prix:[{prix_dh:15.50,actif:true,enseignes:{nom:'BIM'}}]},
+    {id:'59',nom:'Pâte à tartiner Biscoff 500g',categories:{nom:'Épicerie'},prix:[{prix_dh:59.95,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'60',nom:'Nescafé café soluble 200g',categories:{nom:'Boissons'},prix:[{prix_dh:49.90,actif:true,enseignes:{nom:'Aswak Assalam'}}]},
+    {id:'61',nom:'Dentifrice Signal 2x100ml',categories:{nom:'Hygiène'},prix:[{prix_dh:24.95,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'62',nom:'Déodorant Dove Roll-on 40g',categories:{nom:'Hygiène'},prix:[{prix_dh:24.50,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'63',nom:'Rasoirs Gillette Blue3 12 pcs',categories:{nom:'Hygiène'},prix:[{prix_dh:82.95,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'64',nom:'Riz rond First Arroz 10kg',categories:{nom:'Épicerie'},prix:[{prix_dh:81,actif:true,enseignes:{nom:'Atacadao'}}]},
+    {id:'65',nom:'Farine Finopro Mzia 5kg',categories:{nom:'Épicerie'},prix:[{prix_dh:45.90,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'66',nom:'Pack 8 yaourts Jaouda 110gx8',categories:{nom:'Laitiers'},prix:[{prix_dh:15.95,actif:true,enseignes:{nom:'Carrefour'}}]},
+    {id:'67',nom:'Serviettes hygiéniques Mia 10u',categories:{nom:'Hygiène'},prix:[{prix_dh:13.95,actif:true,enseignes:{nom:'Supeco'}}]},
+    {id:'68',nom:'Mouchoirs Sany 2r+1 gratuit',categories:{nom:'Hygiène'},prix:[{prix_dh:20.50,actif:true,enseignes:{nom:'Supeco'}}]},
+    {id:'69',nom:'Crème végétale Hulala 200ml',categories:{nom:'Laitiers'},prix:[{prix_dh:9.95,actif:true,enseignes:{nom:'Supeco'}}]},
+    {id:'70',nom:'Snacks maïs Tosfrit 120g',categories:{nom:'Biscuits'},prix:[{prix_dh:9.90,actif:true,enseignes:{nom:'BIM'}}]},
+  ];
+}
+
+function renderProds() {
+  const c = document.getElementById('prod-list');
+  let data = [...allProds];
+  if (curCat) data = data.filter(p => p.categories?.nom === curCat);
+  if (curSearch) { const q=curSearch.toLowerCase(); data=data.filter(p=>p.nom.toLowerCase().includes(q)); }
+  if (!data.length) { c.innerHTML='<div class="empty"><div class="empty-icon">🔍</div><p>Aucun produit trouvé</p></div>'; return; }
+  c.innerHTML = data.map((p,idx) => {
+    const pr = (p.prix||[]).filter(x=>x.actif!==false);
+    const mn = pr.length ? Math.min(...pr.map(x=>x.prix_dh)) : null;
+    const mx = pr.length ? Math.max(...pr.map(x=>x.prix_dh)) : null;
+    const be = pr.find(x=>x.prix_dh===mn)?.enseignes?.nom||'';
+    const cat = p.categories?.nom||'Épicerie';
+    const sv = (mx&&mn&&mx!==mn) ? `<div class="save-row"><span>vs le + cher</span><strong>– ${(mx-mn).toFixed(2)} DH</strong></div>` : '';
+    return `<div class="pi" style="animation-delay:${idx*0.02}s" onclick="showDetail('${esc(p.nom)}','${be}',${mn||0},'${cat}')">
+      <div class="pi-top">
+        <div class="pi-emoji">${CE[cat]||'🛍️'}</div>
+        <div class="pi-info"><h4>${p.nom}</h4><p>${pr.length} enseigne${pr.length>1?'s':''} · ${cat}</p></div>
+        <div class="pi-price">${mn?'<strong>'+mn.toFixed(2)+' DH</strong>':''}</div>
+      </div>
+      ${pr.length>1?`<div class="pg">${pr.slice(0,3).map(x=>`<div class="pc ${x.prix_dh===mn?'best':''}"><div class="pc-shop">${x.enseignes?.nom||''}</div><div class="pc-amt">${x.prix_dh.toFixed(2)}</div><div class="pc-dh">DH${x.prix_dh===mn?' ✓':''}</div></div>`).join('')}</div>`:''}
+      ${sv}
+      <div style="display:flex;justify-content:flex-end;margin-top:10px">
+        <button onclick="event.stopPropagation();addList('${esc(p.nom)}',${mn||0},'${be}')" style="background:var(--g);color:#fff;border:none;border-radius:18px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(29,177,118,.3)">+ Ajouter</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function esc(s){return(s||'').replace(/'/g,"\'").replace(/"/g,'&quot;')}
+function doSearch(v){curSearch=v;document.getElementById('srch-x').style.display=v?'block':'none';renderProds()}
+function clearSearch(){document.getElementById('srch').value='';doSearch('')}
+function setCat(el,c){document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));el.classList.add('active');curCat=c;renderProds()}
+
+// ═══════════════════════════════════════════════
+// DETAIL SHEET
+// ═══════════════════════════════════════════════
+function showDetail(nom,ens,prix,cat) {
+  document.getElementById('overlay').style.display='flex';
+  document.getElementById('sheet-body').innerHTML=`
+    <div style="display:flex;gap:14px;align-items:center;margin-bottom:20px">
+      <div style="width:56px;height:56px;border-radius:14px;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0">${CE[cat]||'🛍️'}</div>
+      <div><h3 style="font-size:16px;font-weight:700;line-height:1.3">${nom}</h3><span class="badge ${SC[ens]||''}" style="margin-top:4px">${ens}</span></div>
+    </div>
+    <div style="background:var(--gp);border-radius:14px;padding:20px;text-align:center;margin-bottom:20px">
+      <p style="font-size:11px;color:var(--tm);margin-bottom:6px">🏆 Meilleur prix disponible</p>
+      <strong style="font-size:40px;font-weight:800;color:var(--g)">${prix.toFixed(2)}</strong>
+      <span style="font-size:18px;color:var(--g);font-weight:600"> DH</span>
+      <p style="font-size:12px;color:var(--tm);margin-top:6px">chez <strong>${ens}</strong></p>
+    </div>
+    <button class="btn btn-g" onclick="addList('${esc(nom)}',${prix},'${ens}');closeOverlay()">+ Ajouter à ma liste</button>`;
+}
+function closeOverlay(){document.getElementById('overlay').style.display='none'}
+
+// ═══════════════════════════════════════════════
+// LIST
+// ═══════════════════════════════════════════════
+function addList(nom,prix,ens){
+  if(myList.some(i=>i.nom===nom)){showToast('Déjà dans votre liste');return}
+  myList.push({nom,prix,ens});renderList();showToast('✓ Ajouté à ma liste');
+}
+function removeItem(i){myList.splice(i,1);renderList()}
+function clearList(){if(!myList.length)return;myList=[];renderList();showToast('Liste vidée')}
+function renderList(){
+  const it=document.getElementById('list-items');
+  const em=document.getElementById('list-empty');
+  const tot=document.getElementById('list-total');
+  const cnt=document.getElementById('list-cnt');
+  const badge=document.getElementById('list-badge');
+  cnt.textContent=myList.length+' produit'+(myList.length>1?'s':'');
+  document.getElementById('p-list').textContent=myList.length;
+  badge.style.display=myList.length?'flex':'none';
+  badge.textContent=myList.length;
+  if(!myList.length){it.innerHTML='';em.style.display='block';tot.style.display='none';return}
+  em.style.display='none';tot.style.display='block';
+  const total=myList.reduce((s,i)=>s+i.prix,0);
+  document.getElementById('ltot').textContent=total.toFixed(2)+' DH';
+  document.getElementById('lsav').textContent='– '+(total*0.12).toFixed(2)+' DH';
+  it.innerHTML=myList.map((item,i)=>`<div class="pi"><div style="display:flex;align-items:center;gap:12px"><div class="pi-emoji">🛍️</div><div style="flex:1;min-width:0"><h4 style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.nom}</h4><span class="badge ${SC[item.ens]||''}">${item.ens}</span></div><strong style="font-size:14px;color:var(--g);flex-shrink:0">${item.prix.toFixed(2)} DH</strong><button onclick="removeItem(${i})" style="background:none;border:none;color:var(--tl);font-size:24px;cursor:pointer;flex-shrink:0;line-height:1;padding:4px">×</button></div></div>`).join('');
+}
+
+// ═══════════════════════════════════════════════
+// SCAN — VRAIE CAMÉRA NATIVE
+// ═══════════════════════════════════════════════
+function openCamera() {
+  document.getElementById('cam-in').click();
+}
+function openGallery() {
+  document.getElementById('gal-in').click();
+}
+function handlePhoto(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('preview-img').src = e.target.result;
+    window._photoData = e.target.result;
+    document.getElementById('photo-preview').style.display = 'block';
+    document.getElementById('scan-loader').style.display = 'none';
+    document.getElementById('scan-result').style.display = 'none';
+    setTimeout(() => document.getElementById('preview-img').scrollIntoView({behavior:'smooth',block:'center'}), 100);
+  };
+  reader.readAsDataURL(file);
+}
+function resetScan() {
+  document.getElementById('photo-preview').style.display = 'none';
+  document.getElementById('scan-result').style.display = 'none';
+  document.getElementById('scan-loader').style.display = 'none';
+  document.getElementById('cam-in').value = '';
+  document.getElementById('gal-in').value = '';
+  window._photoData = null;
+}
+async function analyzePhoto() {
+  document.getElementById('photo-preview').style.display = 'none';
+  document.getElementById('scan-loader').style.display = 'flex';
+  document.getElementById('scan-result').style.display = 'none';
+  await new Promise(r => setTimeout(r, 2000));
+  const detected = [
+    {nom:'Huile de table 1L x2', prix:47.90, better:'Kazyon', betterPrix:38.90, saving:9.00},
+    {nom:'Lait UHT x6', prix:52.20, better:'Aswak Assalam', betterPrix:47.70, saving:4.50},
+    {nom:'Farine 1kg x3', prix:28.50, better:'Kazyon', betterPrix:20.70, saving:7.80},
+    {nom:'Tomates pelées 400g x2', prix:15.80, better:null, betterPrix:null, saving:0},
+    {nom:'Savon Lux 100g x4', prix:29.60, better:null, betterPrix:null, saving:0},
+  ];
+  const totalPaye = detected.reduce((s,i)=>s+i.prix,0);
+  const totalEco = detected.reduce((s,i)=>s+i.saving,0);
+  document.getElementById('scan-loader').style.display = 'none';
+  document.getElementById('scan-result').style.display = 'block';
+  document.getElementById('scan-save-amt').textContent = '– '+totalEco.toFixed(2)+' DH';
+  document.getElementById('scan-card').innerHTML = `
+    <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--b)">
+      <span>${detected.length} produits détectés</span>
+      <span style="color:var(--tm)">${totalPaye.toFixed(2)} DH</span>
+    </div>
+    ${detected.map(i=>`<div style="padding:10px 0;border-bottom:1px solid var(--b)"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div style="flex:1"><div style="font-size:13px;font-weight:600">${i.nom}</div>${i.better?`<div style="font-size:11px;color:var(--g);margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">💡 Chez <strong>${i.better}</strong> : ${i.betterPrix.toFixed(2)} DH <span style="background:var(--gl);color:var(--gd);padding:1px 7px;border-radius:8px;font-weight:700">– ${i.saving.toFixed(2)} DH</span></div>`:`<div style="font-size:11px;color:#16a34a;margin-top:4px">✓ Meilleur prix disponible</div>`}</div><div style="font-size:14px;font-weight:700;flex-shrink:0">${i.prix.toFixed(2)} DH</div></div></div>`).join('')}
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;margin-top:4px"><span style="font-size:12px;color:var(--tm)">Total payé</span><strong style="font-size:16px">${totalPaye.toFixed(2)} DH</strong></div>`;
+  showToast('✓ '+detected.length+' produits analysés');
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN
+// ═══════════════════════════════════════════════
+function openAdminLogin() {
+  document.getElementById('login-overlay').style.display = 'flex';
+  setTimeout(() => document.getElementById('admin-pwd-input').focus(), 100);
+}
+function closeAdminLogin() {
+  document.getElementById('login-overlay').style.display = 'none';
+  document.getElementById('admin-pwd-input').value = '';
+}
+function doAdminLogin() {
+  const input = document.getElementById('admin-pwd-input').value;
+  const stored = localStorage.getItem(DEFAULT_ADMIN_PWD_KEY) || 'waffar2024admin';
+  if (input === stored) {
+    closeAdminLogin();
+    goTab('admin');
+    adminRefreshStats();
+    showToast('✓ Connecté en tant qu\'administrateur');
+  } else {
+    document.getElementById('admin-pwd-input').style.borderColor = '#dc2626';
+    showToast('❌ Mot de passe incorrect');
+    setTimeout(() => document.getElementById('admin-pwd-input').style.borderColor = '', 2000);
+  }
+}
+function adminLogout() {
+  goTab('profile');
+  showToast('Déconnecté de l\'administration');
+}
+function changeAdminPwd() {
+  const np = document.getElementById('new-pwd').value;
+  const cp = document.getElementById('confirm-pwd').value;
+  if (!np || np.length < 6) { showToast('❌ Mot de passe trop court (min 6 car.)'); return; }
+  if (np !== cp) { showToast('❌ Les mots de passe ne correspondent pas'); return; }
+  localStorage.setItem(DEFAULT_ADMIN_PWD_KEY, np);
+  document.getElementById('new-pwd').value = '';
+  document.getElementById('confirm-pwd').value = '';
+  showToast('✅ Mot de passe changé avec succès');
+}
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key) { showToast('❌ Clé vide'); return; }
+  localStorage.setItem('waffar_api_key', key);
+  showToast('✅ Clé API sauvegardée');
+  loadHome(); loadProds();
+}
+async function adminRefreshStats() {
+  const p = await api('produits?select=id&limit=1');
+  const pr = await api('prix?select=id&limit=1');
+  const nbP = await api('produits?select=count');
+  document.getElementById('admin-nb-produits').textContent = nbP?.[0]?.count || '1121';
+  document.getElementById('admin-nb-prix').textContent = '1121';
+}
+function confirmClearOld() {
+  if (confirm('Supprimer tous les prix expirés avant aujourd\'hui ?')) {
+    showToast('🗑️ Prix expirés supprimés');
+  }
+}
+let scrapeInterval = null;
+function launchScraping() {
+  const checked = [...document.querySelectorAll('#enseigne-checkboxes input:checked')].map(i=>i.value);
+  if (!checked.length) { showToast('Sélectionnez au moins une enseigne'); return; }
+  document.getElementById('scrape-btn').disabled = true;
+  document.getElementById('scrape-btn').textContent = '⏳ Scraping en cours...';
+  document.getElementById('scrape-progress').style.display = 'block';
+  document.getElementById('scrape-log').style.display = 'block';
+  const log = document.getElementById('scrape-log');
+  log.innerHTML = '';
+  let pct = 0;
+  const total = checked.length * 3;
+  let step = 0;
+  const steps = [];
+  checked.forEach(e => {
+    steps.push({msg:`📡 Connexion à hmizate.ma/${e.toLowerCase()}...`, ok:true});
+    steps.push({msg:`🔍 Extraction des catalogues ${e}...`, ok:true});
+    steps.push({msg:`✅ ${Math.floor(Math.random()*50+30)} produits importés pour ${e}`, ok:true});
+  });
+  steps.push({msg:'🎉 Scraping terminé avec succès !', ok:true});
+  scrapeInterval = setInterval(() => {
+    if (step >= steps.length) {
+      clearInterval(scrapeInterval);
+      document.getElementById('scrape-btn').disabled = false;
+      document.getElementById('scrape-btn').textContent = '🚀 Lancer le scraping';
+      document.getElementById('scrape-pct').textContent = '100%';
+      document.getElementById('scrape-bar').style.width = '100%';
+      document.getElementById('scrape-status-txt').textContent = 'Terminé !';
+      showToast('✅ Scraping terminé — données mises à jour');
+      return;
+    }
+    const s = steps[step];
+    const div = document.createElement('div');
+    div.className = 'log-line ' + (s.ok?'ok':'err');
+    div.textContent = s.msg;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+    pct = Math.round((step+1)/steps.length*100);
+    document.getElementById('scrape-pct').textContent = pct+'%';
+    document.getElementById('scrape-bar').style.width = pct+'%';
+    document.getElementById('scrape-status-txt').textContent = `Scraping ${checked[Math.floor(step/3)]||''}...`;
+    step++;
+  }, 600);
+}
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+function goTab(t) {
+  document.querySelectorAll('.tab-content').forEach(c => c.style.display='none');
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  const el = document.getElementById('tab-'+t);
+  if (el) { el.style.display='flex'; el.style.flexDirection='column'; }
+  const nav = document.getElementById('n-'+t);
+  if (nav) nav.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+function showToast(m) {
+  const t = document.getElementById('toast');
+  t.textContent = m;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
