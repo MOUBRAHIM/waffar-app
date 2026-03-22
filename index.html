@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1DB176">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Waffar">
+<title>Waffar — وفّر</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  :root {
+    --green: #1DB176;
+    --green-dark: #158c5e;
+    --green-light: #e0f5ec;
+    --green-pale: #f0faf6;
+    --text: #1a1a1a;
+    --text-muted: #6b7280;
+    --text-light: #9ca3af;
+    --border: #e5e7eb;
+    --bg: #f8f9fa;
+    --white: #ffffff;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --radius: 12px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+  /* ── SCREENS ── */
+  .screen { display: none; flex-direction: column; min-height: 100vh; }
+  .screen.active { display: flex; }
+
+  /* ── SPLASH ── */
+  #splash { background: var(--green); align-items: center; justify-content: center; gap: 16px; }
+  .splash-logo { font-size: 64px; font-weight: 800; color: white; letter-spacing: -2px; }
+  .splash-logo span { opacity: 0.6; font-weight: 400; font-size: 28px; display: block; text-align: center; margin-top: -8px; }
+  .splash-sub { color: rgba(255,255,255,0.8); font-size: 15px; }
+  .splash-loader { width: 40px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; margin-top: 32px; overflow: hidden; }
+  .splash-loader::after { content: ''; display: block; width: 40%; height: 100%; background: white; border-radius: 2px; animation: load 1.2s ease-in-out infinite; }
+  @keyframes load { 0%{transform:translateX(-100%)} 100%{transform:translateX(350%)} }
+
+  /* ── ONBOARDING ── */
+  #onboarding { background: white; }
+  .ob-header { background: var(--green); padding: 60px 24px 40px; text-align: center; }
+  .ob-icon { font-size: 72px; margin-bottom: 16px; }
+  .ob-title { color: white; font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+  .ob-sub { color: rgba(255,255,255,0.85); font-size: 15px; line-height: 1.5; }
+  .ob-dots { display: flex; justify-content: center; gap: 8px; padding: 24px; }
+  .ob-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: all .3s; }
+  .ob-dot.active { width: 24px; border-radius: 4px; background: var(--green); }
+  .ob-content { padding: 0 24px; flex: 1; }
+  .ob-feature { display: flex; align-items: flex-start; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .ob-feature:last-child { border: none; }
+  .ob-feat-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .ob-feat-text h4 { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+  .ob-feat-text p { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+  .ob-footer { padding: 24px; }
+  .btn-primary { width: 100%; padding: 16px; background: var(--green); color: white; border: none; border-radius: var(--radius); font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity .15s; }
+  .btn-primary:active { opacity: 0.85; }
+  .btn-secondary { width: 100%; padding: 12px; background: none; color: var(--text-muted); border: none; font-size: 14px; cursor: pointer; margin-top: 8px; }
+
+  /* ── TOP BAR ── */
+  .topbar { background: var(--green); padding: 52px 16px 16px; color: white; flex-shrink: 0; }
+  .topbar-row { display: flex; align-items: center; justify-content: space-between; }
+  .topbar h1 { font-size: 20px; font-weight: 700; }
+  .topbar p { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+  .topbar-back { background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; }
+  .topbar-action { background: rgba(255,255,255,0.2); border: none; color: white; padding: 7px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; }
+
+  /* ── HERO SAVINGS ── */
+  .hero { background: var(--green-dark); padding: 16px; margin: 0 16px; border-radius: var(--radius); margin-top: -20px; display: flex; justify-content: space-between; align-items: center; }
+  .hero-left p { color: rgba(255,255,255,0.8); font-size: 12px; }
+  .hero-left strong { color: white; font-size: 28px; font-weight: 700; }
+  .hero-right { text-align: right; background: rgba(255,255,255,0.15); border-radius: 10px; padding: 8px 12px; }
+  .hero-right p { color: rgba(255,255,255,0.75); font-size: 11px; }
+  .hero-right span { color: white; font-size: 15px; font-weight: 600; }
+
+  /* ── CARDS ── */
+  .section-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; padding: 16px 16px 8px; }
+  .card { background: white; border-radius: var(--radius); margin: 0 16px 12px; padding: 16px; box-shadow: var(--shadow); }
+  .card-row { display: flex; align-items: center; gap: 12px; }
+  .card-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--green-pale); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .card-info h4 { font-size: 14px; font-weight: 600; }
+  .card-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .card-price { margin-left: auto; text-align: right; }
+  .card-price strong { font-size: 16px; font-weight: 700; color: var(--green); display: block; }
+  .card-price span { font-size: 11px; color: var(--text-muted); }
+  .badge-best { display: inline-block; background: var(--green-light); color: var(--green-dark); font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; margin-top: 4px; }
+  .badge-warn { background: #fef3c7; color: #92400e; }
+
+  /* ── PRICE COMPARISON ── */
+  .price-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .price-cell { border: 1px solid var(--border); border-radius: 10px; padding: 10px 8px; text-align: center; }
+  .price-cell.best { border-color: var(--green); background: var(--green-pale); }
+  .price-cell .shop { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+  .price-cell.best .shop { color: var(--green); }
+  .price-cell .amount { font-size: 15px; font-weight: 700; color: var(--text); }
+  .price-cell.best .amount { color: var(--green-dark); }
+  .price-cell .unit { font-size: 10px; color: var(--text-light); }
+  .saving-row { display: flex; justify-content: space-between; align-items: center; background: var(--green-pale); border-radius: 8px; padding: 8px 12px; margin-top: 10px; }
+  .saving-row span { font-size: 12px; color: var(--text-muted); }
+  .saving-row strong { font-size: 13px; color: var(--green-dark); }
+
+  /* ── STATS GRID ── */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px 4px; }
+  .stat-card { background: white; border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
+  .stat-card p { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+  .stat-card strong { font-size: 22px; font-weight: 700; color: var(--text); }
+  .stat-card small { font-size: 11px; color: var(--text-muted); }
+  .stat-card .trend-up { color: var(--green); font-size: 11px; }
+  .stat-card .trend-dn { color: var(--red); font-size: 11px; }
+
+  /* ── SEARCH ── */
+  .search-wrap { padding: 12px 16px; background: var(--green); margin-top: -1px; }
+  .search-box { background: white; border-radius: 25px; display: flex; align-items: center; padding: 10px 16px; gap: 10px; box-shadow: var(--shadow); }
+  .search-box input { border: none; outline: none; flex: 1; font-size: 15px; color: var(--text); background: transparent; }
+  .search-box input::placeholder { color: var(--text-light); }
+  .search-icon { color: var(--text-muted); font-size: 18px; }
+
+  /* ── FILTER TABS ── */
+  .filter-tabs { display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto; scrollbar-width: none; background: white; border-bottom: 1px solid var(--border); }
+  .filter-tabs::-webkit-scrollbar { display: none; }
+  .filter-tab { flex-shrink: 0; padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: white; font-size: 13px; cursor: pointer; font-weight: 500; color: var(--text-muted); transition: all .2s; }
+  .filter-tab.active { border-color: var(--green); background: var(--green-pale); color: var(--green-dark); }
+
+  /* ── PRODUCT LIST ── */
+  .product-item { background: white; padding: 14px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .15s; }
+  .product-item:active { background: var(--bg); }
+  .product-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .product-emoji { width: 40px; height: 40px; border-radius: 10px; background: var(--green-pale); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .product-meta { flex: 1; }
+  .product-meta h4 { font-size: 14px; font-weight: 600; line-height: 1.3; }
+  .product-meta p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .product-add { width: 30px; height: 30px; border-radius: 50%; background: var(--green); border: none; color: white; font-size: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+
+  /* ── NAVBAR ── */
+  .navbar { background: white; border-top: 1px solid var(--border); display: flex; padding: 8px 0 20px; flex-shrink: 0; position: sticky; bottom: 0; }
+  .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; padding: 4px; }
+  .nav-item .nav-icon { font-size: 22px; }
+  .nav-item .nav-label { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+  .nav-item.active .nav-label { color: var(--green); }
+  .nav-item.active .nav-icon { filter: none; }
+
+  /* ── LOADING ── */
+  .loading { display: flex; align-items: center; justify-content: center; padding: 48px; flex-direction: column; gap: 12px; }
+  .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty { text-align: center; padding: 48px 24px; color: var(--text-muted); font-size: 14px; }
+  .empty .empty-icon { font-size: 48px; margin-bottom: 12px; }
+
+  /* ── SCROLL ── */
+  .scroll-content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 16px; }
+
+  /* ── STORE BADGES ── */
+  .store-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .store-bim { background: #fff3e0; color: #e65100; }
+  .store-carrefour { background: #e3f2fd; color: #1565c0; }
+  .store-atacadao { background: #fce4ec; color: #c62828; }
+  .store-marjane { background: #ffebee; color: #b71c1c; }
+  .store-kazyon { background: #fff8e1; color: #f57f17; }
+  .store-aswak { background: #e8f5e9; color: #1b5e20; }
+  .store-supeco { background: #fffde7; color: #f9a825; }
+
+  /* ── SCAN SCREEN ── */
+  .scan-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px; text-align: center; margin: 16px; cursor: pointer; transition: all .2s; }
+  .scan-zone:active { border-color: var(--green); background: var(--green-pale); }
+  .scan-zone .scan-icon { font-size: 48px; margin-bottom: 12px; }
+  .scan-zone h4 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .scan-zone p { font-size: 13px; color: var(--text-muted); }
+
+  /* ── TIPS ── */
+  .tip-card { background: var(--green-pale); border: 1px solid #9FE1CB; border-radius: var(--radius); padding: 14px 16px; margin: 0 16px 12px; display: flex; align-items: flex-start; gap: 10px; }
+  .tip-card .tip-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .tip-card h4 { font-size: 13px; font-weight: 600; color: #085041; margin-bottom: 3px; }
+  .tip-card p { font-size: 12px; color: #0F6E56; line-height: 1.5; }
+
+  /* ── PROFILE ── */
+  .profile-header { background: var(--green); padding: 52px 24px 32px; text-align: center; }
+  .avatar { width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 12px; }
+  .profile-name { color: white; font-size: 20px; font-weight: 700; }
+  .profile-sub { color: rgba(255,255,255,0.8); font-size: 13px; margin-top: 4px; }
+  .profile-item { background: white; padding: 16px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--border); cursor: pointer; }
+  .profile-item .pi-icon { font-size: 22px; width: 36px; text-align: center; }
+  .profile-item h4 { font-size: 14px; font-weight: 500; }
+  .profile-item p { font-size: 12px; color: var(--text-muted); }
+  .profile-item .pi-arrow { margin-left: auto; color: var(--text-light); }
+
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; padding: 10px 20px; border-radius: 25px; font-size: 13px; font-weight: 500; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 999; white-space: nowrap; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- ── SPLASH ── -->
+<div id="splash" class="screen active">
+  <div class="splash-logo">وفّر<span>Waffar</span></div>
+  <div class="splash-sub">Économisez sur vos courses au Maroc</div>
+  <div class="splash-loader"></div>
+</div>
+
+<!-- ── ONBOARDING ── -->
+<div id="onboarding" class="screen">
+  <div class="ob-header">
+    <div class="ob-icon">🛒</div>
+    <div class="ob-title">Bienvenue sur Waffar</div>
+    <div class="ob-sub">Comparez les prix de BIM, Carrefour, Marjane et plus — économisez chaque mois</div>
+  </div>
+  <div class="ob-dots">
+    <div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div>
+  </div>
+  <div class="ob-content">
+    <div class="ob-feature">
+      <div class="ob-feat-icon">📊</div>
+      <div class="ob-feat-text">
+        <h4>Comparez les prix en temps réel</h4>
+        <p>Trouvez le meilleur prix sur 1000+ produits dans 7 enseignes marocaines</p>
+      </div>
+    </div>
+    <div class="ob-feature">
+      <div class="ob-feat-icon">📸</div>
+      <div class="ob-feat-text">
+        <h4>Scannez vos reçus</h4>
+        <p>Analysez vos achats et découvrez combien vous auriez pu économiser</p>
+      </div>
+    </div>
+    <div class="ob-feature">
+      <div class="ob-feat-icon">💡</div>
+      <div class="ob-feat-text">
+        <h4>Conseils personnalisés</h4>
+        <p>Recevez des recommandations intelligentes selon vos habitudes d'achat</p>
+      </div>
+    </div>
+  </div>
+  <div class="ob-footer">
+    <button class="btn-primary" onclick="goToMain()">Commencer gratuitement</button>
+    <button class="btn-secondary" onclick="goToMain()">J'ai déjà un compte</button>
+  </div>
+</div>
+
+<!-- ── MAIN APP ── -->
+<div id="main" class="screen">
+
+  <!-- HOME TAB -->
+  <div id="tab-home" class="tab-content">
+    <div class="topbar">
+      <div class="topbar-row">
+        <div>
+          <h1>Bonjour 👋</h1>
+          <p id="home-date">Chargement...</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.2);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>
+      </div>
+    </div>
+    <div class="scroll-content">
+      <div class="hero">
+        <div class="hero-left">
+          <p>Économies potentielles</p>
+          <strong id="hero-savings">—</strong>
+        </div>
+        <div class="hero-right">
+          <p>Produits comparés</p>
+          <span id="hero-count">—</span>
+        </div>
+      </div>
+
+      <div class="section-title">Meilleures offres du moment</div>
+      <div id="best-deals-list">
+        <div class="loading"><div class="spinner"></div><span>Chargement...</span></div>
+      </div>
+
+      <div class="section-title">Conseil du moment</div>
+      <div class="tip-card">
+        <div class="tip-icon">💡</div>
+        <div>
+          <h4>Astuce Ramadan</h4>
+          <p>L'eau minérale est 8% moins chère chez Atacadao (3,80 DH) vs Carrefour. Pour 6 bouteilles/semaine, économisez ~20 DH/mois.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARE TAB -->
+  <div id="tab-compare" class="tab-content" style="display:none;">
+    <div class="topbar">
+      <div class="topbar-row">
+        <div><h1>Comparer les prix</h1><p>1121 produits · 7 enseignes</p></div>
+        <button class="topbar-action" onclick="toggleFilters()">Filtres</button>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Huile, lait, couscous..." oninput="searchProducts(this.value)">
+      </div>
+    </div>
+    <div class="filter-tabs" id="cat-filters">
+      <div class="filter-tab active" onclick="filterCat(this,'')">Tout</div>
+      <div class="filter-tab" onclick="filterCat(this,'Épicerie')">🫙 Épicerie</div>
+      <div class="filter-tab" onclick="filterCat(this,'Laitiers')">🥛 Laitiers</div>
+      <div class="filter-tab" onclick="filterCat(this,'Boissons')">🥤 Boissons</div>
+      <div class="filter-tab" onclick="filterCat(this,'Conserves')">🥫 Conserves</div>
+      <div class="filter-tab" onclick="filterCat(this,'Hygiène')">🧴 Hygiène</div>
+      <div class="filter-tab" onclick="filterCat(this,'Entretien')">🧹 Entretien</div>
+      <div class="filter-tab" onclick="filterCat(this,'Viandes')">🥩 Viandes</div>
+      <div class="filter-tab" onclick="filterCat(this,'Biscuits')">🍪 Biscuits</div>
+    </div>
+    <div class="scroll-content" id="products-list" style="max-height:calc(100vh - 280px);">
+      <div class="loading"><div class="spinner"></div><span>Chargement des produits...</span></div>
+    </div>
+  </div>
+
+  <!-- SCAN TAB -->
+  <div id="tab-scan" class="tab-content" style="display:none;">
+    <div class="topbar">
+      <div class="topbar-row">
+        <div><h1>Scanner un reçu</h1><p>Analysez vos achats</p></div>
+      </div>
+    </div>
+    <div class="scroll-content">
+      <div class="scan-zone" onclick="simulateScan()">
+        <div class="scan-icon">📷</div>
+        <h4>Photo du reçu</h4>
+        <p>Appuyez pour prendre une photo de votre reçu</p>
+      </div>
+      <div style="padding:0 16px;text-align:center;color:var(--text-muted);font-size:13px;margin-bottom:16px;">— ou —</div>
+      <div class="card" onclick="simulateScan()" style="cursor:pointer;text-align:center;">
+        <p style="font-size:13px;color:var(--text-muted);">📁 Importer depuis la galerie</p>
+      </div>
+      <div id="scan-result" style="display:none;">
+        <div class="section-title">Dernière analyse — Marjane</div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <span style="font-size:13px;font-weight:600;">5 produits détectés</span>
+            <span style="font-size:11px;color:var(--text-muted);">21 mars 2026</span>
+          </div>
+          <div id="scan-items"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border);margin-top:8px;">
+            <span style="font-size:13px;color:var(--text-muted);">Total payé</span>
+            <strong style="font-size:16px;">237,70 DH</strong>
+          </div>
+        </div>
+        <div style="margin:0 16px;padding:12px 14px;background:#fef3c7;border-radius:var(--radius);display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;color:#92400e;">Vous auriez économisé</span>
+          <strong style="font-size:15px;color:#78350f;">– 26,55 DH</strong>
+        </div>
+        <div style="padding:16px;">
+          <button class="btn-primary" onclick="showToast('Historique mis à jour ✓')">Ajouter à mon historique</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIST TAB -->
+  <div id="tab-list" class="tab-content" style="display:none;">
+    <div class="topbar">
+      <div class="topbar-row">
+        <div><h1>Ma liste</h1><p id="list-count">0 produit</p></div>
+        <button class="topbar-action" onclick="clearList()">Vider</button>
+      </div>
+    </div>
+    <div class="scroll-content">
+      <div id="my-list-items"></div>
+      <div id="list-empty" class="empty">
+        <div class="empty-icon">🛒</div>
+        <p>Votre liste est vide</p>
+        <p style="margin-top:6px;font-size:13px;">Ajoutez des produits depuis l'onglet Comparer</p>
+      </div>
+      <div id="list-total" style="display:none;margin:0 16px;">
+        <div style="background:var(--green);border-radius:var(--radius);padding:16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div>
+            <p style="color:rgba(255,255,255,0.8);font-size:12px;">Total optimal</p>
+            <strong id="list-total-amount" style="color:white;font-size:24px;"></strong>
+          </div>
+          <div style="background:rgba(255,255,255,0.2);border-radius:10px;padding:8px 12px;text-align:right;">
+            <p style="color:rgba(255,255,255,0.75);font-size:11px;">Économies</p>
+            <span id="list-savings" style="color:white;font-size:14px;font-weight:600;"></span>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="showToast('Itinéraire généré ! BIM → Carrefour → Atacadao')">Voir l'itinéraire optimal 🗺️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div id="tab-profile" class="tab-content" style="display:none;">
+    <div class="profile-header">
+      <div class="avatar">👤</div>
+      <div class="profile-name">Mon Profil</div>
+      <div class="profile-sub">Agadir · Foyer de 4 personnes</div>
+    </div>
+    <div class="scroll-content" style="padding-bottom:80px;">
+      <div class="section-title">Mes statistiques</div>
+      <div class="stats-grid">
+        <div class="stat-card"><p>Économies ce mois</p><strong id="p-savings">—</strong><small> DH</small></div>
+        <div class="stat-card"><p>Reçus scannés</p><strong>0</strong><small> ce mois</small></div>
+        <div class="stat-card"><p>Produits comparés</p><strong id="p-compared">—</strong><small> total</small></div>
+        <div class="stat-card"><p>Budget mensuel</p><strong>2500</strong><small> DH</small></div>
+      </div>
+      <div class="section-title">Paramètres</div>
+      <div class="profile-item" onclick="showToast('Budget : 2500 DH/mois')">
+        <div class="pi-icon">💰</div>
+        <div><h4>Budget mensuel</h4><p>2 500 DH / mois</p></div>
+        <div class="pi-arrow">›</div>
+      </div>
+      <div class="profile-item" onclick="showToast('Ville : Agadir')">
+        <div class="pi-icon">📍</div>
+        <div><h4>Ma ville</h4><p>Agadir</p></div>
+        <div class="pi-arrow">›</div>
+      </div>
+      <div class="profile-item" onclick="showToast('Enseignes préférées sauvegardées')">
+        <div class="pi-icon">🏪</div>
+        <div><h4>Mes enseignes</h4><p>BIM, Carrefour, Atacadao</p></div>
+        <div class="pi-arrow">›</div>
+      </div>
+      <div class="profile-item" onclick="showToast('Notifications activées')">
+        <div class="pi-icon">🔔</div>
+        <div><h4>Alertes promos</h4><p>Activées</p></div>
+        <div class="pi-arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-label">Accueil</div>
+    </div>
+    <div class="nav-item" id="nav-compare" onclick="switchTab('compare')">
+      <div class="nav-icon">📊</div>
+      <div class="nav-label">Comparer</div>
+    </div>
+    <div class="nav-item" id="nav-scan" onclick="switchTab('scan')">
+      <div class="nav-icon">📷</div>
+      <div class="nav-label">Scanner</div>
+    </div>
+    <div class="nav-item" id="nav-list" onclick="switchTab('list')">
+      <div class="nav-icon">🛒</div>
+      <div class="nav-label">Ma liste</div>
+    </div>
+    <div class="nav-item" id="nav-profile" onclick="switchTab('profile')">
+      <div class="nav-icon">👤</div>
+      <div class="nav-label">Profil</div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL OVERLAY -->
+<div id="detail-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:flex-end;" onclick="closeDetail()">
+  <div id="detail-sheet" style="background:white;border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:80vh;overflow-y:auto;" onclick="event.stopPropagation()">
+    <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;"></div>
+    <div id="detail-content"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://njfdbrkpvjomqfxabamt.supabase.co';
+// Clé anon publique - lecture seule sur données publiques
+const SUPABASE_KEY = localStorage.getItem('waffar_api_key') || '';
+  // 👉 Pour activer la vraie base: localStorage.setItem('waffar_api_key', 'TA_CLE_ANON')
+  // Projet Supabase: njfdbrkpvjomqfxabamt.supabase.co
+
+let allProducts = [];
+let myList = [];
+let currentCat = '';
+let currentSearch = '';
+
+// ── EMOJI par catégorie ──
+const catEmoji = {
+  'Épicerie':'🫙','Conserves':'🥫','Laitiers':'🥛','Fromages':'🧀',
+  'Charcuterie':'🥩','Viandes':'🥩','Boissons':'🥤','Boulangerie':'🍞',
+  'Biscuits':'🍪','Hygiène':'🧴','Entretien':'🧹','Bébé':'👶',
+  'Surgelés':'❄️','Fruits & Légumes':'🍊','Fruits secs':'🥜',
+  'Confiserie':'🍬','Maison':'🏠','Textile':'👕','Électroménager':'🔌',
+  'High-Tech':'📱','Sport':'⚽','default':'🛍️'
+};
+
+const storeClass = {
+  'BIM':'store-bim','Carrefour':'store-carrefour','Atacadao':'store-atacadao',
+  'Marjane':'store-marjane','Kazyon':'store-kazyon',
+  'Aswak Assalam':'store-aswak','Supeco':'store-supeco'
+};
+
+// ── API CALL ──
+async function supaFetch(path) {
+  try {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Accept': 'application/json'
+      }
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } catch(e) {
+    console.error('API error:', e);
+    return null;
+  }
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  // Splash → Onboarding
+  setTimeout(() => {
+    document.getElementById('splash').classList.remove('active');
+    const seen = localStorage.getItem('waffar_seen');
+    if (seen) {
+      goToMain();
+    } else {
+      document.getElementById('onboarding').classList.add('active');
+    }
+  }, 2000);
+
+  // Date
+  const now = new Date();
+  document.getElementById('home-date').textContent =
+    now.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
+});
+
+function goToMain() {
+  localStorage.setItem('waffar_seen','1');
+  document.getElementById('onboarding').classList.remove('active');
+  document.getElementById('main').classList.add('active');
+  loadHomeData();
+  loadProducts();
+}
+
+// ── LOAD HOME ──
+async function loadHomeData() {
+  const data = await supaFetch('prix?select=prix_dh&actif=eq.true&limit=1000');
+  if (data && data.length) {
+    const prices = data.map(d => d.prix_dh);
+    const total = prices.reduce((a,b) => a+b, 0);
+    document.getElementById('hero-count').textContent = data.length;
+    document.getElementById('hero-savings').textContent = Math.round(total * 0.12) + ' DH';
+    document.getElementById('p-savings').textContent = Math.round(total * 0.05);
+    document.getElementById('p-compared').textContent = data.length;
+  } else {
+    // Données de démo si API indisponible
+    document.getElementById('hero-count').textContent = '1121';
+    document.getElementById('hero-savings').textContent = '340 DH';
+    document.getElementById('p-savings').textContent = '127';
+    document.getElementById('p-compared').textContent = '1121';
+  }
+  loadBestDeals();
+}
+
+// ── BEST DEALS ──
+async function loadBestDeals() {
+  const container = document.getElementById('best-deals-list');
+  const data = await supaFetch(
+    'prix?select=prix_dh,enseigne_id,produits(nom,categorie_id,categories(nom))' +
+    '&actif=eq.true&order=prix_dh.asc&limit=6'
+  );
+
+  const demos = [
+    {nom:'Eau minérale Assil 1.5L', prix:3.80, enseigne:'Atacadao', cat:'Boissons'},
+    {nom:'Maïs doux Belmont', prix:3.85, enseigne:'Atacadao', cat:'Conserves'},
+    {nom:'Biscuit Mega Cookies 33g', prix:0.72, enseigne:'Atacadao', cat:'Biscuits'},
+    {nom:'Yaourt à boire Activia 280g', prix:4.50, enseigne:'BIM', cat:'Laitiers'},
+    {nom:'Eau minérale Kazyon 1.5L', prix:3.50, enseigne:'Kazyon', cat:'Boissons'},
+    {nom:'Sucre Kazyon 1kg', prix:7.20, enseigne:'Kazyon', cat:'Épicerie'},
+  ];
+
+  container.innerHTML = demos.map(p => `
+    <div class="product-item" onclick="showProductDetail('${p.nom}','${p.enseigne}',${p.prix},'${p.cat}')">
+      <div class="product-top">
+        <div class="product-emoji">${catEmoji[p.cat]||'🛍️'}</div>
+        <div class="product-meta">
+          <h4>${p.nom}</h4>
+          <span class="store-badge ${storeClass[p.enseigne]||''}">${p.enseigne}</span>
+        </div>
+        <div class="card-price">
+          <strong>${p.prix.toFixed(2)} DH</strong>
+          <span class="badge-best">Meilleur prix</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── LOAD PRODUCTS ──
+async function loadProducts() {
+  const container = document.getElementById('products-list');
+
+  // Essayer l'API Supabase
+  let data = await supaFetch(
+    'produits?select=id,nom,categorie_id,categories(nom),prix(prix_dh,enseigne_id,enseignes(nom),actif,date_fin)' +
+    '&limit=200&order=nom.asc'
+  );
+
+  if (!data || !data.length) {
+    // Données de démo
+    data = getDemoProducts();
+  }
+
+  allProducts = data;
+  renderProducts(data);
+}
+
+function getDemoProducts() {
+  return [
+    {id:'1',nom:'Couscous fin Al Bahia 1kg',categories:{nom:'Épicerie'},prix:[{prix_dh:8,enseignes:{nom:'Atacadao'},actif:true}]},
+    {id:'2',nom:'Eau minérale Assil 1.5L',categories:{nom:'Boissons'},prix:[{prix_dh:3.80,enseignes:{nom:'Atacadao'},actif:true},{prix_dh:3.50,enseignes:{nom:'Kazyon'},actif:true},{prix_dh:22.50,enseignes:{nom:'Carrefour'},actif:true}]},
+    {id:'3',nom:'Huile table Oléor 5L',categories:{nom:'Épicerie'},prix:[{prix_dh:72.90,enseignes:{nom:'Carrefour'},actif:true},{prix_dh:82.95,enseignes:{nom:'Supeco'},actif:true},{prix_dh:68.90,enseignes:{nom:'Kazyon'},actif:true}]},
+    {id:'4',nom:'Lait UHT Kazyon 1L',categories:{nom:'Laitiers'},prix:[{prix_dh:8.50,enseignes:{nom:'Kazyon'},actif:true},{prix_dh:7.95,enseignes:{nom:'Aswak Assalam'},actif:true}]},
+    {id:'5',nom:'Farine blé tendre 5kg',categories:{nom:'Épicerie'},prix:[{prix_dh:18.50,enseignes:{nom:'Carrefour'},actif:true},{prix_dh:45.90,enseignes:{nom:'Carrefour'},actif:true}]},
+    {id:'6',nom:'Shampooing Pantene 200ml',categories:{nom:'Hygiène'},prix:[{prix_dh:14.90,enseignes:{nom:'Atacadao'},actif:true}]},
+    {id:'7',nom:'Détergent Ariel 4kg',categories:{nom:'Entretien'},prix:[{prix_dh:98.90,enseignes:{nom:'BIM'},actif:true},{prix_dh:65.90,enseignes:{nom:'Aswak Assalam'},actif:true}]},
+    {id:'8',nom:'Yaourt Danone Filoni 4x110g',categories:{nom:'Laitiers'},prix:[{prix_dh:8.95,enseignes:{nom:'Supeco'},actif:true}]},
+    {id:'9',nom:'Pack 3 thon Isabel 80gx3',categories:{nom:'Conserves'},prix:[{prix_dh:31.95,enseignes:{nom:'Carrefour'},actif:true},{prix_dh:23.95,enseignes:{nom:'Carrefour'},actif:true}]},
+    {id:'10',nom:'Biscuit Oreo vanille 220g',categories:{nom:'Biscuits'},prix:[{prix_dh:22.90,enseignes:{nom:'BIM'},actif:true}]},
+    {id:'11',nom:'Lessive liquide Chany 5L',categories:{nom:'Entretien'},prix:[{prix_dh:51,enseignes:{nom:'Atacadao'},actif:true},{prix_dh:18.90,enseignes:{nom:'Kazyon'},actif:true}]},
+    {id:'12',nom:'Papier toilette Selpak 32r',categories:{nom:'Entretien'},prix:[{prix_dh:84.90,enseignes:{nom:'BIM'},actif:true},{prix_dh:16.90,enseignes:{nom:'Kazyon'},actif:true}]},
+    {id:'13',nom:'Red Bull 25cl',categories:{nom:'Boissons'},prix:[{prix_dh:17.95,enseignes:{nom:'Carrefour'},actif:true}]},
+    {id:'14',nom:'Poulet fermier Alhor kg',categories:{nom:'Viandes'},prix:[{prix_dh:79.90,enseignes:{nom:'Carrefour'},actif:true}]},
+    {id:'15',nom:'Fromage Philadelphia 150g',categories:{nom:'Fromages'},prix:[{prix_dh:26.90,enseignes:{nom:'BIM'},actif:true}]},
+  ];
+}
+
+function renderProducts(data) {
+  const container = document.getElementById('products-list');
+  let filtered = data;
+
+  if (currentCat) filtered = filtered.filter(p => p.categories?.nom === currentCat);
+  if (currentSearch) {
+    const q = currentSearch.toLowerCase();
+    filtered = filtered.filter(p => p.nom.toLowerCase().includes(q));
+  }
+
+  if (!filtered.length) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div><p>Aucun produit trouvé</p></div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(p => {
+    const prices = (p.prix || []).filter(pr => pr.actif !== false);
+    const minPrice = prices.length ? Math.min(...prices.map(pr => pr.prix_dh)) : null;
+    const maxPrice = prices.length ? Math.max(...prices.map(pr => pr.prix_dh)) : null;
+    const bestEns = prices.find(pr => pr.prix_dh === minPrice)?.enseignes?.nom || '';
+    const cat = p.categories?.nom || 'Épicerie';
+    const emoji = catEmoji[cat] || '🛍️';
+    const saving = (maxPrice && minPrice && maxPrice !== minPrice)
+      ? `<span class="badge-best">– ${(maxPrice-minPrice).toFixed(2)} DH vs le plus cher</span>` : '';
+
+    return `<div class="product-item" onclick="showProductDetail('${p.nom.replace(/'/g,"\\'")}','${bestEns}',${minPrice||0},'${cat}')">
+      <div class="product-top">
+        <div class="product-emoji">${emoji}</div>
+        <div class="product-meta">
+          <h4>${p.nom}</h4>
+          <p>${prices.length} enseigne${prices.length>1?'s':''} · ${cat}</p>
+        </div>
+        <div class="card-price">
+          ${minPrice ? `<strong>${minPrice.toFixed(2)} DH</strong>` : ''}
+          ${saving}
+        </div>
+      </div>
+      ${prices.length > 1 ? `
+      <div class="price-grid">
+        ${prices.slice(0,3).map(pr => `
+          <div class="price-cell ${pr.prix_dh === minPrice ? 'best' : ''}">
+            <div class="shop">${pr.enseignes?.nom||''}</div>
+            <div class="amount">${pr.prix_dh.toFixed(2)}</div>
+            <div class="unit">DH</div>
+            ${pr.prix_dh === minPrice ? '<div style="font-size:9px;color:var(--green);margin-top:2px;">✓ Meilleur</div>' : ''}
+          </div>
+        `).join('')}
+      </div>` : ''}
+      <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+        <button onclick="event.stopPropagation();addToList('${p.nom.replace(/'/g,"\\'")}',${minPrice||0},'${bestEns}')" style="background:var(--green);color:white;border:none;border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;cursor:pointer;">+ Ajouter</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── SEARCH & FILTER ──
+function searchProducts(val) {
+  currentSearch = val;
+  renderProducts(allProducts);
+}
+
+function filterCat(el, cat) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentCat = cat;
+  renderProducts(allProducts);
+}
+
+// ── DETAIL SHEET ──
+function showProductDetail(nom, enseigne, prix, cat) {
+  const overlay = document.getElementById('detail-overlay');
+  const content = document.getElementById('detail-content');
+  overlay.style.display = 'flex';
+
+  content.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+      <div style="width:52px;height:52px;border-radius:12px;background:var(--green-pale);display:flex;align-items:center;justify-content:center;font-size:26px;">${catEmoji[cat]||'🛍️'}</div>
+      <div>
+        <h3 style="font-size:16px;font-weight:700;line-height:1.3;">${nom}</h3>
+        <span class="store-badge ${storeClass[enseigne]||''}">${enseigne}</span>
+      </div>
+    </div>
+    <div style="background:var(--green-pale);border-radius:var(--radius);padding:16px;margin-bottom:16px;text-align:center;">
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">Meilleur prix</p>
+      <strong style="font-size:32px;color:var(--green);">${prix.toFixed(2)} DH</strong>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">chez ${enseigne}</p>
+    </div>
+    <button class="btn-primary" onclick="addToList('${nom.replace(/'/g,"\\'")}',${prix},'${enseigne}');closeDetail();">
+      + Ajouter à ma liste
+    </button>
+  `;
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').style.display = 'none';
+}
+
+// ── MY LIST ──
+function addToList(nom, prix, enseigne) {
+  if (myList.some(i => i.nom === nom)) {
+    showToast('Déjà dans votre liste');
+    return;
+  }
+  myList.push({nom, prix, enseigne});
+  renderList();
+  showToast('✓ Ajouté à ma liste');
+}
+
+function removeFromList(idx) {
+  myList.splice(idx, 1);
+  renderList();
+}
+
+function clearList() {
+  myList = [];
+  renderList();
+}
+
+function renderList() {
+  const container = document.getElementById('my-list-items');
+  const empty = document.getElementById('list-empty');
+  const total = document.getElementById('list-total');
+  const count = document.getElementById('list-count');
+
+  count.textContent = myList.length + ' produit' + (myList.length > 1 ? 's' : '');
+
+  if (!myList.length) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    total.style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+  total.style.display = 'block';
+
+  const totalAmt = myList.reduce((s, i) => s + i.prix, 0);
+  document.getElementById('list-total-amount').textContent = totalAmt.toFixed(2) + ' DH';
+  document.getElementById('list-savings').textContent = '– ' + (totalAmt * 0.12).toFixed(2) + ' DH';
+
+  container.innerHTML = myList.map((item, i) => `
+    <div class="product-item">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--green-pale);display:flex;align-items:center;justify-content:center;font-size:20px;">🛍️</div>
+        <div style="flex:1;">
+          <h4 style="font-size:14px;font-weight:600;">${item.nom}</h4>
+          <span class="store-badge ${storeClass[item.enseigne]||''}">${item.enseigne}</span>
+        </div>
+        <div style="text-align:right;">
+          <strong style="font-size:15px;color:var(--green);">${item.prix.toFixed(2)} DH</strong>
+        </div>
+        <button onclick="removeFromList(${i})" style="background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:4px;">×</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── SCAN SIMULATION ──
+function simulateScan() {
+  showToast('Analyse en cours...');
+  setTimeout(() => {
+    const scanResult = document.getElementById('scan-result');
+    const scanItems = document.getElementById('scan-items');
+    scanResult.style.display = 'block';
+    const items = [
+      {nom:"Huile Jawhara 1L x2", prix:105.80, tag:"warn", tagTxt:"+ cher que BIM"},
+      {nom:"Tomates Aïcha x4", prix:27.20, tag:"best", tagTxt:"Meilleur prix"},
+      {nom:"Lait Danone x6", prix:43.20, tag:"warn", tagTxt:"+ cher que Carrefour"},
+      {nom:"Farine Cigogne x3", prix:25.50, tag:"warn", tagTxt:"+ cher que Kazyon"},
+      {nom:"Savon Lux x4", prix:36.00, tag:"best", tagTxt:"Meilleur prix"},
+    ];
+    scanItems.innerHTML = items.map(i => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+        <div>
+          <div style="font-size:13px;font-weight:500;">${i.nom}</div>
+          <span class="store-badge ${i.tag === 'best' ? '' : 'badge-warn'}" style="margin-top:3px;display:inline-block;">
+            ${i.tagTxt}
+          </span>
+        </div>
+        <div style="font-size:14px;font-weight:600;">${i.prix.toFixed(2)} DH</div>
+      </div>
+    `).join('');
+    showToast('Reçu analysé — 5 produits détectés');
+  }, 1500);
+}
+
+// ── TAB NAVIGATION ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + tab).style.display = 'flex';
+  document.getElementById('tab-' + tab).style.flexDirection = 'column';
+  document.getElementById('nav-' + tab).classList.add('active');
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function toggleFilters() { showToast('Filtres avancés bientôt disponibles'); }
+</script>
+</body>
+</html>
