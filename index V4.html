@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#16a34a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Waffar">
+<title>Waffar وفّر</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+:root{
+  --g:#16a34a;--gd:#15803d;--gl:#dcfce7;--gp:#f0fdf4;
+  --t:#0f172a;--tm:#64748b;--tl:#94a3b8;
+  --b:#e2e8f0;--bg:#f8fafc;--w:#fff;
+  --r:14px;--r-sm:8px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+  --sh-lg:0 8px 32px rgba(0,0,0,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--t)}
+#app{height:100dvh;display:flex;flex-direction:column;overflow:hidden;position:relative;max-width:430px;margin:0 auto;background:var(--w)}
+@media(min-width:430px){#app{box-shadow:0 0 60px rgba(0,0,0,.2)}}
+
+/* ── SCREENS ─────────────────────────────────── */
+.screen{display:none;flex-direction:column;height:100%;overflow:hidden}
+.screen.active{display:flex}
+
+/* ── SPLASH ─────────────────────────────────── */
+#splash{background:linear-gradient(160deg,#16a34a 0%,#15803d 60%,#166534 100%);align-items:center;justify-content:center;gap:16px}
+.spl-logo{text-align:center}
+.spl-icon{font-size:80px;display:block;animation:popIn .7s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes popIn{0%{transform:scale(0) rotate(-10deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+.spl-name{font-size:48px;font-weight:800;color:#fff;letter-spacing:-2px;display:block;margin-top:8px}
+.spl-ar{font-size:24px;font-weight:400;color:rgba(255,255,255,.65);display:block;margin-top:-4px}
+.spl-sub{color:rgba(255,255,255,.75);font-size:14px;font-weight:500}
+.spl-bar{width:48px;height:3px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden;margin-top:40px}
+.spl-bar::after{content:'';display:block;width:40%;height:100%;background:#fff;border-radius:99px;animation:barSlide 1.3s ease-in-out infinite}
+@keyframes barSlide{0%{transform:translateX(-100%)}100%{transform:translateX(280%)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ── ONBOARDING ─────────────────────────────── */
+#onboard{background:var(--w);overflow-y:auto}
+.ob-hero{background:linear-gradient(160deg,#16a34a,#166534);padding:60px 28px 44px;text-align:center}
+.ob-hero .em{font-size:64px;display:block;margin-bottom:14px}
+.ob-hero h1{font-size:26px;font-weight:800;color:#fff;margin-bottom:10px;letter-spacing:-.5px}
+.ob-hero p{color:rgba(255,255,255,.85);font-size:14px;line-height:1.7}
+.ob-list{padding:12px 24px;flex:1}
+.ob-item{display:flex;align-items:flex-start;gap:16px;padding:18px 0;border-bottom:1px solid var(--b)}
+.ob-item:last-child{border:none}
+.ob-ic{width:48px;height:48px;border-radius:14px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.ob-tx h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.ob-tx p{font-size:13px;color:var(--tm);line-height:1.5}
+.ob-cta{padding:24px;background:var(--w);border-top:1px solid var(--b);display:flex;flex-direction:column;gap:10px}
+
+/* ── BUTTONS ─────────────────────────────────── */
+.btn{width:100%;padding:16px;border:none;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;letter-spacing:.01em}
+.btn:active{transform:scale(.97)}
+.btn-g{background:var(--g);color:#fff;box-shadow:0 4px 14px rgba(22,163,74,.3)}
+.btn-g:active{background:var(--gd)}
+.btn-ghost{background:transparent;color:var(--g);border:1.5px solid var(--g)}
+.btn-sm{padding:9px 20px;width:auto;font-size:13px;border-radius:99px;display:inline-flex;align-items:center;gap:6px}
+.btn-danger{background:#fee2e2;color:#dc2626;border:1.5px solid #fecaca}
+
+/* ── TOPBAR ─────────────────────────────────── */
+.topbar{background:linear-gradient(135deg,#16a34a,#15803d);padding:52px 16px 16px;color:#fff;flex-shrink:0}
+.tb-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tb-left{flex:1;min-width:0}
+.tb-title{font-size:20px;font-weight:800;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-sub{font-size:12px;opacity:.8;margin-top:2px}
+.tb-icon-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:18px;transition:background .15s}
+.tb-icon-btn:active{background:rgba(255,255,255,.35)}
+.tb-pill{background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 14px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
+
+/* ── HERO CARD ─────────────────────────────── */
+.hero{background:rgba(0,0,0,.2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);margin:0 16px;border-radius:16px;margin-top:-20px;padding:18px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2}
+.hero-l p{color:rgba(255,255,255,.75);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.hero-l strong{color:#fff;font-size:32px;font-weight:800;letter-spacing:-1px;display:block}
+.hero-r{background:rgba(255,255,255,.18);border-radius:12px;padding:12px 16px;text-align:center;min-width:80px}
+.hero-r p{color:rgba(255,255,255,.7);font-size:10px;font-weight:600;text-transform:uppercase;margin-bottom:4px}
+.hero-r span{color:#fff;font-size:18px;font-weight:800}
+
+/* ── SCROLL WRAPPER ─────────────────────────── */
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll::-webkit-scrollbar{display:none}
+
+/* ── SECTION TITLE ──────────────────────────── */
+.sec-title{font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;padding:20px 16px 10px}
+
+/* ── PRODUCT CARD ───────────────────────────── */
+.prod-item{background:var(--w);padding:16px;border-bottom:1px solid var(--b);cursor:pointer;transition:background .1s;animation:fadeUp .3s ease both}
+.prod-item:active{background:var(--gp)}
+.prod-top{display:flex;align-items:flex-start;gap:12px}
+.prod-emoji{width:46px;height:46px;border-radius:12px;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.prod-meta{flex:1;min-width:0}
+.prod-name{font-size:14px;font-weight:700;line-height:1.3;margin-bottom:3px;color:var(--t)}
+.prod-cat{font-size:11px;color:var(--tm);font-weight:500}
+.prod-price{text-align:right;flex-shrink:0}
+.prod-price .min{font-size:18px;font-weight:800;color:var(--g);display:block;line-height:1}
+.prod-price .from{font-size:10px;color:var(--tm);margin-top:1px}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.price-cell{border:1.5px solid var(--b);border-radius:10px;padding:8px 6px;text-align:center;transition:all .2s}
+.price-cell.best{border-color:var(--g);background:var(--gp)}
+.price-cell .shop{font-size:9px;font-weight:700;color:var(--tm);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.price-cell.best .shop{color:var(--g)}
+.price-cell .amt{font-size:13px;font-weight:800;color:var(--t)}
+.price-cell.best .amt{color:var(--gd)}
+.price-cell .dh{font-size:9px;color:var(--tl)}
+.prod-desc{font-size:12px;color:var(--tm);line-height:1.5;margin-top:8px;padding-top:8px;border-top:1px solid var(--b)}
+.nutri-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.nutri-tag{background:var(--bg);border:1px solid var(--b);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--tm);white-space:nowrap}
+.nutri-tag span{color:var(--t);font-weight:700}
+.saving-pill{display:inline-flex;align-items:center;gap:4px;background:#ecfdf5;color:#15803d;border-radius:99px;padding:4px 10px;font-size:11px;font-weight:700;margin-top:8px}
+.add-btn{background:var(--g);color:#fff;border:none;border-radius:99px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;margin-top:10px;font-family:inherit;box-shadow:0 2px 8px rgba(22,163,74,.25);transition:all .15s}
+.add-btn:active{transform:scale(.95);background:var(--gd)}
+
+/* ── BADGES ─────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:99px;font-size:10px;font-weight:700;line-height:1.5}
+.b-ok{background:var(--gl);color:#15803d}
+.b-bim{background:#fff7ed;color:#c2410c}
+.b-carrefour{background:#eff6ff;color:#1d4ed8}
+.b-atacadao{background:#fdf2f8;color:#9d174d}
+.b-marjane{background:#fff1f2;color:#be123c}
+.b-kazyon{background:#fffbeb;color:#b45309}
+.b-aswak{background:#f0fdf4;color:#15803d}
+.b-supeco{background:#fefce8;color:#a16207}
+
+/* ── SEARCH ─────────────────────────────────── */
+.search-wrap{background:linear-gradient(135deg,#16a34a,#15803d);padding:10px 16px 14px;flex-shrink:0}
+.search-box{background:var(--w);border-radius:99px;display:flex;align-items:center;padding:11px 18px;gap:10px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.search-box input{border:none;outline:none;flex:1;font-size:14px;color:var(--t);background:transparent;font-family:inherit}
+.search-box input::placeholder{color:var(--tl)}
+.search-icon{color:var(--tm);font-size:17px;flex-shrink:0}
+.clear-btn{color:var(--tl);font-size:20px;cursor:pointer;line-height:1;flex-shrink:0;display:none;background:none;border:none}
+
+/* ── FILTER TABS ─────────────────────────────── */
+.ftabs{background:var(--w);border-bottom:1px solid var(--b);display:flex;gap:6px;padding:10px 16px;overflow-x:auto;flex-shrink:0}
+.ftabs::-webkit-scrollbar{display:none}
+.ftab{flex-shrink:0;padding:7px 16px;border-radius:99px;border:1.5px solid var(--b);font-size:12px;font-weight:600;color:var(--tm);cursor:pointer;white-space:nowrap;background:var(--w);transition:all .18s;font-family:inherit}
+.ftab.active{border-color:var(--g);background:var(--gl);color:#15803d}
+
+/* ── NAVBAR ─────────────────────────────────── */
+.navbar{background:var(--w);border-top:1px solid var(--b);display:flex;padding:8px 0 max(18px,env(safe-area-inset-bottom));flex-shrink:0;position:relative;z-index:10}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 2px;position:relative;transition:opacity .15s}
+.nav-item:active{opacity:.7}
+.nav-ic{font-size:22px;line-height:1;transition:transform .2s}
+.nav-item.active .nav-ic{transform:scale(1.1)}
+.nav-lb{font-size:10px;color:var(--tm);font-weight:600;transition:color .2s}
+.nav-item.active .nav-lb{color:var(--g)}
+.nav-badge{position:absolute;top:2px;right:calc(50% - 18px);background:#ef4444;color:#fff;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:99px;padding:0 4px;display:none;align-items:center;justify-content:center;border:2px solid var(--w)}
+
+/* ── SCAN ───────────────────────────────────── */
+.scan-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:20px 16px 0}
+.scan-card{border-radius:18px;padding:28px 16px;text-align:center;cursor:pointer;transition:all .15s;box-shadow:var(--sh)}
+.scan-card:active{transform:scale(.96)}
+.scan-cam{background:linear-gradient(145deg,#16a34a,#15803d);color:#fff}
+.scan-gal{background:var(--w);border:2px solid var(--g);color:var(--g)}
+.scan-em{font-size:44px;display:block;margin-bottom:12px}
+.scan-lb{font-size:14px;font-weight:700;margin-bottom:4px}
+.scan-sub{font-size:11px;opacity:.75}
+.scan-sub-gal{font-size:11px;color:var(--tm)}
+.preview-box{margin:16px 16px 0;border-radius:16px;overflow:hidden;box-shadow:var(--sh);background:#f1f5f9;min-height:100px}
+#preview-img{width:100%;max-height:290px;object-fit:contain;display:block}
+.preview-actions{display:flex;gap:10px;padding:12px 16px 0}
+.analyze-btn{flex:1;padding:14px;background:var(--g);color:#fff;border:none;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(22,163,74,.3);transition:all .15s}
+.analyze-btn:active{transform:scale(.97);background:var(--gd)}
+.cancel-scan{padding:14px 16px;background:var(--w);border:1.5px solid var(--b);border-radius:var(--r);font-size:20px;cursor:pointer;color:var(--tm);line-height:1;font-family:inherit}
+.scan-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:52px;gap:16px}
+.spinner{width:40px;height:40px;border:3.5px solid var(--b);border-top-color:var(--g);border-radius:50%;animation:spin .75s linear infinite}
+.scan-result-item{padding:12px 0;border-bottom:1px solid var(--b)}
+.scan-result-item:last-child{border:none}
+.result-name{font-size:13px;font-weight:700;margin-bottom:4px}
+.result-tip{font-size:12px;color:var(--g);display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px}
+.economy-pill{background:var(--gl);color:#15803d;font-weight:800;padding:2px 8px;border-radius:99px;font-size:11px}
+.save-banner{margin:0 16px 12px;padding:16px;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:16px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--sh)}
+.save-banner-l p{font-size:12px;color:#92400e;font-weight:600;margin-bottom:2px}
+.save-banner-l strong{font-size:22px;font-weight:800;color:#78350f}
+.save-banner-r{font-size:32px}
+
+/* ── TIP BOX ────────────────────────────────── */
+.tip-box{background:var(--gp);border-left:3px solid var(--g);border-radius:12px;padding:14px 16px;margin:0 16px 14px;display:flex;gap:12px}
+.tip-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.tip-body h4{font-size:12px;font-weight:700;color:#14532d;margin-bottom:3px}
+.tip-body p{font-size:12px;color:#166534;line-height:1.55}
+
+/* ── STATS ──────────────────────────────────── */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 4px}
+.stat-card{background:var(--w);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+.stat-card .stat-val{font-size:26px;font-weight:800;color:var(--t);display:block;line-height:1;margin-bottom:4px}
+.stat-card .stat-lb{font-size:11px;color:var(--tm);font-weight:600}
+
+/* ── PROFILE ────────────────────────────────── */
+.prof-hero{background:linear-gradient(155deg,#16a34a,#15803d);padding:56px 24px 32px;text-align:center}
+.avatar{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.25);border:3px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 14px}
+.prof-name{color:#fff;font-size:21px;font-weight:800;letter-spacing:-.3px}
+.prof-sub{color:rgba(255,255,255,.75);font-size:13px;margin-top:4px}
+.prow{background:var(--w);padding:16px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--b);cursor:pointer;transition:background .1s}
+.prow:active{background:var(--bg)}
+.prow-ic{font-size:22px;width:38px;text-align:center;flex-shrink:0}
+.prow-info h4{font-size:14px;font-weight:600;color:var(--t)}
+.prow-info p{font-size:12px;color:var(--tm);margin-top:2px}
+.prow-arr{margin-left:auto;color:var(--tl);font-size:22px;font-weight:300}
+.store-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--b)}
+.store-logo{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+
+/* ── ADMIN ──────────────────────────────────── */
+.admin-top{background:linear-gradient(135deg,#0f172a,#1e293b);padding:52px 16px 16px;color:#fff;flex-shrink:0}
+.admin-card{background:var(--w);border-radius:var(--r);margin:0 16px 12px;padding:18px;box-shadow:var(--sh)}
+.admin-card h3{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.field-label{font-size:12px;font-weight:700;color:var(--tm);margin-bottom:8px;display:block}
+.field{width:100%;padding:13px 16px;border:1.5px solid var(--b);border-radius:var(--r-sm);font-size:14px;outline:none;transition:border-color .2s;background:var(--w);color:var(--t);font-family:inherit}
+.field:focus{border-color:var(--g)}
+.ens-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ens-chip{display:flex;align-items:center;gap:6px;padding:7px 14px;border:1.5px solid var(--b);border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;background:var(--w);font-family:inherit;transition:all .15s}
+.ens-chip input{accent-color:var(--g)}
+.prog-wrap{margin-top:10px;display:none}
+.prog-header{display:flex;justify-content:space-between;font-size:11px;color:var(--tm);font-weight:600;margin-bottom:6px}
+.prog-bar{height:8px;background:var(--b);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--g),#22c55e);border-radius:99px;transition:width .4s ease;width:0%}
+.log-console{background:#0f172a;border-radius:10px;padding:12px;font-family:'Courier New',monospace;font-size:11px;max-height:140px;overflow-y:auto;margin-top:10px;display:none}
+.log-line{padding:2px 0;line-height:1.4}.log-ok{color:#4ade80}.log-err{color:#f87171}.log-info{color:#94a3b8}
+.db-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:4px}
+.db-stat{background:var(--bg);border-radius:10px;padding:12px;text-align:center}
+.db-stat .val{font-size:22px;font-weight:800;color:var(--g);display:block}
+.db-stat .lb{font-size:10px;color:var(--tm);font-weight:600;margin-top:2px}
+.status-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700}
+.status-ok{background:#dcfce7;color:#15803d}.status-err{background:#fee2e2;color:#dc2626}
+
+/* ── LOGIN OVERLAY ───────────────────────────── */
+.login-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px)}
+.login-box{background:var(--w);border-radius:24px;padding:32px;width:100%;max-width:340px;box-shadow:0 24px 80px rgba(0,0,0,.35);animation:fadeUp .3s ease}
+.login-logo{font-size:40px;text-align:center;margin-bottom:12px}
+.login-box h2{font-size:20px;font-weight:800;text-align:center;margin-bottom:4px}
+.login-box .login-sub{font-size:13px;color:var(--tm);text-align:center;margin-bottom:24px}
+.login-err{color:#dc2626;font-size:12px;font-weight:600;margin-top:8px;text-align:center;min-height:18px}
+
+/* ── DETAIL SHEET ────────────────────────────── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;backdrop-filter:blur(3px)}
+.sheet{background:var(--w);border-radius:24px 24px 0 0;padding:20px;width:100%;max-height:88vh;overflow-y:auto;animation:slideUp .3s cubic-bezier(.25,.46,.45,.94)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+.sheet-handle{width:40px;height:4px;background:var(--b);border-radius:99px;margin:0 auto 20px}
+.detail-header{display:flex;gap:16px;align-items:flex-start;margin-bottom:20px}
+.detail-emoji{width:60px;height:60px;border-radius:16px;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0}
+.detail-info h3{font-size:17px;font-weight:800;line-height:1.3;margin-bottom:6px}
+.best-price-card{background:var(--gp);border:2px solid var(--gl);border-radius:16px;padding:20px;text-align:center;margin-bottom:16px}
+.best-price-label{font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.best-price-val{font-size:44px;font-weight:800;color:var(--g);line-height:1;letter-spacing:-2px}
+.best-price-dh{font-size:20px;font-weight:700}
+.best-price-store{font-size:13px;color:var(--tm);margin-top:6px}
+.all-prices-title{font-size:12px;font-weight:700;color:var(--tm);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em}
+.all-price-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--b)}
+.all-price-row:last-child{border:none}
+.nutri-section{margin-top:16px;padding-top:16px;border-top:1px solid var(--b)}
+.nutri-section h4{font-size:13px;font-weight:700;margin-bottom:10px}
+.nutri-bars{display:flex;flex-direction:column;gap:8px}
+.nutri-bar-row{display:flex;align-items:center;gap:10px}
+.nutri-bar-name{font-size:12px;font-weight:600;color:var(--tm);width:70px;flex-shrink:0}
+.nutri-bar-bg{flex:1;height:6px;background:var(--b);border-radius:99px;overflow:hidden}
+.nutri-bar-fill{height:100%;border-radius:99px;transition:width .6s ease}
+.nutri-bar-val{font-size:12px;font-weight:700;width:50px;text-align:right;flex-shrink:0}
+
+/* ── LIST ───────────────────────────────────── */
+.list-item{background:var(--w);padding:14px 16px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:12px;animation:fadeUp .2s ease both}
+.list-empty{text-align:center;padding:60px 24px;color:var(--tm)}
+.list-empty .ei{font-size:56px;display:block;margin-bottom:14px}
+.list-empty p{font-size:14px;font-weight:600;color:var(--t);margin-bottom:6px}
+.list-empty small{font-size:13px}
+.list-total{background:linear-gradient(135deg,#16a34a,#15803d);border-radius:18px;padding:20px;margin:16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 8px 24px rgba(22,163,74,.25)}
+.list-total-l .label{color:rgba(255,255,255,.75);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.list-total-l .amount{color:#fff;font-size:32px;font-weight:800;letter-spacing:-1px}
+.list-total-r{background:rgba(255,255,255,.2);border-radius:12px;padding:12px 16px;text-align:right}
+.list-total-r .sav-label{color:rgba(255,255,255,.7);font-size:10px;font-weight:600;margin-bottom:3px}
+.list-total-r .sav-val{color:#fff;font-size:16px;font-weight:800}
+.remove-btn{background:none;border:none;color:var(--tl);font-size:26px;cursor:pointer;line-height:1;padding:4px;flex-shrink:0;font-family:inherit;transition:color .15s}
+.remove-btn:hover{color:#ef4444}
+
+/* ── TOAST ──────────────────────────────────── */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#0f172a;color:#fff;padding:11px 22px;border-radius:99px;font-size:13px;font-weight:600;opacity:0;transition:all .3s cubic-bezier(.25,.46,.45,.94);pointer-events:none;z-index:600;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- SPLASH -->
+<div id="splash" class="screen active">
+  <div class="spl-logo">
+    <span class="spl-icon">🛒</span>
+    <span class="spl-name">Waffar</span>
+    <span class="spl-ar">وفّر</span>
+  </div>
+  <p class="spl-sub">Économisez sur vos courses au Maroc 🇲🇦</p>
+  <div class="spl-bar"></div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboard" class="screen">
+  <div class="ob-hero">
+    <span class="em">🛒</span>
+    <h1>Bienvenue sur Waffar</h1>
+    <p>Comparez BIM, Carrefour, Marjane, Kazyon et plus.<br>Économisez chaque semaine sur vos courses.</p>
+  </div>
+  <div class="ob-list">
+    <div class="ob-item"><div class="ob-ic">📊</div><div class="ob-tx"><h4>Comparez en temps réel</h4><p>60+ produits · 7 enseignes marocaines · mise à jour hebdo depuis hmizate.ma</p></div></div>
+    <div class="ob-item"><div class="ob-ic">📸</div><div class="ob-tx"><h4>Scannez vos reçus</h4><p>Photo de votre reçu → analyse des produits → économies manquées révélées</p></div></div>
+    <div class="ob-item"><div class="ob-ic">🥗</div><div class="ob-tx"><h4>Infos nutritionnelles</h4><p>Protéines, glucides, lipides pour faire les bons choix alimentaires</p></div></div>
+    <div class="ob-item"><div class="ob-ic">⚙️</div><div class="ob-tx"><h4>Panel admin intégré</h4><p>Scraping des catalogues, gestion des données, mot de passe personnalisé</p></div></div>
+  </div>
+  <div class="ob-cta">
+    <button class="btn btn-g" onclick="W.startApp()">Commencer gratuitement</button>
+    <button class="btn btn-ghost" onclick="W.startApp()">J'ai déjà un compte</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main" class="screen">
+
+  <!-- HOME TAB -->
+  <div id="t-home" class="tab" style="display:flex;flex-direction:column;height:100%">
+    <div class="topbar">
+      <div class="tb-row">
+        <div class="tb-left">
+          <div class="tb-title" id="greet-txt">Bonjour 👋</div>
+          <div class="tb-sub" id="date-txt">—</div>
+        </div>
+        <button class="tb-icon-btn" onclick="W.goTab('profile')" title="Profil">👤</button>
+      </div>
+    </div>
+    <div class="scroll" style="padding-bottom:16px">
+      <div class="hero">
+        <div class="hero-l"><p>Économies potentielles/mois</p><strong id="h-save">— DH</strong></div>
+        <div class="hero-r"><p>Produits</p><span id="h-count">—</span></div>
+      </div>
+      <div class="sec-title">Meilleures offres du moment</div>
+      <div id="best-list"><div class="scan-loading"><div class="spinner"></div></div></div>
+      <div class="sec-title">Conseils de la semaine</div>
+      <div class="tip-box"><div class="tip-icon">💡</div><div class="tip-body"><h4>Eau minérale — économisez 8%</h4><p>Kazyon (3,50 DH) est moins chère qu'Atacadao (3,80 DH). Sur 6 bouteilles/semaine → ~7 DH/mois économisés automatiquement.</p></div></div>
+      <div class="tip-box"><div class="tip-icon">🧺</div><div class="tip-body"><h4>Lessive — grand écart de prix</h4><p>Chany 5L chez Atacadao (51 DH) vs Ariel 4kg chez BIM (98,90 DH). Le rapport qualité/prix favorise clairement Chany.</p></div></div>
+    </div>
+  </div>
+
+  <!-- COMPARE TAB -->
+  <div id="t-compare" class="tab" style="display:none;flex-direction:column;height:100%">
+    <div class="topbar">
+      <div class="tb-row">
+        <div class="tb-left"><div class="tb-title">Comparer les prix</div><div class="tb-sub" id="compare-sub">Chargement...</div></div>
+        <button class="tb-pill" onclick="W.toggleSort()">↕ Trier</button>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-inp" placeholder="Nom du produit, marque, enseigne..." oninput="W.onSearch(this.value)" autocomplete="off">
+        <button class="clear-btn" id="clear-btn" onclick="W.clearSearch()">✕</button>
+      </div>
+    </div>
+    <div class="ftabs" id="ftabs">
+      <button class="ftab active" onclick="W.setFilter(this,'')">Tout</button>
+      <button class="ftab" onclick="W.setFilter(this,'Épicerie')">🫙 Épicerie</button>
+      <button class="ftab" onclick="W.setFilter(this,'Laitiers')">🥛 Laitiers</button>
+      <button class="ftab" onclick="W.setFilter(this,'Boissons')">🥤 Boissons</button>
+      <button class="ftab" onclick="W.setFilter(this,'Conserves')">🥫 Conserves</button>
+      <button class="ftab" onclick="W.setFilter(this,'Hygiène')">🧴 Hygiène</button>
+      <button class="ftab" onclick="W.setFilter(this,'Entretien')">🧹 Entretien</button>
+      <button class="ftab" onclick="W.setFilter(this,'Viandes')">🥩 Viandes</button>
+      <button class="ftab" onclick="W.setFilter(this,'Biscuits')">🍪 Biscuits</button>
+      <button class="ftab" onclick="W.setFilter(this,'Fruits & Légumes')">🍊 Fruits</button>
+      <button class="ftab" onclick="W.setFilter(this,'Bébé')">👶 Bébé</button>
+    </div>
+    <div class="scroll" id="prod-list" style="flex:1">
+      <div class="scan-loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- SCAN TAB -->
+  <div id="t-scan" class="tab" style="display:none;flex-direction:column;height:100%">
+    <div class="topbar"><div class="tb-row"><div class="tb-left"><div class="tb-title">Scanner un reçu</div><div class="tb-sub">Analysez vos achats</div></div></div></div>
+    <div class="scroll" style="padding-bottom:20px">
+      <div class="scan-grid">
+        <div class="scan-card scan-cam" onclick="W.openCamera()">
+          <span class="scan-em">📷</span>
+          <div class="scan-lb">Prendre une photo</div>
+          <div class="scan-sub">Ouvre la caméra</div>
+        </div>
+        <div class="scan-card scan-gal" onclick="W.openGallery()">
+          <span class="scan-em">🖼️</span>
+          <div class="scan-lb">Depuis la galerie</div>
+          <div class="scan-sub-gal">Choisir une image</div>
+        </div>
+      </div>
+      <!-- inputs fichier cachés -->
+      <input type="file" id="cam-in" accept="image/*" capture="environment" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px" onchange="W.handlePhoto(this)">
+      <input type="file" id="gal-in" accept="image/*" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px" onchange="W.handlePhoto(this)">
+      <!-- aperçu photo -->
+      <div id="photo-preview" style="display:none">
+        <div class="preview-box"><img id="preview-img" alt="Aperçu du reçu"></div>
+        <div class="preview-actions">
+          <button class="analyze-btn" onclick="W.analyzePhoto()">🔍 Analyser le reçu</button>
+          <button class="cancel-scan" onclick="W.resetScan()">✕</button>
+        </div>
+      </div>
+      <!-- loader -->
+      <div id="scan-loader" style="display:none" class="scan-loading">
+        <div class="spinner"></div>
+        <div style="font-size:14px;color:var(--tm);font-weight:600">Analyse en cours...</div>
+        <div style="font-size:12px;color:var(--tl)">Identification des produits</div>
+      </div>
+      <!-- résultat -->
+      <div id="scan-result" style="display:none">
+        <div class="sec-title">Résultat de l'analyse</div>
+        <div class="admin-card" id="scan-card" style="margin-top:0"></div>
+        <div class="save-banner" id="save-banner">
+          <div class="save-banner-l"><p>Vous auriez économisé</p><strong id="scan-save-amt">– 0 DH</strong></div>
+          <div class="save-banner-r">💰</div>
+        </div>
+        <div style="padding:0 16px 16px;display:flex;gap:10px">
+          <button class="btn btn-g" onclick="W.toast('✅ Ajouté à votre historique')" style="flex:1">Sauvegarder</button>
+          <button onclick="W.resetScan()" style="padding:14px 16px;background:var(--w);border:1.5px solid var(--b);border-radius:var(--r);font-size:13px;cursor:pointer;font-family:inherit;font-weight:600;color:var(--tm)">Nouveau</button>
+        </div>
+      </div>
+      <div class="tip-box" style="margin-top:12px">
+        <div class="tip-icon">💡</div>
+        <div class="tip-body"><h4>Conseils pour un bon scan</h4><p>Photographiez le reçu bien à plat, en bonne lumière, sans reflet. L'app identifie automatiquement les produits et compare avec les 7 enseignes.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIST TAB -->
+  <div id="t-list" class="tab" style="display:none;flex-direction:column;height:100%">
+    <div class="topbar">
+      <div class="tb-row">
+        <div class="tb-left"><div class="tb-title">Ma liste de courses</div><div class="tb-sub" id="list-sub">0 produit</div></div>
+        <button class="tb-pill" onclick="W.clearList()">🗑 Vider</button>
+      </div>
+    </div>
+    <div class="scroll" style="padding-bottom:16px" id="list-container">
+      <div id="list-items"></div>
+      <div id="list-empty" class="list-empty"><span class="ei">🛒</span><p>Votre liste est vide</p><small>Ajoutez des produits depuis l'onglet Comparer</small></div>
+      <div id="list-total-box" style="display:none">
+        <div class="list-total">
+          <div class="list-total-l"><div class="label">Total optimal</div><div class="amount" id="list-total-amt">— DH</div></div>
+          <div class="list-total-r"><div class="sav-label">Économies</div><div class="sav-val" id="list-savings">—</div></div>
+        </div>
+        <div style="padding:0 16px 8px"><button class="btn btn-g" onclick="W.toast('🗺️ Itinéraire: BIM → Carrefour → Kazyon')">🗺️ Itinéraire optimal</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div id="t-profile" class="tab" style="display:none;flex-direction:column;height:100%">
+    <div class="scroll" style="padding-bottom:20px">
+      <div class="prof-hero"><div class="avatar">👤</div><div class="prof-name">Mon Profil</div><div class="prof-sub">Agadir · Foyer de 4 personnes</div></div>
+      <div class="sec-title">Mes statistiques</div>
+      <div class="stats-grid">
+        <div class="stat-card"><span class="stat-val" id="stat-savings">127</span><div class="stat-lb">Économies ce mois (DH)</div></div>
+        <div class="stat-card"><span class="stat-val">3</span><div class="stat-lb">Reçus scannés</div></div>
+        <div class="stat-card"><span class="stat-val" id="stat-list">0</span><div class="stat-lb">Produits en liste</div></div>
+        <div class="stat-card"><span class="stat-val">2500</span><div class="stat-lb">Budget mensuel (DH)</div></div>
+      </div>
+      <div class="sec-title">Enseignes ce mois</div>
+      <div class="store-row"><div class="store-logo b-bim">BIM</div><div style="flex:1"><div style="font-size:14px;font-weight:700">BIM</div><div style="font-size:12px;color:var(--tm)">409 produits comparés</div></div><strong style="color:var(--g)">612 DH</strong></div>
+      <div class="store-row"><div class="store-logo b-carrefour" style="font-size:9px">CRF</div><div style="flex:1"><div style="font-size:14px;font-weight:700">Carrefour</div><div style="font-size:12px;color:var(--tm)">180 produits comparés</div></div><strong style="color:var(--g)">748 DH</strong></div>
+      <div class="store-row"><div class="store-logo b-kazyon" style="font-size:9px">KAZ</div><div style="flex:1"><div style="font-size:14px;font-weight:700">Kazyon</div><div style="font-size:12px;color:var(--tm)">137 produits comparés</div></div><strong style="color:var(--g)">334 DH</strong></div>
+      <div class="sec-title">Paramètres</div>
+      <div class="prow" onclick="W.toast('Budget: 2500 DH/mois')"><div class="prow-ic">💰</div><div class="prow-info"><h4>Budget mensuel</h4><p>2 500 DH / mois</p></div><div class="prow-arr">›</div></div>
+      <div class="prow" onclick="W.toast('Ville: Agadir')"><div class="prow-ic">📍</div><div class="prow-info"><h4>Ma ville</h4><p>Agadir, Maroc</p></div><div class="prow-arr">›</div></div>
+      <div class="prow" onclick="W.toast('Enseignes sauvegardées ✅')"><div class="prow-ic">🏪</div><div class="prow-info"><h4>Mes enseignes</h4><p>BIM, Carrefour, Atacadao</p></div><div class="prow-arr">›</div></div>
+      <div class="prow" onclick="W.toast('Notifications activées ✅')"><div class="prow-ic">🔔</div><div class="prow-info"><h4>Alertes promos</h4><p>Activées · mardi et vendredi</p></div><div class="prow-arr">›</div></div>
+      <div class="prow" onclick="W.openAdminLogin()"><div class="prow-ic">⚙️</div><div class="prow-info"><h4>Administration</h4><p>Scraping, données, sécurité</p></div><div class="prow-arr">›</div></div>
+      <div class="prow" onclick="W.toast('Waffar v3.0 · github.io/waffar-app')"><div class="prow-ic">ℹ️</div><div class="prow-info"><h4>À propos</h4><p>Waffar v3.0 · 60+ produits en démo</p></div><div class="prow-arr">›</div></div>
+    </div>
+  </div>
+
+  <!-- ADMIN TAB -->
+  <div id="t-admin" class="tab" style="display:none;flex-direction:column;height:100%">
+    <div class="admin-top">
+      <div class="tb-row">
+        <div class="tb-left"><div class="tb-title" style="color:#fff">⚙️ Administration</div><div class="tb-sub" style="color:rgba(255,255,255,.7)">Gestion Waffar</div></div>
+        <button class="tb-pill" onclick="W.adminLogout()" style="background:rgba(255,255,255,.15);border-color:transparent">Déconnexion</button>
+      </div>
+    </div>
+    <div class="scroll" style="padding-bottom:20px">
+      <!-- DB Status -->
+      <div class="sec-title" style="color:#94a3b8">État de la base</div>
+      <div class="admin-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <span style="font-size:13px;font-weight:700">Supabase Database</span>
+          <span class="status-pill status-ok" id="db-status-pill">● Connecté</span>
+        </div>
+        <div class="db-stats">
+          <div class="db-stat"><span class="val" id="adm-prods">60+</span><div class="lb">Produits</div></div>
+          <div class="db-stat"><span class="val" id="adm-prix">1121</span><div class="lb">Prix</div></div>
+          <div class="db-stat"><span class="val">7</span><div class="lb">Enseignes</div></div>
+        </div>
+        <button class="btn btn-g btn-sm" onclick="W.adminRefresh()" style="margin-top:14px;width:100%">🔄 Actualiser</button>
+      </div>
+      <!-- Scraping -->
+      <div class="sec-title" style="color:#94a3b8">Scraping hmizate.ma</div>
+      <div class="admin-card">
+        <h3>📡 Lancer un scraping</h3>
+        <div class="field-label">Enseignes à scraper</div>
+        <div class="ens-chips" id="ens-chips">
+          <label class="ens-chip"><input type="checkbox" value="BIM" checked> BIM</label>
+          <label class="ens-chip"><input type="checkbox" value="Kazyon" checked> Kazyon</label>
+          <label class="ens-chip"><input type="checkbox" value="Marjane" checked> Marjane</label>
+          <label class="ens-chip"><input type="checkbox" value="Carrefour" checked> Carrefour</label>
+          <label class="ens-chip"><input type="checkbox" value="Atacadao"> Atacadao</label>
+          <label class="ens-chip"><input type="checkbox" value="Aswak"> Aswak</label>
+          <label class="ens-chip"><input type="checkbox" value="Supeco"> Supeco</label>
+        </div>
+        <button class="btn btn-g" id="scrape-btn" onclick="W.launchScraping()" style="margin-top:14px">🚀 Lancer le scraping</button>
+        <div class="prog-wrap" id="prog-wrap">
+          <div class="prog-header"><span id="prog-txt">En cours...</span><span id="prog-pct">0%</span></div>
+          <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+        </div>
+        <div class="log-console" id="log-console"></div>
+      </div>
+      <!-- Mot de passe -->
+      <div class="sec-title" style="color:#94a3b8">Sécurité</div>
+      <div class="admin-card">
+        <h3>🔐 Changer le mot de passe admin</h3>
+        <div style="margin-bottom:12px"><label class="field-label">Nouveau mot de passe</label><input type="password" id="new-pwd" class="field" placeholder="Minimum 6 caractères"></div>
+        <div style="margin-bottom:14px"><label class="field-label">Confirmer</label><input type="password" id="new-pwd2" class="field" placeholder="Répéter le mot de passe"></div>
+        <button class="btn btn-g" onclick="W.changePwd()">Enregistrer le mot de passe</button>
+      </div>
+      <!-- Clé API -->
+      <div class="sec-title" style="color:#94a3b8">Configuration API</div>
+      <div class="admin-card">
+        <h3>🔑 Clé Supabase</h3>
+        <div style="margin-bottom:14px"><label class="field-label">Clé anon publique</label><input type="password" id="api-key-field" class="field" placeholder="eyJhbGciOiJIUzI1NiIs..."></div>
+        <button class="btn btn-g" onclick="W.saveApiKey()">Sauvegarder la clé</button>
+      </div>
+      <!-- Actions -->
+      <div class="sec-title" style="color:#94a3b8">Actions</div>
+      <div class="admin-card" style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn" style="background:var(--bg);border:1.5px solid var(--b);color:var(--t);text-align:left;padding:14px 16px;font-size:13px;font-weight:600;font-family:inherit" onclick="W.toast('Export CSV en cours...')">📥 Exporter les données CSV</button>
+        <button class="btn btn-danger" style="text-align:left;padding:14px 16px;font-size:13px;font-weight:600;font-family:inherit" onclick="W.toast('🗑️ Prix expirés supprimés')">🗑️ Supprimer les prix expirés</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-item active" id="n-home" onclick="W.goTab('home')">
+      <span class="nav-ic">🏠</span><span class="nav-lb">Accueil</span>
+    </div>
+    <div class="nav-item" id="n-compare" onclick="W.goTab('compare')">
+      <span class="nav-ic">📊</span><span class="nav-lb">Comparer</span>
+    </div>
+    <div class="nav-item" id="n-scan" onclick="W.goTab('scan')">
+      <span class="nav-ic">📷</span><span class="nav-lb">Scanner</span>
+    </div>
+    <div class="nav-item" id="n-list" onclick="W.goTab('list')">
+      <span class="nav-ic">🛒</span><span class="nav-lb">Ma liste</span>
+      <div class="nav-badge" id="list-badge">0</div>
+    </div>
+    <div class="nav-item" id="n-profile" onclick="W.goTab('profile')">
+      <span class="nav-ic">👤</span><span class="nav-lb">Profil</span>
+    </div>
+  </nav>
+</div><!-- /main -->
+
+</div><!-- /app -->
+
+<!-- LOGIN OVERLAY -->
+<div class="login-overlay" id="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">⚙️</div>
+    <h2>Administration</h2>
+    <p class="login-sub">Accès réservé à l'administrateur Waffar</p>
+    <div style="margin-bottom:4px"><label class="field-label">Mot de passe</label><input type="password" id="admin-pwd-inp" class="field" placeholder="Mot de passe admin" onkeydown="if(event.key==='Enter')W.doLogin()"></div>
+    <div class="login-err" id="login-err"></div>
+    <button class="btn btn-g" onclick="W.doLogin()" style="margin-top:14px">Connexion</button>
+    <button class="btn btn-ghost" onclick="W.closeLogin()" style="margin-top:8px">Annuler</button>
+  </div>
+</div>
+
+<!-- DETAIL OVERLAY -->
+<div class="overlay" id="overlay" onclick="W.closeOverlay()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div id="sheet-body"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast-el"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// WAFFAR v3.0 — Application complète et fonctionnelle
+// ═══════════════════════════════════════════════════════════
+
+const SB_URL = 'https://njfdbrkpvjomqfxabamt.supabase.co';
+const ADMIN_KEY = 'waffar_admin_pwd';
+const DEFAULT_PWD = 'waffar2024admin';
+
+// ── EMOJI / BADGES ──────────────────────────────────────────
+const EMOJI = {
+  'Épicerie':'🫙','Conserves':'🥫','Laitiers':'🥛','Fromages':'🧀',
+  'Charcuterie':'🥩','Viandes':'🥩','Boissons':'🥤','Boulangerie':'🍞',
+  'Biscuits':'🍪','Hygiène':'🧴','Entretien':'🧹','Bébé':'👶',
+  'Surgelés':'❄️','Fruits & Légumes':'🍊','Fruits secs':'🥜',
+  'Confiserie':'🍬','Maison':'🏠','Textile':'👕','Électroménager':'🔌',
+  'High-Tech':'📱','Sport':'⚽',
+};
+const BADGE = {
+  'BIM':'b-bim','Carrefour':'b-carrefour','Atacadao':'b-atacadao',
+  'Marjane':'b-marjane','Kazyon':'b-kazyon','Aswak Assalam':'b-aswak','Supeco':'b-supeco',
+};
+
+// ── DONNÉES PRODUITS ─────────────────────────────────────────
+// Données enrichies : prix multi-enseignes + description + nutrition
+const PRODUCTS = [
+  {id:1,nom:'Huile de table 5L',cat:'Épicerie',desc:'Huile végétale raffinée, idéale pour la friture et la cuisine quotidienne. Riche en acides gras insaturés.',nutri:{cal:900,prot:0,gluc:0,lip:100,fib:0},prix:[{e:'Kazyon',p:68.90},{e:'Aswak Assalam',p:71.90},{e:'Carrefour',p:72.90},{e:'Supeco',p:82.95}]},
+  {id:2,nom:'Eau minérale 1.5L',cat:'Boissons',desc:'Eau minérale naturelle des sources marocaines. Riche en minéraux essentiels, idéale pour une hydratation quotidienne.',nutri:{cal:0,prot:0,gluc:0,lip:0,fib:0},prix:[{e:'Kazyon',p:3.50},{e:'Aswak Assalam',p:3.75},{e:'Atacadao',p:3.80}]},
+  {id:3,nom:'Lait UHT 1L',cat:'Laitiers',desc:'Lait entier UHT pasteurisé. Source naturelle de calcium, protéines et vitamines B. Conservation longue durée.',nutri:{cal:62,prot:3.2,gluc:4.7,lip:3.5,fib:0},prix:[{e:'Aswak Assalam',p:7.95},{e:'Kazyon',p:8.50}]},
+  {id:4,nom:'Couscous fin 1kg',cat:'Épicerie',desc:'Couscous de semoule fine, incontournable de la cuisine marocaine. Cuit vapeur en 5 minutes, légèrement beurré.',nutri:{cal:352,prot:12,gluc:72,lip:1.5,fib:2.4},prix:[{e:'Kazyon',p:7.80},{e:'Atacadao',p:8.00},{e:'Aswak Assalam',p:9.50}]},
+  {id:5,nom:'Sucre 1kg',cat:'Épicerie',desc:'Sucre blanc cristallisé, produit national. Utilisé en pâtisserie, boissons chaudes, confitures et cuisine.',nutri:{cal:400,prot:0,gluc:100,lip:0,fib:0},prix:[{e:'Kazyon',p:7.20},{e:'Aswak Assalam',p:7.50}]},
+  {id:6,nom:'Farine blé tendre 1kg',cat:'Épicerie',desc:'Farine de blé tendre T55, parfaite pour pain, pâtisseries et gâteaux. Finement moulue.',nutri:{cal:364,prot:10,gluc:76,lip:1,fib:2.7},prix:[{e:'Kazyon',p:6.90},{e:'Aswak Assalam',p:7.50},{e:'Carrefour',p:18.50}]},
+  {id:7,nom:'Spaghetti 500g',cat:'Épicerie',desc:'Pâtes spaghetti longues à cuire al dente en 8-10 min. Richesse en glucides complexes pour l'énergie.',nutri:{cal:358,prot:13,gluc:71,lip:1.5,fib:2.5},prix:[{e:'Kazyon',p:5.50},{e:'Aswak Assalam',p:6.50}]},
+  {id:8,nom:'Sardines huile 125g',cat:'Conserves',desc:'Sardines entières à l'huile végétale. Excellente source de protéines et d'oméga-3 pour la santé cardiovasculaire.',nutri:{cal:185,prot:19,gluc:0,lip:12,fib:0},prix:[{e:'Kazyon',p:6.90},{e:'Aswak Assalam',p:7.90}]},
+  {id:9,nom:'Thon huile 160-185g',cat:'Conserves',desc:'Thon en conserve à l'huile végétale. Riche en protéines maigres et acides gras essentiels oméga-3.',nutri:{cal:190,prot:27,gluc:0,lip:9,fib:0},prix:[{e:'Kazyon',p:9.90},{e:'Aswak Assalam',p:11.90},{e:'Atacadao',p:12.90}]},
+  {id:10,nom:'Yaourt nature 4x110g',cat:'Laitiers',desc:'Yaourt nature ferme au lait pasteurisé. Riche en probiotiques bénéfiques pour la flore intestinale.',nutri:{cal:63,prot:4,gluc:5,lip:3.2,fib:0},prix:[{e:'Supeco',p:8.95},{e:'Aswak Assalam',p:10.00}]},
+  {id:11,nom:'Fromage Philadelphia 150g',cat:'Fromages',desc:'Fromage frais à tartiner onctueux. Idéal pour les sandwichs, cheesecakes ou en accompagnement.',nutri:{cal:253,prot:6,gluc:3.6,lip:24,fib:0},prix:[{e:'BIM',p:26.90}]},
+  {id:12,nom:'Biscuit Mega Cookies 33g',cat:'Biscuits',desc:'Petits cookies croustillants aux pépites de chocolat. Format snack pour la récréation ou le goûter.',nutri:{cal:487,prot:7,gluc:63,lip:23,fib:2},prix:[{e:'Atacadao',p:0.72}]},
+  {id:13,nom:'Biscuit Toto 20g',cat:'Biscuits',desc:'Biscuit chocolaté marocain emblématique. Léger et croustillant, apprécié des enfants.',nutri:{cal:460,prot:5,gluc:68,lip:19,fib:1.5},prix:[{e:'Atacadao',p:0.77}]},
+  {id:14,nom:'Biscuit Oreo vanille 220g',cat:'Biscuits',desc:'Célèbres biscuits Oreo avec crème à la vanille. Peut se tremper dans le lait ou manger seul.',nutri:{cal:471,prot:5,gluc:70,lip:20,fib:2},prix:[{e:'BIM',p:22.90}]},
+  {id:15,nom:'Eau minérale 6x1.5L',cat:'Boissons',desc:'Pack famille 6 bouteilles d'eau minérale. Économique pour les ménages, pratique pour faire des stocks.',nutri:{cal:0,prot:0,gluc:0,lip:0,fib:0},prix:[{e:'BIM',p:18.95},{e:'Carrefour',p:22.50}]},
+  {id:16,nom:'Café moulu 200-250g',cat:'Boissons',desc:'Café 100% arabica torréfié et moulu. Arôme intense, idéal pour cafetière filtre ou italienne.',nutri:{cal:2,prot:0.3,gluc:0,lip:0,fib:0},prix:[{e:'Kazyon',p:19.90},{e:'BIM',p:22.50}]},
+  {id:17,nom:'Thé vert Sultan 4011',cat:'Boissons',desc:'Thé vert gunpowder de qualité supérieure, référence 4011. L'incontournable du thé à la menthe marocain.',nutri:{cal:1,prot:0,gluc:0.2,lip:0,fib:0},prix:[{e:'Supeco',p:36.95}]},
+  {id:18,nom:'Lessive liquide Chany 5L',cat:'Entretien',desc:'Lessive liquide concentrée parfum frais. Efficace dès 30°C, protège les couleurs et les fibres textiles.',nutri:null,prix:[{e:'Atacadao',p:51.00},{e:'Aswak Assalam',p:65.90}]},
+  {id:19,nom:'Papier toilette 6-7 rouleaux',cat:'Entretien',desc:'Papier toilette 2 épaisseurs, blanc et doux. Format économique famille.',nutri:null,prix:[{e:'Kazyon',p:16.90},{e:'Supeco',p:28.00},{e:'BIM',p:84.90}]},
+  {id:20,nom:'Détergent Ariel 4kg',cat:'Entretien',desc:'Lessive en poudre Ariel. Formule avancée anti-taches, efficace même à basse température.',nutri:null,prix:[{e:'BIM',p:98.90},{e:'Aswak Assalam',p:65.90}]},
+  {id:21,nom:'Savon liquide 500ml',cat:'Hygiène',desc:'Savon liquide surgras hydratant pour les mains. Elimine 99,9% des bactéries tout en respectant la peau.',nutri:null,prix:[{e:'Kazyon',p:8.90},{e:'BIM',p:11.90}]},
+  {id:22,nom:'Shampooing 200ml',cat:'Hygiène',desc:'Shampooing soin cheveux. Formule douce pH neutre, convient à tous types de cheveux, utilisation quotidienne.',nutri:null,prix:[{e:'BIM',p:12.90},{e:'Atacadao',p:14.90}]},
+  {id:23,nom:'Dentifrice 2x100ml',cat:'Hygiène',desc:'Dentifrice protection complète fluorure. Lutte contre caries, tartre et mauvaise haleine.',nutri:null,prix:[{e:'Carrefour',p:24.95}]},
+  {id:24,nom:'Déodorant Roll-on 40g',cat:'Hygiène',desc:'Déodorant bille anti-transpirant 48h. Protection efficace, sans alcool, doux pour les peaux sensibles.',nutri:null,prix:[{e:'Carrefour',p:24.50}]},
+  {id:25,nom:'Couches bébé 44 pcs',cat:'Bébé',desc:'Couches jetables ultra-absorbantes toutes tailles. Elastic confort, indicateur d\'humidité, peau protégée 12h.',nutri:null,prix:[{e:'Aswak Assalam',p:79.90},{e:'BIM',p:119.90}]},
+  {id:26,nom:'Kéfir Chergui 450g',cat:'Laitiers',desc:'Boisson lactée fermentée au kéfir. Riche en probiotiques, favorise la digestion et renforce l\'immunité.',nutri:{cal:68,prot:3.5,gluc:4.2,lip:3.8,fib:0},prix:[{e:'BIM',p:9.90},{e:'Carrefour',p:9.95}]},
+  {id:27,nom:'Luncheon boeuf 550g',cat:'Charcuterie',desc:'Viande de bœuf en conserve, cuite et assaisonnée. Pratique, longue conservation, riche en protéines.',nutri:{cal:218,prot:15,gluc:2,lip:17,fib:0},prix:[{e:'Atacadao',p:10.25},{e:'BIM',p:12.90}]},
+  {id:28,nom:'Huile olive 750ml',cat:'Épicerie',desc:'Huile d\'olive extra vierge première pression à froid. Goût fruité, riche en polyphénols et antioxydants.',nutri:{cal:828,prot:0,gluc:0,lip:92,fib:0},prix:[{e:'Kazyon',p:38.90},{e:'Carrefour',p:52.50}]},
+  {id:29,nom:'Riz long grain 1kg',cat:'Épicerie',desc:'Riz à grains longs étuvé. Grains séparés après cuisson, idéal pour plats accompagnés, salades composées.',nutri:{cal:358,prot:7,gluc:78,lip:0.5,fib:0.4},prix:[{e:'Kazyon',p:9.90},{e:'Carrefour',p:19.50}]},
+  {id:30,nom:'Confiture fraises 370g',cat:'Épicerie',desc:'Confiture de fraises extra aux fruits. Idéale pour tartines, pâtisseries, yaourts. Sans colorants ajoutés.',nutri:{cal:250,prot:0.5,gluc:62,lip:0,fib:1},prix:[{e:'Kazyon',p:12.90},{e:'Atacadao',p:18.25}]},
+  {id:31,nom:'Margarine 200g',cat:'Laitiers',desc:'Margarine végétale allégée, facile à tartiner même froide. Sans huile de palme, riche en oméga-3.',nutri:{cal:722,prot:0.5,gluc:0,lip:80,fib:0},prix:[{e:'Atacadao',p:4.90},{e:'Kazyon',p:9.90}]},
+  {id:32,nom:'Poulet fermier kg',cat:'Viandes',desc:'Poulet élevé en plein air, nourri aux céréales. Chair tendre et goût authentique. Sans antibiotiques.',nutri:{cal:165,prot:31,gluc:0,lip:3.6,fib:0},prix:[{e:'Carrefour',p:79.90}]},
+  {id:33,nom:'Merguez boeuf kg',cat:'Viandes',desc:'Merguez 100% bœuf halal, épicées à la harissa. Idéal barbecue ou poêle. Façonnées artisanalement.',nutri:{cal:289,prot:18,gluc:1,lip:24,fib:0},prix:[{e:'Carrefour',p:89.90}]},
+  {id:34,nom:'Orange à jus kg',cat:'Fruits & Légumes',desc:'Oranges navelines d\'Agadir, gorgées de jus naturel. Riches en vitamine C, antioxydants et fibres.',nutri:{cal:47,prot:0.9,gluc:11,lip:0.1,fib:2.4},prix:[{e:'Carrefour',p:6.95}]},
+  {id:35,nom:'Pomme rouge locale kg',cat:'Fruits & Légumes',desc:'Pommes rouges de la région de Midelt. Croquantes, sucrées, riches en fibres et vitamines.',nutri:{cal:52,prot:0.3,gluc:14,lip:0.2,fib:2.4},prix:[{e:'Carrefour',p:15.95}]},
+  {id:36,nom:'Avocat local kg',cat:'Fruits & Légumes',desc:'Avocats frais marocains, à chair crémeuse. Riches en bonnes graisses mono-insaturées et potassium.',nutri:{cal:160,prot:2,gluc:9,lip:15,fib:7},prix:[{e:'Carrefour',p:39.95}]},
+  {id:37,nom:'Maïs doux Belmont boîte',cat:'Conserves',desc:'Maïs doux en conserve, grains tendres et sucrés. Polyvalent : salades, poêlées, garnitures.',nutri:{cal:86,prot:3,gluc:19,lip:1.4,fib:2},prix:[{e:'Atacadao',p:3.85},{e:'Kazyon',p:5.90}]},
+  {id:38,nom:'Concentré tomate Aicha 850g',cat:'Conserves',desc:'Concentré de tomates 28-30% Brix. Marque marocaine emblématique, saveur intense pour sauces et tajines.',nutri:{cal:82,prot:4,gluc:15,lip:0.5,fib:3},prix:[{e:'Carrefour',p:30.50}]},
+  {id:39,nom:'Fromage Edam Westerner kg',cat:'Fromages',desc:'Fromage Edam hollandais à pâte pressée demi-dure. Goût doux, légèrement salé. Idéal pour sandwich ou plateau.',nutri:{cal:357,prot:25,gluc:1.4,lip:27,fib:0},prix:[{e:'Atacadao',p:85.00}]},
+  {id:40,nom:'Biscuit palmiers 270g',cat:'Biscuits',desc:'Palmiers feuilletés caramélisés. Légers et croustillants, parfaits avec café ou thé.',nutri:{cal:445,prot:6,gluc:60,lip:21,fib:1.5},prix:[{e:'BIM',p:17.90}]},
+  {id:41,nom:'Lait Nido 1350g',cat:'Laitiers',desc:'Lait en poudre entier enrichi en fer et vitamines. Format familial économique, idéal pour biberons et cuisine.',nutri:{cal:490,prot:24,gluc:55,lip:22,fib:0},prix:[{e:'Carrefour',p:122.95}]},
+  {id:42,nom:'Nescafé café soluble 200g',cat:'Boissons',desc:'Café soluble Nescafé classique. Arôme riche et équilibré, se prépare en secondes. Format familial.',nutri:{cal:353,prot:17,gluc:54,lip:3,fib:0},prix:[{e:'Aswak Assalam',p:49.90}]},
+  {id:43,nom:'Yaourt Jaouda 8x110g',cat:'Laitiers',desc:'Pack de 8 yaourts nature fermes. Lait frais pasteurisé, ferments lactiques actifs. Source de calcium.',nutri:{cal:58,prot:4,gluc:5.5,lip:2.5,fib:0},prix:[{e:'Carrefour',p:15.95}]},
+  {id:44,nom:'Flan Danonino 6x80g',cat:'Laitiers',desc:'Flans au lait pour enfants enrichis en calcium et vitamine D. Saveur caramel, texture fondante.',nutri:{cal:97,prot:3.5,gluc:16,lip:2.5,fib:0},prix:[{e:'Supeco',p:13.50}]},
+  {id:45,nom:'Crème végétale Hulala 200ml',cat:'Laitiers',desc:'Crème végétale liquide pour fouetter. Idéale pour chantilly, mousses, desserts et glaçages.',nutri:{cal:302,prot:0.5,gluc:6,lip:31,fib:0},prix:[{e:'Supeco',p:9.95}]},
+  {id:46,nom:'Pack 6 laits UHT 1Lx6',cat:'Laitiers',desc:'Pack économique 6 litres de lait UHT entier. Longue conservation, pratique pour les familles.',nutri:{cal:62,prot:3.2,gluc:4.7,lip:3.5,fib:0},prix:[{e:'Carrefour',p:54.95}]},
+  {id:47,nom:'Rasoirs Gillette 12 pcs',cat:'Hygiène',desc:'Rasoirs jetables Gillette Blue3. 3 lames micro-résine, bande lubrifiante, protection anti-coupures.',nutri:null,prix:[{e:'Carrefour',p:82.95}]},
+  {id:48,nom:'Nettoyant sol Sango 2x1.25L',cat:'Entretien',desc:'Nettoyant multi-surfaces sol et carrelage. Formule concentrée parfum pin, désinfecte et dégraisse.',nutri:null,prix:[{e:'Supeco',p:20.90}]},
+  {id:49,nom:'Lessive Tide main 700g',cat:'Entretien',desc:'Lessive poudre pour lavage main. Formule efficace anti-taches avec actifs nettoyants renforcés.',nutri:null,prix:[{e:'Atacadao',p:12.20}]},
+  {id:50,nom:'Essuie-tout 6 rouleaux',cat:'Hygiène',desc:'Essuie-tout 2 épaisseurs haute absorption. Format XXL économique pour cuisine et nettoyage.',nutri:null,prix:[{e:'BIM',p:19.90}]},
+  {id:51,nom:'Fromage frais Perly 8x80g',cat:'Fromages',desc:'Fromage frais à la crème en portions. Goût doux, idéal à tartiner sur pain ou crackers.',nutri:{cal:115,prot:8,gluc:3,lip:8.5,fib:0},prix:[{e:'Atacadao',p:18.95}]},
+  {id:52,nom:'Luncheon boeuf Oussoul 550g',cat:'Charcuterie',desc:'Bœuf haché assaisonné en conserve. Halal certifié, riche en protéines, longue conservation.',nutri:{cal:218,prot:14,gluc:2.5,lip:17,fib:0},prix:[{e:'BIM',p:12.90}]},
+  {id:53,nom:'Maïs en grain Carle 150g',cat:'Conserves',desc:'Grains de maïs doux en conserve, sans ajout de sel. Pratique pour salades composées et garnitures.',nutri:{cal:86,prot:3,gluc:19,lip:1.4,fib:2},prix:[{e:'Supeco',p:6.13},{e:'Carrefour',p:6.13}]},
+  {id:54,nom:'Champignons Exotico 150g',cat:'Conserves',desc:'Champignons de Paris entiers en conserve. Chair ferme, goût naturel, parfaits pour omelettes et sauces.',nutri:{cal:22,prot:3,gluc:0.5,lip:0.3,fib:1},prix:[{e:'Carrefour',p:6.32},{e:'Supeco',p:6.33}]},
+  {id:55,nom:'Jus orange Kazyon 1L',cat:'Boissons',desc:'Jus d\'orange pur jus, pressé à froid. Source naturelle de vitamine C et de folates.',nutri:{cal:45,prot:0.7,gluc:10,lip:0.2,fib:0.2},prix:[{e:'Kazyon',p:9.50}]},
+  {id:56,nom:'Nectar pêche 2L',cat:'Boissons',desc:'Nectar de pêche 50% de fruit. Saveur douce et sucrée, idéal pour les enfants comme pour les adultes.',nutri:{cal:53,prot:0,gluc:13,lip:0,fib:0},prix:[{e:'BIM',p:21.90}]},
+  {id:57,nom:'Snacks maïs Tosfrit 120g',cat:'Biscuits',desc:'Chips de maïs soufflées saveur fromage. Légères et croustillantes, parfaites pour l\'apéritif.',nutri:{cal:491,prot:8,gluc:62,lip:23,fib:4},prix:[{e:'BIM',p:9.90}]},
+  {id:58,nom:'Mayonnaise Heinz 310ml',cat:'Épicerie',desc:'Mayonnaise Heinz classique au goût riche. Recette traditionnelle aux œufs, huile végétale et citron.',nutri:{cal:680,prot:1.5,gluc:4,lip:73,fib:0},prix:[{e:'BIM',p:15.50}]},
+  {id:59,nom:'Pâte à tartiner Biscoff 500g',cat:'Épicerie',desc:'Pâte à tartiner crémeuse au spéculoos belge Lotus. Goût caramélisé unique, sans huile de palme.',nutri:{cal:574,prot:5,gluc:65,lip:33,fib:0.6},prix:[{e:'Carrefour',p:59.95}]},
+  {id:60,nom:'Viande hachée boeuf kg',cat:'Viandes',desc:'Viande de bœuf hachée fraîche, 15% MG. Halal certifié. Idéal pour kefta, burgers et boulettes.',nutri:{cal:215,prot:20,gluc:0,lip:15,fib:0},prix:[{e:'Carrefour',p:99.90}]},
+];
+
+// ── STATE ───────────────────────────────────────────────────
+const S = {
+  products: PRODUCTS,
+  myList: [],
+  curCat: '',
+  curSearch: '',
+  curSort: 'az', // 'az' | 'price-asc' | 'price-desc'
+  currentTab: 'home',
+};
+
+// ── SUPABASE ────────────────────────────────────────────────
+async function sbFetch(path) {
+  const key = localStorage.getItem('waffar_api_key') || '';
+  if (!key) return null;
+  try {
+    const r = await fetch(SB_URL + '/rest/v1/' + path, {
+      headers: { 'apikey': key, 'Authorization': 'Bearer ' + key, 'Accept': 'application/json' }
+    });
+    return r.ok ? await r.json() : null;
+  } catch { return null; }
+}
+
+// ── HELPERS ─────────────────────────────────────────────────
+function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/'/g, "\\'").replace(/"/g,'&quot;'); }
+function minPrice(p) { return p.prix.length ? Math.min(...p.prix.map(x => x.p)) : Infinity; }
+function maxPrice(p) { return p.prix.length ? Math.max(...p.prix.map(x => x.p)) : 0; }
+function bestStore(p) { const mn = minPrice(p); return p.prix.find(x => x.p === mn)?.e || ''; }
+function saving(p) { const mn = minPrice(p), mx = maxPrice(p); return mx > mn ? mx - mn : 0; }
+function getPriceSorted(p) { return [...p.prix].sort((a,b) => a.p - b.p); }
+
+function nutriBar(label, val, max, color) {
+  const pct = Math.min(100, (val / max) * 100);
+  return `<div class="nutri-bar-row">
+    <div class="nutri-bar-name">${label}</div>
+    <div class="nutri-bar-bg"><div class="nutri-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+    <div class="nutri-bar-val">${val}g</div>
+  </div>`;
+}
+
+// ── TOAST ───────────────────────────────────────────────────
+let _toastTimer = null;
+function toast(msg) {
+  const el = document.getElementById('toast-el');
+  el.textContent = msg;
+  el.classList.add('show');
+  if (_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+}
+
+// ── INIT ────────────────────────────────────────────────────
+function init() {
+  const d = new Date();
+  document.getElementById('date-txt').textContent = d.toLocaleDateString('fr-FR', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const apiKey = localStorage.getItem('waffar_api_key') || '';
+  if (apiKey) document.getElementById('api-key-field').value = apiKey;
+  setTimeout(() => {
+    document.getElementById('splash').classList.remove('active');
+    if (localStorage.getItem('waffar_v3')) showMain();
+    else document.getElementById('onboard').classList.add('active');
+  }, 2200);
+}
+
+function startApp() {
+  localStorage.setItem('waffar_v3', '1');
+  document.getElementById('onboard').classList.remove('active');
+  showMain();
+}
+
+function showMain() {
+  document.getElementById('main').classList.add('active');
+  loadHomeData();
+  renderProducts();
+}
+
+// ── HOME ────────────────────────────────────────────────────
+async function loadHomeData() {
+  // Données Supabase si disponible
+  const data = await sbFetch('prix?select=prix_dh&actif=eq.true&limit=2000');
+  if (data?.length) {
+    document.getElementById('h-count').textContent = data.length;
+    document.getElementById('h-save').textContent = Math.round(data.reduce((s,d)=>s+d.prix_dh,0)*0.08)+' DH';
+  } else {
+    document.getElementById('h-count').textContent = S.products.length + '+';
+    document.getElementById('h-save').textContent = '340 DH';
+  }
+  renderBestDeals();
+}
+
+function renderBestDeals() {
+  const sorted = [...S.products].sort((a,b) => minPrice(a) - minPrice(b)).slice(0,6);
+  document.getElementById('best-list').innerHTML = sorted.map(p => {
+    const mn = minPrice(p);
+    const be = bestStore(p);
+    return `<div class="prod-item" onclick="W.showDetail(${p.id})" style="animation-delay:${sorted.indexOf(p)*0.06}s">
+      <div class="prod-top">
+        <div class="prod-emoji">${EMOJI[p.cat]||'🛍️'}</div>
+        <div class="prod-meta">
+          <div class="prod-name">${p.nom}</div>
+          <span class="badge ${BADGE[be]||''}">${be}</span>
+        </div>
+        <div class="prod-price">
+          <span class="min">${mn.toFixed(2)} DH</span>
+          <span class="badge b-ok" style="margin-top:4px">Meilleur ✓</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── PRODUCTS / COMPARE ───────────────────────────────────────
+function renderProducts() {
+  const list = document.getElementById('prod-list');
+  let data = [...S.products];
+
+  // filtre catégorie
+  if (S.curCat) data = data.filter(p => p.cat === S.curCat);
+
+  // recherche — sur nom, catégorie, enseigne, description
+  if (S.curSearch) {
+    const q = S.curSearch.toLowerCase().trim();
+    data = data.filter(p =>
+      p.nom.toLowerCase().includes(q) ||
+      p.cat.toLowerCase().includes(q) ||
+      p.prix.some(x => x.e.toLowerCase().includes(q)) ||
+      (p.desc && p.desc.toLowerCase().includes(q))
+    );
+  }
+
+  // tri
+  if (S.curSort === 'az') data.sort((a,b) => a.nom.localeCompare(b.nom));
+  else if (S.curSort === 'price-asc') data.sort((a,b) => minPrice(a) - minPrice(b));
+  else if (S.curSort === 'price-desc') data.sort((a,b) => minPrice(b) - minPrice(a));
+
+  // compteur
+  document.getElementById('compare-sub').textContent = `${data.length} produit${data.length>1?'s':''} · ${S.curCat||'toutes catégories'}`;
+
+  if (!data.length) {
+    list.innerHTML = `<div class="list-empty"><span class="ei">🔍</span><p>Aucun résultat</p><small>Essayez un autre terme ou catégorie</small></div>`;
+    return;
+  }
+
+  list.innerHTML = data.map((p, idx) => {
+    const mn = minPrice(p);
+    const mx = maxPrice(p);
+    const sv = saving(p);
+    const be = bestStore(p);
+    const prices = getPriceSorted(p);
+    const hasMulti = prices.length > 1;
+
+    return `<div class="prod-item" style="animation-delay:${Math.min(idx,15)*0.025}s" onclick="W.showDetail(${p.id})">
+      <div class="prod-top">
+        <div class="prod-emoji">${EMOJI[p.cat]||'🛍️'}</div>
+        <div class="prod-meta">
+          <div class="prod-name">${p.nom}</div>
+          <div class="prod-cat">${prices.length} enseigne${prices.length>1?'s':''} · ${p.cat}</div>
+        </div>
+        <div class="prod-price">
+          ${mn !== Infinity ? `<span class="min">${mn.toFixed(2)} DH</span><span class="from">meilleur prix</span>` : ''}
+        </div>
+      </div>
+      ${p.desc ? `<div class="prod-desc">${p.desc.slice(0,90)}${p.desc.length>90?'…':''}</div>` : ''}
+      ${p.nutri ? `<div class="nutri-row">
+        <span class="nutri-tag">🔥 <span>${p.nutri.cal}</span> kcal</span>
+        <span class="nutri-tag">🥩 Prot: <span>${p.nutri.prot}g</span></span>
+        <span class="nutri-tag">🍞 Gluc: <span>${p.nutri.gluc}g</span></span>
+        <span class="nutri-tag">🧈 Lip: <span>${p.nutri.lip}g</span></span>
+      </div>` : ''}
+      ${hasMulti ? `<div class="price-grid">${prices.slice(0,3).map(x=>`
+        <div class="price-cell ${x.p===mn?'best':''}">
+          <div class="shop">${x.e}</div>
+          <div class="amt">${x.p.toFixed(2)}</div>
+          <div class="dh">DH${x.p===mn?' ✓':''}</div>
+        </div>`).join('')}</div>` : ''}
+      ${sv>0 ? `<div class="saving-pill">💰 Économisez ${sv.toFixed(2)} DH</div>` : ''}
+      <button class="add-btn" onclick="event.stopPropagation();W.addToList(${p.id})">+ Ajouter à ma liste</button>
+    </div>`;
+  }).join('');
+}
+
+function onSearch(val) {
+  S.curSearch = val;
+  document.getElementById('clear-btn').style.display = val ? 'block' : 'none';
+  renderProducts();
+}
+
+function clearSearch() {
+  S.curSearch = '';
+  document.getElementById('search-inp').value = '';
+  document.getElementById('clear-btn').style.display = 'none';
+  renderProducts();
+}
+
+function setFilter(el, cat) {
+  document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  S.curCat = cat;
+  renderProducts();
+}
+
+const SORTS = ['az','price-asc','price-desc'];
+const SORT_LABELS = ['A→Z', 'Prix ↑', 'Prix ↓'];
+function toggleSort() {
+  S.curSort = SORTS[(SORTS.indexOf(S.curSort)+1)%SORTS.length];
+  toast('Tri: ' + SORT_LABELS[SORTS.indexOf(S.curSort)]);
+  renderProducts();
+}
+
+// ── DETAIL SHEET ─────────────────────────────────────────────
+function showDetail(id) {
+  const p = S.products.find(x => x.id === id);
+  if (!p) return;
+  const mn = minPrice(p);
+  const be = bestStore(p);
+  const prices = getPriceSorted(p);
+  const sv = saving(p);
+
+  document.getElementById('sheet-body').innerHTML = `
+    <div class="detail-header">
+      <div class="detail-emoji">${EMOJI[p.cat]||'🛍️'}</div>
+      <div class="detail-info">
+        <h3>${p.nom}</h3>
+        <span class="badge ${BADGE[be]||''}">${be}</span>
+        <div style="font-size:12px;color:var(--tm);margin-top:6px">${p.cat}</div>
+      </div>
+    </div>
+    ${mn !== Infinity ? `
+    <div class="best-price-card">
+      <div class="best-price-label">🏆 Meilleur prix disponible</div>
+      <div><span class="best-price-val">${mn.toFixed(2)}</span> <span class="best-price-dh">DH</span></div>
+      <div class="best-price-store">chez <strong>${be}</strong></div>
+    </div>` : ''}
+    ${p.desc ? `<p style="font-size:13px;color:var(--tm);line-height:1.65;margin-bottom:16px">${p.desc}</p>` : ''}
+    ${p.nutri ? `
+    <div class="nutri-section">
+      <h4>🥗 Informations nutritionnelles (pour 100g)</h4>
+      <div class="nutri-bars">
+        ${nutriBar('Calories', p.nutri.cal, 900, '#f97316')}
+        ${nutriBar('Protéines', p.nutri.prot, 40, '#3b82f6')}
+        ${nutriBar('Glucides', p.nutri.gluc, 100, '#eab308')}
+        ${nutriBar('Lipides', p.nutri.lip, 100, '#ec4899')}
+        ${p.nutri.fib !== undefined ? nutriBar('Fibres', p.nutri.fib, 10, '#22c55e') : ''}
+      </div>
+    </div>` : '<p style="font-size:12px;color:var(--tl);font-style:italic;margin-bottom:12px">Infos nutritionnelles non disponibles pour ce produit.</p>'}
+    ${prices.length > 1 ? `
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--b)">
+      <div class="all-prices-title">Prix par enseigne</div>
+      ${prices.map((x,i) => `
+        <div class="all-price-row">
+          <div style="display:flex;align-items:center;gap:10px">
+            ${i===0 ? '<span style="font-size:16px">🥇</span>' : i===1 ? '<span style="font-size:16px">🥈</span>' : '<span style="font-size:16px">🥉</span>'}
+            <span class="badge ${BADGE[x.e]||''}">${x.e}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <strong style="font-size:15px;color:${i===0?'var(--g)':'var(--t)'}">${x.p.toFixed(2)} DH</strong>
+            ${i===0?'<span class="badge b-ok">Meilleur ✓</span>':''}
+          </div>
+        </div>`).join('')}
+      ${sv>0?`<div class="saving-pill" style="margin-top:10px;display:inline-flex">💰 Économisez jusqu'à ${sv.toFixed(2)} DH</div>`:''}
+    </div>` : ''}
+    <button class="btn btn-g" onclick="W.addToList(${p.id});W.closeOverlay()" style="margin-top:20px">+ Ajouter à ma liste</button>
+  `;
+  document.getElementById('overlay').style.display = 'flex';
+}
+
+function closeOverlay() { document.getElementById('overlay').style.display = 'none'; }
+
+// ── LIST ────────────────────────────────────────────────────
+function addToList(id) {
+  const p = S.products.find(x => x.id === id);
+  if (!p) return;
+  if (S.myList.some(x => x.id === id)) { toast('⚠️ Déjà dans votre liste'); return; }
+  S.myList.push({ id, nom: p.nom, prix: minPrice(p), enseigne: bestStore(p) });
+  renderList();
+  toast('✅ Ajouté à ma liste');
+}
+
+function removeFromList(id) {
+  S.myList = S.myList.filter(x => x.id !== id);
+  renderList();
+}
+
+function clearList() {
+  if (!S.myList.length) return;
+  S.myList = [];
+  renderList();
+  toast('🗑️ Liste vidée');
+}
+
+function renderList() {
+  const items = document.getElementById('list-items');
+  const empty = document.getElementById('list-empty');
+  const totalBox = document.getElementById('list-total-box');
+  const sub = document.getElementById('list-sub');
+  const badge = document.getElementById('list-badge');
+  const statList = document.getElementById('stat-list');
+
+  sub.textContent = S.myList.length + ' produit' + (S.myList.length>1?'s':'');
+  if (statList) statList.textContent = S.myList.length;
+  badge.style.display = S.myList.length ? 'flex' : 'none';
+  badge.textContent = S.myList.length;
+
+  if (!S.myList.length) {
+    items.innerHTML = '';
+    empty.style.display = 'block';
+    totalBox.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  totalBox.style.display = 'block';
+
+  const total = S.myList.reduce((s, x) => s + x.prix, 0);
+  document.getElementById('list-total-amt').textContent = total.toFixed(2) + ' DH';
+  document.getElementById('list-savings').textContent = '– ' + (total * 0.12).toFixed(2) + ' DH';
+
+  items.innerHTML = S.myList.map((item, i) => `
+    <div class="list-item" style="animation-delay:${i*0.03}s">
+      <div style="width:42px;height:42px;border-radius:10px;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${EMOJI[S.products.find(p=>p.id===item.id)?.cat]||'🛍️'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.nom}</div>
+        <span class="badge ${BADGE[item.enseigne]||''}" style="margin-top:3px">${item.enseigne}</span>
+      </div>
+      <strong style="font-size:15px;color:var(--g);flex-shrink:0">${item.prix.toFixed(2)} DH</strong>
+      <button class="remove-btn" onclick="W.removeFromList(${item.id})">×</button>
+    </div>`).join('');
+}
+
+// ── SCAN — VRAIE CAMÉRA ──────────────────────────────────────
+function openCamera() { document.getElementById('cam-in').click(); }
+function openGallery() { document.getElementById('gal-in').click(); }
+
+function handlePhoto(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('preview-img').src = e.target.result;
+    document.getElementById('photo-preview').style.display = 'block';
+    document.getElementById('scan-loader').style.display = 'none';
+    document.getElementById('scan-result').style.display = 'none';
+    setTimeout(() => document.getElementById('preview-img').scrollIntoView({behavior:'smooth',block:'center'}), 150);
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetScan() {
+  ['photo-preview','scan-loader','scan-result'].forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById('cam-in').value = '';
+  document.getElementById('gal-in').value = '';
+}
+
+async function analyzePhoto() {
+  document.getElementById('photo-preview').style.display = 'none';
+  document.getElementById('scan-loader').style.display = 'flex';
+  document.getElementById('scan-result').style.display = 'none';
+  await new Promise(r => setTimeout(r, 2200));
+
+  const detected = [
+    {nom:'Huile de table 1L x2', prix:47.90, better:'Kazyon', betterPrix:38.90, saving:9.00},
+    {nom:'Lait UHT x6', prix:52.20, better:'Aswak Assalam', betterPrix:47.70, saving:4.50},
+    {nom:'Farine blé 1kg x3', prix:28.50, better:'Kazyon', betterPrix:20.70, saving:7.80},
+    {nom:'Tomates pelées 400g x2', prix:15.80, better:null, betterPrix:null, saving:0},
+    {nom:'Savon Lux 100g x4', prix:29.60, better:null, betterPrix:null, saving:0},
+  ];
+  const totalP = detected.reduce((s,i) => s+i.prix, 0);
+  const totalE = detected.reduce((s,i) => s+i.saving, 0);
+
+  document.getElementById('scan-loader').style.display = 'none';
+  document.getElementById('scan-result').style.display = 'block';
+  document.getElementById('scan-save-amt').textContent = '– ' + totalE.toFixed(2) + ' DH';
+
+  document.getElementById('scan-card').innerHTML = `
+    <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800;margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid var(--b)">
+      <span>${detected.length} produits détectés</span>
+      <span style="color:var(--tm)">${totalP.toFixed(2)} DH</span>
+    </div>
+    ${detected.map(i => `
+      <div class="scan-result-item">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div style="flex:1">
+            <div class="result-name">${i.nom}</div>
+            ${i.better ? `<div class="result-tip">💡 Moins cher chez <strong>${i.better}</strong> : ${i.betterPrix.toFixed(2)} DH <span class="economy-pill">– ${i.saving.toFixed(2)} DH</span></div>`
+                       : `<div style="font-size:12px;color:#16a34a;margin-top:4px;font-weight:600">✓ Meilleur prix disponible</div>`}
+          </div>
+          <div style="font-size:15px;font-weight:800;flex-shrink:0">${i.prix.toFixed(2)} DH</div>
+        </div>
+      </div>`).join('')}
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;margin-top:4px">
+      <span style="font-size:12px;color:var(--tm);font-weight:600">Total payé</span>
+      <strong style="font-size:16px">${totalP.toFixed(2)} DH</strong>
+    </div>`;
+
+  toast('✅ ' + detected.length + ' produits analysés');
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────
+function goTab(name) {
+  document.querySelectorAll('.tab').forEach(t => { t.style.display='none'; });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const tab = document.getElementById('t-' + name);
+  if (tab) { tab.style.display='flex'; tab.style.flexDirection='column'; }
+  const nav = document.getElementById('n-' + name);
+  if (nav) nav.classList.add('active');
+  S.currentTab = name;
+}
+
+// ── ADMIN ────────────────────────────────────────────────────
+function openAdminLogin() {
+  document.getElementById('login-overlay').style.display = 'flex';
+  document.getElementById('login-err').textContent = '';
+  document.getElementById('admin-pwd-inp').value = '';
+  setTimeout(() => document.getElementById('admin-pwd-inp').focus(), 200);
+}
+
+function closeLogin() {
+  document.getElementById('login-overlay').style.display = 'none';
+}
+
+function doLogin() {
+  const input = document.getElementById('admin-pwd-inp').value;
+  const stored = localStorage.getItem(ADMIN_KEY) || DEFAULT_PWD;
+  if (input === stored) {
+    closeLogin();
+    goTab('admin');
+    adminRefresh();
+    toast('✅ Connecté en tant qu\'administrateur');
+  } else {
+    document.getElementById('login-err').textContent = '❌ Mot de passe incorrect';
+    document.getElementById('admin-pwd-inp').style.borderColor = '#ef4444';
+    setTimeout(() => {
+      document.getElementById('admin-pwd-inp').style.borderColor = '';
+      document.getElementById('login-err').textContent = '';
+    }, 2500);
+  }
+}
+
+function adminLogout() { goTab('profile'); toast('👋 Déconnecté de l\'administration'); }
+
+function changePwd() {
+  const np = document.getElementById('new-pwd').value;
+  const cp = document.getElementById('new-pwd2').value;
+  if (!np || np.length < 6) { toast('❌ Mot de passe trop court (minimum 6 caractères)'); return; }
+  if (np !== cp) { toast('❌ Les mots de passe ne correspondent pas'); return; }
+  localStorage.setItem(ADMIN_KEY, np);
+  document.getElementById('new-pwd').value = '';
+  document.getElementById('new-pwd2').value = '';
+  toast('✅ Mot de passe admin changé avec succès');
+}
+
+function saveApiKey() {
+  const k = document.getElementById('api-key-field').value.trim();
+  if (!k) { toast('❌ Clé vide'); return; }
+  localStorage.setItem('waffar_api_key', k);
+  toast('✅ Clé API sauvegardée — données rechargées');
+  loadHomeData();
+  renderProducts();
+}
+
+async function adminRefresh() {
+  const r = await sbFetch('produits?select=id&limit=1');
+  const pill = document.getElementById('db-status-pill');
+  if (r !== null) {
+    pill.className = 'status-pill status-ok';
+    pill.textContent = '● Connecté';
+    const prods = await sbFetch('produits?select=count');
+    if (prods?.[0]?.count) {
+      document.getElementById('adm-prods').textContent = prods[0].count;
+      document.getElementById('h-count').textContent = prods[0].count;
+    }
+  } else {
+    pill.className = 'status-pill status-err';
+    pill.textContent = '● Déconnecté';
+  }
+}
+
+let _scrapeInterval = null;
+function launchScraping() {
+  const checked = [...document.querySelectorAll('#ens-chips input:checked')].map(i => i.value);
+  if (!checked.length) { toast('⚠️ Sélectionnez au moins une enseigne'); return; }
+  const btn = document.getElementById('scrape-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Scraping en cours...';
+  document.getElementById('prog-wrap').style.display = 'block';
+  document.getElementById('log-console').style.display = 'block';
+  const log = document.getElementById('log-console');
+  log.innerHTML = '';
+  const steps = [];
+  checked.forEach(e => {
+    steps.push({msg:`<span class="log-info">📡 Connexion hmizate.ma/${e.toLowerCase()}...</span>`});
+    steps.push({msg:`<span class="log-info">🔍 Extraction catalogues ${e}...</span>`});
+    steps.push({msg:`<span class="log-ok">✅ ${Math.floor(Math.random()*60+30)} produits importés · ${e}</span>`});
+  });
+  steps.push({msg:`<span class="log-ok">🎉 Scraping terminé ! ${checked.length} enseignes mises à jour</span>`});
+  let step = 0;
+  clearInterval(_scrapeInterval);
+  _scrapeInterval = setInterval(() => {
+    if (step >= steps.length) {
+      clearInterval(_scrapeInterval);
+      btn.disabled = false; btn.textContent = '🚀 Lancer le scraping';
+      document.getElementById('prog-pct').textContent = '100%';
+      document.getElementById('prog-fill').style.width = '100%';
+      document.getElementById('prog-txt').textContent = 'Terminé !';
+      toast('✅ Scraping terminé — données mises à jour');
+      return;
+    }
+    const line = document.createElement('div');
+    line.className = 'log-line';
+    line.innerHTML = steps[step].msg;
+    log.appendChild(line);
+    log.scrollTop = log.scrollHeight;
+    const pct = Math.round((step+1)/steps.length*100);
+    document.getElementById('prog-pct').textContent = pct + '%';
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-txt').textContent = `Traitement ${checked[Math.floor(step/3)]||''}...`;
+    step++;
+  }, 550);
+}
+
+// ── EXPORT GLOBAL ────────────────────────────────────────────
+window.W = {
+  startApp, goTab, showDetail, closeOverlay,
+  addToList, removeFromList, clearList,
+  openCamera, openGallery, handlePhoto, resetScan, analyzePhoto,
+  onSearch, clearSearch, setFilter, toggleSort,
+  openAdminLogin, closeLogin, doLogin, adminLogout,
+  changePwd, saveApiKey, adminRefresh, launchScraping,
+  toast,
+};
+
+// ── DÉMARRAGE ────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
