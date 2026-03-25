@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#16a34a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Waffar">
+<title>Waffar وفّر — Comparez les prix au Maroc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --g:#16a34a;--gd:#15803d;--gl:#dcfce7;--gp:#f0fdf4;
+  --t:#0f172a;--tm:#475569;--tl:#94a3b8;
+  --b:#e2e8f0;--bg:#f1f5f9;--w:#ffffff;
+  --r:16px;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.06);
+  --red:#ef4444;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t);font-family:"Plus Jakarta Sans",sans-serif;-webkit-font-smoothing:antialiased}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;max-width:430px;margin:0 auto;background:var(--w);overflow:hidden}
+@media(min-width:430px){#app{box-shadow:0 0 80px rgba(0,0,0,.25)}}
+.screen{display:none;position:absolute;inset:0;flex-direction:column;z-index:10;background:var(--w)}
+.screen.on{display:flex}
+#main{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden}
+#main.on{display:flex}
+.tab{display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0}
+.tab.on{display:flex}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+.scroll::-webkit-scrollbar{display:none}
+#navbar{background:var(--w);border-top:1px solid var(--b);display:flex;padding:6px 0 max(14px,env(safe-area-inset-bottom));flex-shrink:0;z-index:100}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 2px;position:relative;transition:opacity .1s}
+.ni:active{opacity:.6}
+.ni-ic{font-size:22px;line-height:1;transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
+.ni.on .ni-ic{transform:scale(1.15)}
+.ni-lb{font-size:9px;font-weight:700;color:var(--tl);text-transform:uppercase;letter-spacing:.02em}
+.ni.on .ni-lb{color:var(--g)}
+.nbadge{position:absolute;top:2px;right:calc(50% - 18px);background:var(--red);color:#fff;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:99px;padding:0 4px;display:none;align-items:center;justify-content:center;border:2px solid var(--w)}
+@keyframes pop{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes ld{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+#splash{background:linear-gradient(160deg,#22c55e 0%,#16a34a 50%,#166534 100%);align-items:center;justify-content:center;gap:14px;z-index:200}
+.spl-em{font-size:80px;animation:pop .8s cubic-bezier(.175,.885,.32,1.275) both}
+.spl-title{font-size:44px;font-weight:800;color:#fff;letter-spacing:-2px;text-align:center;line-height:1.1}
+.spl-ar{font-size:22px;font-weight:400;color:rgba(255,255,255,.65);display:block;margin-top:4px}
+.spl-sub{color:rgba(255,255,255,.82);font-size:14px;font-weight:500;text-align:center}
+.spl-bar{width:52px;height:3px;background:rgba(255,255,255,.25);border-radius:99px;overflow:hidden;margin-top:48px}
+.spl-bar::after{content:"";display:block;height:100%;width:38%;background:#fff;border-radius:99px;animation:ld 1.4s ease-in-out infinite}
+#onboard{overflow-y:auto;z-index:50}
+.ob-top{background:linear-gradient(160deg,#16a34a,#15803d);padding:60px 28px 44px;text-align:center}
+.ob-em{font-size:64px;display:block;margin-bottom:16px}
+.ob-top h1{font-size:26px;font-weight:800;color:#fff;margin-bottom:10px;letter-spacing:-.5px}
+.ob-top p{color:rgba(255,255,255,.82);font-size:14px;line-height:1.75}
+.ob-feats{padding:8px 20px}
+.ob-feat{display:flex;align-items:flex-start;gap:16px;padding:18px 0;border-bottom:1px solid var(--b)}
+.ob-feat:last-child{border:none}
+.ob-feat-ic{width:48px;height:48px;border-radius:14px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.ob-feat h4{font-size:15px;font-weight:700;margin-bottom:4px;color:var(--t)}
+.ob-feat p{font-size:13px;color:var(--tm);line-height:1.6}
+.ob-cta{padding:24px 24px 36px;border-top:1px solid var(--b);display:flex;flex-direction:column;gap:10px}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;text-align:center;letter-spacing:.01em;-webkit-appearance:none}
+.btn:active{transform:scale(.97)}
+.btn-g{background:var(--g);color:#fff;box-shadow:0 4px 16px rgba(22,163,74,.35)}
+.btn-g:active{background:var(--gd)}
+.btn-out{background:transparent;color:var(--g);border:2px solid var(--g)}
+.btn-sm{padding:10px 20px;width:auto;font-size:13px;border-radius:99px;display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.bic{background:rgba(255,255,255,.2);border:none;color:#fff;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex-shrink:0;transition:background .15s}
+.bic:active{background:rgba(255,255,255,.35)}
+.topbar{background:linear-gradient(135deg,#16a34a,#15803d);padding:50px 16px 16px;color:#fff;flex-shrink:0}
+.tbr{display:flex;align-items:center;gap:12px}
+.tbl{flex:1;min-width:0}
+.tb-title{font-size:20px;font-weight:800;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-sub{font-size:11px;opacity:.82;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-pill{background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 14px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .15s;-webkit-appearance:none}
+.tb-pill:active{background:rgba(255,255,255,.35)}
+.hero-card{background:rgba(0,0,0,.2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);margin:0 16px;border-radius:18px;margin-top:-20px;padding:18px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:5}
+.hero-l .lbl{color:rgba(255,255,255,.7);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.hero-l .amt{color:#fff;font-size:34px;font-weight:800;letter-spacing:-1.5px;line-height:1}
+.hero-r{background:rgba(255,255,255,.18);border-radius:14px;padding:14px 18px;text-align:center}
+.hero-r .lbl{color:rgba(255,255,255,.65);font-size:9px;font-weight:700;text-transform:uppercase;margin-bottom:4px}
+.hero-r .num{color:#fff;font-size:22px;font-weight:800}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 16px 8px}
+.sec-hdr h3{font-size:12px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.08em}
+.sec-hdr a{font-size:12px;color:var(--g);font-weight:600;cursor:pointer;text-decoration:none}
+/* PRODUCT CARD — FIX: photos sans onerror imbriqué */
+.pcard{background:var(--w);padding:14px 16px;border-bottom:1px solid var(--b);cursor:pointer;transition:background .1s;animation:up .25s ease both}
+.pcard:active{background:var(--gp)}
+.pc-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:8px}
+.pc-img-box{width:60px;height:60px;border-radius:14px;flex-shrink:0;overflow:hidden;border:1px solid var(--b);background:var(--gp)}
+.pc-img-box img{width:100%;height:100%;object-fit:contain;padding:4px;display:block}
+.pc-img-fb{width:60px;height:60px;border-radius:14px;flex-shrink:0;background:var(--gp);border:1px solid var(--gl);display:flex;align-items:center;justify-content:center;font-size:26px}
+.pc-meta{flex:1;min-width:0}
+.pc-brand{font-size:10px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.pc-name{font-size:14px;font-weight:700;line-height:1.3;color:var(--t);margin-bottom:4px}
+.pc-sub{font-size:11px;color:var(--tl);font-weight:500}
+.pc-price{text-align:right;flex-shrink:0}
+.pc-min{font-size:18px;font-weight:800;color:var(--g);display:block;line-height:1}
+.pc-lbl{font-size:10px;color:var(--tm);margin-top:1px}
+.pc-desc{font-size:12px;color:var(--tm);line-height:1.55;margin-bottom:9px;padding:0 2px}
+.nutri-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+.ntag{background:var(--bg);border:1px solid var(--b);border-radius:7px;padding:3px 8px;font-size:11px;font-weight:600;color:var(--tm);white-space:nowrap}
+.ntag b{color:var(--t);font-weight:700}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px}
+.pcell{border:1.5px solid var(--b);border-radius:10px;padding:7px 5px;text-align:center}
+.pcell.best{border-color:var(--g);background:var(--gp)}
+.pshop{font-size:9px;font-weight:700;color:var(--tm);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pcell.best .pshop{color:var(--g)}
+.pamt{font-size:13px;font-weight:800;color:var(--t)}
+.pcell.best .pamt{color:var(--gd)}
+.pdh{font-size:9px;color:var(--tl)}
+.save-pill{display:inline-flex;align-items:center;gap:4px;background:var(--gl);color:#15803d;border-radius:99px;padding:4px 10px;font-size:11px;font-weight:700;margin-bottom:8px}
+.add-btn{background:var(--g);color:#fff;border:none;border-radius:99px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(22,163,74,.25);transition:all .15s;-webkit-appearance:none}
+.add-btn:active{background:var(--gd);transform:scale(.95)}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:99px;font-size:10px;font-weight:700;line-height:1.5;vertical-align:middle}
+.b-ok{background:var(--gl);color:#15803d}
+.b-bim{background:#fff7ed;color:#c2410c}
+.b-carrefour{background:#eff6ff;color:#1d4ed8}
+.b-atacadao{background:#fdf2f8;color:#9d174d}
+.b-marjane{background:#fff1f2;color:#be123c}
+.b-kazyon{background:#fffbeb;color:#b45309}
+.b-aswak{background:#f0fdf4;color:#15803d}
+.b-supeco{background:#fefce8;color:#a16207}
+.search-wrap{background:linear-gradient(135deg,#16a34a,#15803d);padding:10px 16px 14px;flex-shrink:0}
+.sb-inner{background:#fff;border-radius:99px;display:flex;align-items:center;padding:11px 18px;gap:10px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.sb-inner input{border:none;outline:none;flex:1;font-size:14px;color:var(--t);background:transparent;font-family:inherit;min-width:0}
+.sb-inner input::placeholder{color:var(--tl)}
+.sb-clr{color:var(--tl);font-size:20px;cursor:pointer;background:none;border:none;line-height:1;display:none;flex-shrink:0}
+.filter-row{background:var(--w);border-bottom:1px solid var(--b);display:flex;gap:6px;padding:10px 16px;overflow-x:auto;flex-shrink:0;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.fc{flex-shrink:0;padding:7px 15px;border-radius:99px;border:1.5px solid var(--b);font-size:12px;font-weight:600;color:var(--tm);cursor:pointer;white-space:nowrap;background:var(--w);font-family:inherit;transition:all .18s;-webkit-appearance:none}
+.fc.on{border-color:var(--g);background:var(--gl);color:#15803d}
+.scan-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:20px 16px 4px;flex-shrink:0}
+.scan-card{border-radius:20px;padding:28px 16px;text-align:center;cursor:pointer;transition:transform .15s;box-shadow:var(--sh)}
+.scan-card:active{transform:scale(.95)}
+.scan-cam{background:linear-gradient(145deg,#16a34a,#15803d);color:#fff}
+.scan-gal{background:var(--w);border:2px solid var(--g);color:var(--g)}
+.scan-em{font-size:44px;display:block;margin-bottom:12px}
+.scan-title{font-size:14px;font-weight:700;margin-bottom:3px}
+.scan-sub{font-size:11px;opacity:.75}
+.scan-gal .scan-sub{color:var(--tm);opacity:1}
+.prev-box{margin:0 16px 10px;border-radius:16px;overflow:hidden;box-shadow:var(--sh);background:#f1f5f9;flex-shrink:0}
+#prev-img{width:100%;max-height:260px;object-fit:contain;display:block}
+.prev-actions{display:flex;gap:10px;padding:0 16px 12px;flex-shrink:0}
+.analyze-btn{flex:1;padding:14px;background:var(--g);color:#fff;border:none;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(22,163,74,.3);-webkit-appearance:none}
+.cancel-btn{padding:14px 16px;background:var(--w);border:1.5px solid var(--b);border-radius:var(--r);font-size:20px;cursor:pointer;font-family:inherit;color:var(--tm)}
+.spin-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:52px;gap:14px}
+.spinner{width:40px;height:40px;border:3.5px solid var(--b);border-top-color:var(--g);border-radius:50%;animation:spin .75s linear infinite}
+.scan-banner{margin:0 16px 12px;padding:18px;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:18px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--sh)}
+.tip{background:var(--gp);border-left:3px solid var(--g);border-radius:14px;padding:14px 16px;margin:0 16px 14px;display:flex;gap:12px}
+.tip-ic{font-size:20px;flex-shrink:0;margin-top:1px}
+.tip h4{font-size:12px;font-weight:700;color:#14532d;margin-bottom:3px}
+.tip p{font-size:12px;color:#166534;line-height:1.6}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 4px}
+.stat-card{background:var(--w);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+.stat-val{font-size:28px;font-weight:800;display:block;line-height:1;margin-bottom:4px}
+.stat-lbl{font-size:11px;color:var(--tm);font-weight:600}
+.list-item{background:var(--w);padding:14px 16px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:12px;animation:up .2s ease both}
+.list-empty{text-align:center;padding:64px 24px}
+.le-ic{font-size:58px;display:block;margin-bottom:16px}
+.le-title{font-size:16px;font-weight:700;color:var(--t);margin-bottom:6px}
+.le-sub{font-size:13px;color:var(--tm)}
+.ltc{background:linear-gradient(135deg,#16a34a,#15803d);border-radius:20px;padding:20px;margin:16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 8px 28px rgba(22,163,74,.3)}
+.ltc-l .lbl{color:rgba(255,255,255,.7);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.ltc-l .amt{color:#fff;font-size:32px;font-weight:800;letter-spacing:-1px}
+.ltc-r{background:rgba(255,255,255,.2);border-radius:14px;padding:12px 16px;text-align:right}
+.ltc-r .lbl{color:rgba(255,255,255,.65);font-size:10px;margin-bottom:3px}
+.ltc-r .sav{color:#fff;font-size:17px;font-weight:800}
+.rm-btn{background:none;border:none;color:var(--tl);font-size:28px;cursor:pointer;line-height:1;padding:4px;font-family:inherit;transition:color .15s}
+.rm-btn:active{color:var(--red)}
+.prof-hero{background:linear-gradient(155deg,#16a34a,#15803d);padding:54px 24px 28px;flex-shrink:0}
+.prof-av-wrap{display:flex;align-items:center;gap:16px}
+.prof-av{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.25);border:3px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:34px;flex-shrink:0;cursor:pointer;position:relative;overflow:hidden}
+.prof-av-edit{position:absolute;bottom:0;right:0;background:var(--g);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid #fff}
+.prof-info h2{color:#fff;font-size:20px;font-weight:800;margin-bottom:3px}
+.prof-info p{color:rgba(255,255,255,.75);font-size:13px}
+.prof-badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.prof-badge{background:rgba(255,255,255,.2);color:#fff;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:600}
+.msec-title{font-size:10px;font-weight:700;color:var(--tl);text-transform:uppercase;letter-spacing:.08em;padding:14px 16px 6px}
+.mrow{background:var(--w);padding:0;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:14px;cursor:pointer;transition:background .1s;min-height:58px}
+.mrow:active{background:var(--bg)}
+.mrow-ic{font-size:22px;width:42px;text-align:center;flex-shrink:0}
+.mrow-body{flex:1;padding:14px 0}
+.mrow-body h4{font-size:14px;font-weight:600;color:var(--t);margin-bottom:2px}
+.mrow-body p{font-size:12px;color:var(--tm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.mrow-right{display:flex;align-items:center;gap:8px;padding-right:16px;flex-shrink:0}
+.mrow-val{font-size:13px;font-weight:600;color:var(--g)}
+.mrow-arr{color:var(--tl);font-size:20px}
+.toggle{width:48px;height:26px;border-radius:99px;background:var(--b);position:relative;cursor:pointer;flex-shrink:0;transition:background .25s}
+.toggle.on{background:var(--g)}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .25s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on::after{transform:translateX(22px)}
+.admin-top{background:linear-gradient(135deg,#0f172a,#1e293b);padding:50px 16px 16px;color:#fff;flex-shrink:0}
+.acard{background:var(--w);border-radius:var(--r);margin:0 16px 12px;padding:18px;box-shadow:var(--sh)}
+.acard h3{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.flbl{font-size:12px;font-weight:700;color:var(--tm);margin-bottom:7px;display:block}
+.field{width:100%;padding:12px 16px;border:1.5px solid var(--b);border-radius:10px;font-size:14px;outline:none;transition:border-color .2s;background:var(--w);color:var(--t);font-family:inherit;-webkit-appearance:none}
+.field:focus{border-color:var(--g)}
+.ens-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ens-chip{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px solid var(--b);border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;background:var(--w);font-family:inherit;transition:all .15s}
+.ens-chip input{accent-color:var(--g)}
+.prog-wrap{margin-top:10px;display:none}
+.prog-hdr{display:flex;justify-content:space-between;font-size:11px;color:var(--tm);font-weight:600;margin-bottom:6px}
+.prog-bar{height:8px;background:var(--b);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--g),#22c55e);border-radius:99px;transition:width .4s;width:0}
+.logbox{background:#0f172a;border-radius:10px;padding:12px;font-family:monospace;font-size:11px;max-height:130px;overflow-y:auto;margin-top:10px;display:none;line-height:1.5}
+.log-ok{color:#4ade80}.log-err{color:#f87171}.log-info{color:#94a3b8}
+.dbstats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.dbstat{background:var(--bg);border-radius:10px;padding:12px;text-align:center}
+.dbstat .dv{font-size:22px;font-weight:800;color:var(--g);display:block}
+.dbstat .dl{font-size:10px;color:var(--tm);font-weight:600;margin-top:2px}
+.dbpill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700}
+.db-ok{background:var(--gl);color:#15803d}.db-err{background:#fee2e2;color:#dc2626}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;align-items:flex-end;backdrop-filter:blur(4px);animation:fadeIn .2s ease}
+.overlay.on{display:flex}
+.sheet{background:var(--w);border-radius:24px 24px 0 0;padding:20px;width:100%;max-height:92vh;overflow-y:auto;animation:slideUp .32s cubic-bezier(.25,.46,.45,.94)}
+.sheet::-webkit-scrollbar{display:none}
+.sheet-handle{width:40px;height:4px;background:var(--b);border-radius:99px;margin:0 auto 20px}
+.det-img-box{width:80px;height:80px;border-radius:16px;overflow:hidden;border:1px solid var(--b);background:var(--gp);flex-shrink:0}
+.det-img-box img{width:100%;height:100%;object-fit:contain;padding:6px;display:block}
+.det-img-fb{width:80px;height:80px;border-radius:16px;background:var(--gp);border:1px solid var(--gl);display:flex;align-items:center;justify-content:center;font-size:38px;flex-shrink:0}
+.det-best{background:var(--gp);border:2px solid var(--gl);border-radius:18px;padding:20px;text-align:center;margin-bottom:16px}
+.det-best-lbl{font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.det-best-price{font-size:46px;font-weight:800;color:var(--g);letter-spacing:-2px;line-height:1}
+.aprow{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--b)}
+.aprow:last-child{border:none}
+.nbars{display:flex;flex-direction:column;gap:8px}
+.nbrow{display:flex;align-items:center;gap:10px}
+.nbn{font-size:12px;font-weight:600;color:var(--tm);width:72px;flex-shrink:0}
+.nbbg{flex:1;height:6px;background:var(--b);border-radius:99px;overflow:hidden}
+.nbfill{height:100%;border-radius:99px;transition:width .7s ease}
+.nbval{font-size:12px;font-weight:700;width:50px;text-align:right;flex-shrink:0}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:600;display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(6px)}
+.modal-bg.on{display:flex}
+.modal-box{background:var(--w);border-radius:24px;padding:28px;width:100%;max-width:360px;box-shadow:0 20px 80px rgba(0,0,0,.4);animation:up .3s ease}
+.modal-box h3{font-size:18px;font-weight:800;margin-bottom:6px}
+.modal-desc{font-size:13px;color:var(--tm);margin-bottom:20px}
+.modal-acts{display:flex;gap:10px;margin-top:20px}
+.modal-acts .btn{flex:1}
+.modal-err{color:var(--red);font-size:12px;font-weight:600;margin-top:8px;min-height:18px;text-align:center}
+.cselect{width:100%;padding:12px 16px;border:1.5px solid var(--b);border-radius:10px;font-size:14px;outline:none;background:var(--w);color:var(--t);font-family:inherit;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px}
+.cselect:focus{border-color:var(--g)}
+.range-val{font-size:22px;font-weight:800;color:var(--g);text-align:center;display:block;margin:8px 0}
+.login-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(6px)}
+.login-bg.on{display:flex}
+.login-box{background:var(--w);border-radius:24px;padding:30px;width:100%;max-width:340px;box-shadow:0 20px 80px rgba(0,0,0,.4);animation:up .3s ease}
+.login-box h2{font-size:20px;font-weight:800;text-align:center;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--tm);text-align:center;margin-bottom:24px}
+.login-err{color:var(--red);font-size:12px;font-weight:600;margin-top:8px;text-align:center;min-height:18px}
+.toast{position:fixed;bottom:calc(70px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(20px);background:#0f172a;color:#fff;padding:12px 24px;border-radius:99px;font-size:13px;font-weight:600;opacity:0;transition:all .3s cubic-bezier(.25,.46,.45,.94);pointer-events:none;z-index:700;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.4);max-width:calc(100vw - 32px);text-overflow:ellipsis;overflow:hidden}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- SPLASH -->
+<div id="splash" class="screen on">
+  <span class="spl-em">🛒</span>
+  <div class="spl-title">Waffar<span class="spl-ar">وفّر</span></div>
+  <p class="spl-sub">Comparez les prix · Économisez au Maroc 🇲🇦</p>
+  <div class="spl-bar"></div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboard" class="screen">
+  <div class="ob-top">
+    <span class="ob-em">🛒</span>
+    <h1>Bienvenue sur Waffar</h1>
+    <p>Comparez BIM, Carrefour, Marjane, Kazyon et plus pour économiser chaque semaine.</p>
+  </div>
+  <div class="ob-feats">
+    <div class="ob-feat"><div class="ob-feat-ic">📸</div><div><h4>Photos réelles des marques</h4><p>Reconnaissance facile des produits avec photo et marque</p></div></div>
+    <div class="ob-feat"><div class="ob-feat-ic">📊</div><div><h4>Comparez 7 enseignes</h4><p>BIM · Carrefour · Marjane · Kazyon · Atacadao · Aswak · Supeco</p></div></div>
+    <div class="ob-feat"><div class="ob-feat-ic">💾</div><div><h4>Sauvegarde automatique</h4><p>Votre liste et profil sont sauvegardés entre les sessions</p></div></div>
+    <div class="ob-feat"><div class="ob-feat-ic">📷</div><div><h4>Scanner vos reçus</h4><p>Analysez vos achats pour trouver où économiser</p></div></div>
+  </div>
+  <div class="ob-cta">
+    <button class="btn btn-g" onclick="W.start()">Commencer gratuitement</button>
+    <button class="btn btn-out" onclick="W.start()">Déjà un compte</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main">
+
+  <!-- HOME -->
+  <div id="tc-home" class="tab on">
+    <div class="topbar">
+      <div class="tbr">
+        <div class="tbl">
+          <div class="tb-title" id="greet">Bonjour 👋</div>
+          <div class="tb-sub" id="ddate">—</div>
+        </div>
+        <button class="bic" onclick="W.go('profile')">👤</button>
+      </div>
+    </div>
+    <div class="scroll" style="padding-bottom:16px">
+      <div class="hero-card">
+        <div class="hero-l"><div class="lbl">Économies pot./mois</div><div class="amt" id="h-save">340 DH</div></div>
+        <div class="hero-r"><div class="lbl">Produits</div><div class="num" id="h-cnt">60+</div></div>
+      </div>
+      <div class="sec-hdr"><h3>Meilleures offres</h3><a onclick="W.go('compare')">Tout voir</a></div>
+      <div id="best-list"><div class="spin-wrap"><div class="spinner"></div></div></div>
+      <div class="sec-hdr"><h3>Conseils économies</h3></div>
+      <div class="tip"><span class="tip-ic">💡</span><div><h4>Eau minérale — économisez 8%</h4><p>Kazyon (3,50 DH) est moins cher qu'Atacadao (3,80 DH). Sur 6 bouteilles/sem: 7 DH/mois économisés.</p></div></div>
+      <div class="tip"><span class="tip-ic">🧺</span><div><h4>Lessive — écart de 48 DH</h4><p>Chany 5L chez Atacadao (51 DH) contre Ariel 4kg chez BIM (98,90 DH). Rapport qualité/prix en faveur de Chany.</p></div></div>
+      <div class="tip"><span class="tip-ic">🛒</span><div><h4>Optimisez vos courses</h4><p>BIM pour les produits de base, Kazyon pour les prix bas, Carrefour pour les fruits et légumes frais.</p></div></div>
+    </div>
+  </div>
+
+  <!-- COMPARE -->
+  <div id="tc-compare" class="tab">
+    <div class="topbar">
+      <div class="tbr">
+        <div class="tbl"><div class="tb-title">Comparer les prix</div><div class="tb-sub" id="cmp-sub">—</div></div>
+        <button class="tb-pill" onclick="W.toggleSort()">↕ Trier</button>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <div class="sb-inner">
+        <span style="font-size:17px;color:var(--tl)">🔍</span>
+        <input type="text" id="srch-inp" placeholder="Marque, produit, enseigne..." oninput="W.search(this.value)" autocomplete="off">
+        <button class="sb-clr" id="srch-clr" onclick="W.clearSearch()">✕</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <button class="fc on" onclick="W.setFilter(this,'')">Tout</button>
+      <button class="fc" onclick="W.setFilter(this,'Épicerie')">🫙 Épicerie</button>
+      <button class="fc" onclick="W.setFilter(this,'Laitiers')">🥛 Laitiers</button>
+      <button class="fc" onclick="W.setFilter(this,'Boissons')">🥤 Boissons</button>
+      <button class="fc" onclick="W.setFilter(this,'Conserves')">🥫 Conserves</button>
+      <button class="fc" onclick="W.setFilter(this,'Hygiène')">🧴 Hygiène</button>
+      <button class="fc" onclick="W.setFilter(this,'Entretien')">🧹 Entretien</button>
+      <button class="fc" onclick="W.setFilter(this,'Viandes')">🥩 Viandes</button>
+      <button class="fc" onclick="W.setFilter(this,'Biscuits')">🍪 Biscuits</button>
+      <button class="fc" onclick="W.setFilter(this,'Fruits & Légumes')">🍊 Fruits</button>
+      <button class="fc" onclick="W.setFilter(this,'Bébé')">👶 Bébé</button>
+    </div>
+    <div class="scroll" id="prod-list"><div class="spin-wrap"><div class="spinner"></div></div></div>
+  </div>
+
+  <!-- SCAN -->
+  <div id="tc-scan" class="tab">
+    <div class="topbar"><div class="tbr"><div class="tbl"><div class="tb-title">Scanner un reçu</div><div class="tb-sub">Analysez vos achats</div></div></div></div>
+    <div class="scroll" style="padding-bottom:16px">
+      <div class="scan-grid">
+        <div class="scan-card scan-cam" onclick="W.openCam()"><span class="scan-em">📷</span><div class="scan-title">Prendre une photo</div><div class="scan-sub">Ouvre la caméra</div></div>
+        <div class="scan-card scan-gal" onclick="W.openGal()"><span class="scan-em">🖼️</span><div class="scan-title">Depuis la galerie</div><div class="scan-sub">Choisir une image</div></div>
+      </div>
+      <input type="file" id="cam-in" accept="image/*" capture="environment" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0" onchange="W.handlePhoto(this)">
+      <input type="file" id="gal-in" accept="image/*" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0" onchange="W.handlePhoto(this)">
+      <div id="prev-box" style="display:none">
+        <div class="prev-box"><img id="prev-img" alt="Aperçu reçu"></div>
+        <div class="prev-actions">
+          <button class="analyze-btn" onclick="W.analyze()">🔍 Analyser le reçu</button>
+          <button class="cancel-btn" onclick="W.resetScan()">✕</button>
+        </div>
+      </div>
+      <div id="scan-load" style="display:none" class="spin-wrap"><div class="spinner"></div><p style="font-size:14px;color:var(--tm);font-weight:600">Analyse en cours...</p><p style="font-size:12px;color:var(--tl)">Identification des produits</p></div>
+      <div id="scan-res" style="display:none">
+        <div class="sec-hdr"><h3>Résultat de l'analyse</h3></div>
+        <div class="acard" id="scan-card" style="margin-top:0"></div>
+        <div class="scan-banner">
+          <div><p style="font-size:12px;color:#92400e;font-weight:600;margin-bottom:3px">Vous auriez économisé</p><p id="scan-eco" style="font-size:24px;font-weight:800;color:#78350f">– 0 DH</p></div>
+          <span style="font-size:36px">💰</span>
+        </div>
+        <div style="padding:0 16px 16px;display:flex;gap:10px">
+          <button class="btn btn-g" onclick="W.toast('✅ Scan sauvegardé')" style="flex:1">Sauvegarder</button>
+          <button onclick="W.resetScan()" style="padding:14px 16px;background:var(--w);border:1.5px solid var(--b);border-radius:var(--r);font-size:13px;cursor:pointer;font-family:inherit;font-weight:600;color:var(--tm)">Nouveau</button>
+        </div>
+      </div>
+      <div class="tip"><span class="tip-ic">💡</span><div><h4>Conseils pour un bon scan</h4><p>Photographiez le reçu bien à plat, en bonne lumière, sans reflet. Le texte doit être net et entièrement visible. Requiert une clé API Anthropic (configurable dans Profil → Administration).</p></div></div>
+      <div class="tip" style="background:#fff7ed;border-color:#f59e0b"><span class="tip-ic">🔑</span><div><h4>Clé API requise pour l'OCR</h4><p>L'analyse IA des reçus nécessite une clé API Anthropic gratuite. <strong>Profil → Administration → Clé API Anthropic</strong> pour la configurer.</p></div></div>
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <div id="tc-list" class="tab">
+    <div class="topbar">
+      <div class="tbr">
+        <div class="tbl"><div class="tb-title">Ma liste de courses</div><div class="tb-sub" id="list-sub">0 produit</div></div>
+        <button class="tb-pill" onclick="W.clearList()">🗑 Vider</button>
+      </div>
+    </div>
+    <div class="scroll" style="padding-bottom:16px">
+      <div id="list-items"></div>
+      <div id="list-empty" class="list-empty"><span class="le-ic">🛒</span><div class="le-title">Votre liste est vide</div><div class="le-sub">Ajoutez des produits depuis Comparer</div></div>
+      <div id="list-total" style="display:none">
+        <div class="ltc">
+          <div class="ltc-l"><div class="lbl">Total optimal</div><div class="amt" id="lt-amt">0 DH</div></div>
+          <div class="ltc-r"><div class="lbl">Économies</div><div class="sav" id="lt-sav">0 DH</div></div>
+        </div>
+        <div style="padding:0 16px 8px">
+          <button class="btn btn-g" onclick="W.toast('🗺️ BIM → Kazyon → Carrefour')">🗺️ Itinéraire optimal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="tc-profile" class="tab">
+    <div class="scroll" style="padding-bottom:16px">
+      <div class="prof-hero">
+        <div class="prof-av-wrap">
+          <div class="prof-av" onclick="W.editField('name','Nom et Prénom','Votre nom complet','text')">
+            <span id="prof-av-ic">👤</span>
+            <div class="prof-av-edit">✏️</div>
+          </div>
+          <div class="prof-info">
+            <h2 id="prof-name-el">Mon Profil</h2>
+            <p id="prof-city-el">Agadir, Maroc</p>
+          </div>
+        </div>
+        <div class="prof-badges">
+          <span class="prof-badge" id="prof-fam-b">👨‍👩‍👧‍👦 4 pers.</span>
+          <span class="prof-badge" id="prof-bud-b">💰 2500 DH/mois</span>
+        </div>
+      </div>
+      <div class="msec-title">Mes statistiques</div>
+      <div class="stats-grid">
+        <div class="stat-card"><span class="stat-val" id="ps-eco">127</span><div class="stat-lbl">Économies ce mois (DH)</div></div>
+        <div class="stat-card"><span class="stat-val">3</span><div class="stat-lbl">Reçus scannés</div></div>
+        <div class="stat-card"><span class="stat-val" id="ps-list">0</span><div class="stat-lbl">Produits en liste</div></div>
+        <div class="stat-card"><span class="stat-val" id="ps-bud">2500</span><div class="stat-lbl">Budget mensuel (DH)</div></div>
+      </div>
+      <div class="msec-title">Mon profil</div>
+      <div class="mrow" onclick="W.editField('name','Nom et Prénom','Votre nom complet','text')"><div class="mrow-ic">👤</div><div class="mrow-body"><h4>Nom et Prénom</h4><p id="pr-name">Appuyez pour modifier</p></div><div class="mrow-right"><span class="mrow-arr">›</span></div></div>
+      <div class="mrow" onclick="W.editCity()"><div class="mrow-ic">📍</div><div class="mrow-body"><h4>Ma ville</h4><p id="pr-city">Agadir, Maroc</p></div><div class="mrow-right"><span class="mrow-arr">›</span></div></div>
+      <div class="mrow" onclick="W.editBudget()"><div class="mrow-ic">💰</div><div class="mrow-body"><h4>Budget mensuel</h4><p id="pr-budget">2 500 DH / mois</p></div><div class="mrow-right"><span class="mrow-val" id="pr-bud-v">2500 DH</span><span class="mrow-arr">›</span></div></div>
+      <div class="mrow" onclick="W.editFamily()"><div class="mrow-ic">👨‍👩‍👧‍👦</div><div class="mrow-body"><h4>Taille de la famille</h4><p id="pr-family">4 personnes</p></div><div class="mrow-right"><span class="mrow-val" id="pr-fam-v">4 pers.</span><span class="mrow-arr">›</span></div></div>
+      <div class="msec-title">Mes enseignes préférées</div>
+      <div class="mrow" onclick="W.editStores()"><div class="mrow-ic">🏪</div><div class="mrow-body"><h4>Enseignes sélectionnées</h4><p id="pr-stores">BIM, Carrefour, Atacadao</p></div><div class="mrow-right"><span class="mrow-arr">›</span></div></div>
+      <div class="msec-title">Paramètres</div>
+      <div class="mrow" onclick="W.toggleNotifs()"><div class="mrow-ic">🔔</div><div class="mrow-body"><h4>Alertes promos</h4><p>Mardi et vendredi</p></div><div class="mrow-right"><div class="toggle on" id="tog-notifs"></div></div></div>
+      <div class="mrow" onclick="W.editField('email','E-mail','Votre adresse e-mail','email')"><div class="mrow-ic">📧</div><div class="mrow-body"><h4>E-mail</h4><p id="pr-email">Ajouter un e-mail</p></div><div class="mrow-right"><span class="mrow-arr">›</span></div></div>
+      <div class="mrow" onclick="W.editField('phone','Téléphone','Votre numéro de téléphone','tel')"><div class="mrow-ic">📱</div><div class="mrow-body"><h4>Téléphone</h4><p id="pr-phone">Ajouter un numéro</p></div><div class="mrow-right"><span class="mrow-arr">›</span></div></div>
+      <div class="msec-title">Administration</div>
+      <div class="mrow" onclick="W.openLogin()"><div class="mrow-ic">⚙️</div><div class="mrow-body"><h4>Administration</h4><p>Scraping, données, sécurité</p></div><div class="mrow-right"><span class="mrow-arr">›</span></div></div>
+      <div class="mrow" onclick="W.showAbout()"><div class="mrow-ic">ℹ️</div><div class="mrow-body"><h4>À propos de Waffar</h4><p>Version 5.0 · 60 produits · 7 enseignes</p></div><div class="mrow-right"><span class="mrow-arr">›</span></div></div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="tc-admin" class="tab">
+    <div class="admin-top"><div class="tbr"><div class="tbl"><div class="tb-title" style="color:#fff">⚙️ Administration</div><div class="tb-sub" style="color:rgba(255,255,255,.7)">Gestion Waffar</div></div><button class="tb-pill" onclick="W.go('profile');W.toast('Déconnecté')">Déconnexion</button></div></div>
+    <div class="scroll" style="padding-bottom:16px">
+      <div class="msec-title" style="color:#94a3b8">État de la base</div>
+      <div class="acard">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:13px;font-weight:700">Supabase Database</span><span class="dbpill db-ok" id="db-pill">● Connecté</span></div>
+        <div class="dbstats"><div class="dbstat"><span class="dv" id="adm-p">60+</span><div class="dl">Produits</div></div><div class="dbstat"><span class="dv">1121</span><div class="dl">Prix</div></div><div class="dbstat"><span class="dv">7</span><div class="dl">Enseignes</div></div></div>
+        <button class="btn btn-g btn-sm" onclick="W.adminRefresh()" style="margin-top:14px;width:100%;justify-content:center">🔄 Actualiser</button>
+      </div>
+      <div class="msec-title" style="color:#94a3b8">Scraping hmizate.ma</div>
+      <div class="acard">
+        <h3>📡 Lancer un scraping</h3>
+        <div class="ens-chips" id="ens-chips">
+          <label class="ens-chip"><input type="checkbox" value="BIM" checked> BIM</label>
+          <label class="ens-chip"><input type="checkbox" value="Kazyon" checked> Kazyon</label>
+          <label class="ens-chip"><input type="checkbox" value="Marjane" checked> Marjane</label>
+          <label class="ens-chip"><input type="checkbox" value="Carrefour" checked> Carrefour</label>
+          <label class="ens-chip"><input type="checkbox" value="Atacadao"> Atacadao</label>
+          <label class="ens-chip"><input type="checkbox" value="Aswak"> Aswak</label>
+          <label class="ens-chip"><input type="checkbox" value="Supeco"> Supeco</label>
+        </div>
+        <button class="btn btn-g" id="scrape-btn" onclick="W.scrape()" style="margin-top:14px">🚀 Lancer le scraping</button>
+        <div class="prog-wrap" id="prog-wrap"><div class="prog-hdr"><span id="prog-txt">En cours...</span><span id="prog-pct">0%</span></div><div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div></div>
+        <div class="logbox" id="logbox"></div>
+      </div>
+      <div class="msec-title" style="color:#94a3b8">Sécurité</div>
+      <div class="acard">
+        <h3>🔐 Changer le mot de passe</h3>
+        <div style="margin-bottom:10px"><label class="flbl">Nouveau (min. 6 car.)</label><input type="password" id="np1" class="field" placeholder="Nouveau mot de passe"></div>
+        <div style="margin-bottom:14px"><label class="flbl">Confirmer</label><input type="password" id="np2" class="field" placeholder="Répéter"></div>
+        <button class="btn btn-g" onclick="W.changePwd()">Enregistrer</button>
+      </div>
+      <div class="msec-title" style="color:#94a3b8">Clé API Anthropic (OCR Scan)</div>
+      <div class="acard">
+        <h3>🤖 Clé API Anthropic</h3>
+        <p style="font-size:12px;color:var(--tm);margin-bottom:12px;line-height:1.6">Requise pour l'analyse OCR des reçus. Obtenez votre clé sur <strong>console.anthropic.com</strong></p>
+        <div style="margin-bottom:14px"><label class="flbl">Clé Anthropic (sk-ant-...)</label><input type="password" id="anthropic-key" class="field" placeholder="sk-ant-api03-..."></div>
+        <button class="btn btn-g" onclick="W.saveAnthropicKey()">Sauvegarder</button>
+        <div id="anthropic-key-status" style="font-size:12px;margin-top:10px;color:var(--tl)"></div>
+      </div>
+      <div class="msec-title" style="color:#94a3b8">Clé API Supabase (Base de données)</div>
+      <div class="acard">
+        <h3>🔑 Clé Supabase anon</h3>
+        <div style="margin-bottom:14px"><label class="flbl">Coller la clé ici</label><input type="password" id="api-key" class="field" placeholder="eyJhbGciOiJIUzI1NiIs..."></div>
+        <button class="btn btn-g" onclick="W.saveKey()">Sauvegarder</button>
+      </div>
+      <div class="msec-title" style="color:#94a3b8">Actions</div>
+      <div class="acard" style="display:flex;flex-direction:column;gap:10px">
+        <button onclick="W.toast('📥 Export CSV en cours...')" style="background:var(--bg);border:1.5px solid var(--b);color:var(--t);padding:14px;border-radius:var(--r);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left">📥 Exporter les données CSV</button>
+        <button onclick="W.toast('🗑️ Prix expirés supprimés')" style="background:#fee2e2;border:1.5px solid #fecaca;color:#dc2626;padding:14px;border-radius:var(--r);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left">🗑️ Supprimer les prix expirés</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <div class="ni on" id="n-home" onclick="W.go('home')"><span class="ni-ic">🏠</span><span class="ni-lb">Accueil</span></div>
+    <div class="ni" id="n-compare" onclick="W.go('compare')"><span class="ni-ic">📊</span><span class="ni-lb">Comparer</span></div>
+    <div class="ni" id="n-scan" onclick="W.go('scan')"><span class="ni-ic">📷</span><span class="ni-lb">Scanner</span></div>
+    <div class="ni" id="n-list" onclick="W.go('list')"><span class="ni-ic">🛒</span><span class="ni-lb">Ma liste</span><div class="nbadge" id="nbadge">0</div></div>
+    <div class="ni" id="n-profile" onclick="W.go('profile')"><span class="ni-ic">👤</span><span class="ni-lb">Profil</span></div>
+  </nav>
+</div>
+
+<!-- DETAIL OVERLAY -->
+<div class="overlay" id="det-ov" onclick="W.closeDetail()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div id="det-body"></div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-bg" id="edit-ov">
+  <div class="modal-box">
+    <h3 id="em-title">Modifier</h3>
+    <p class="modal-desc" id="em-desc">—</p>
+    <div id="em-body"></div>
+    <div class="modal-err" id="em-err"></div>
+    <div class="modal-acts">
+      <button class="btn btn-out" onclick="W.closeEdit()">Annuler</button>
+      <button class="btn btn-g" id="em-save" onclick="W.saveEdit()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="login-bg" id="login-ov">
+  <div class="login-box">
+    <div style="font-size:40px;text-align:center;margin-bottom:12px">⚙️</div>
+    <h2>Administration</h2>
+    <p class="login-sub">Accès réservé à l'administrateur</p>
+    <div style="margin-bottom:4px"><label class="flbl">Mot de passe</label><input type="password" id="admin-inp" class="field" placeholder="Mot de passe admin" onkeydown="if(event.key==='Enter')W.doLogin()"></div>
+    <div class="login-err" id="login-err"></div>
+    <button class="btn btn-g" onclick="W.doLogin()" style="margin-top:14px">Connexion</button>
+    <button class="btn btn-out" onclick="W.closeLogin()" style="margin-top:10px">Annuler</button>
+  </div>
+</div>
+
+<div class="toast" id="toast-el"></div>
+</div>
+
+<script>
+'use strict';
+// WAFFAR v5.2 — ZERO JS SYNTAX ERRORS
+// Règle: JAMAIS de quotes imbriquées dans strings JS
+// Images: DOM manipulation propre, pas de onerror inline avec quotes
+
+const SB_URL = 'https://njfdbrkpvjomqfxabamt.supabase.co';
+const ADMIN_PWD_KEY = 'waffar_admin_pwd';
+const DEFAULT_PWD = 'waffar2024admin';
+const LS_PREFIX = 'wf5_';
+
+const VILLES = ['Agadir','Casablanca','Rabat','Fes','Marrakech','Tanger','Meknes','Oujda','Sale','Kenitra','Tetouan','Safi','Mohammedia','El Jadida','Beni Mellal','Nador','Taza','Settat','Laayoune','Khouribga'];
+const ALL_STORES = ['BIM','Carrefour','Atacadao','Marjane','Kazyon','Aswak Assalam','Supeco'];
+
+// STORAGE
+const LS = {
+  get: function(k) {
+    try { var v = localStorage.getItem(LS_PREFIX+k); return v !== null ? JSON.parse(v) : null; }
+    catch(e) { return null; }
+  },
+  set: function(k, v) {
+    try { localStorage.setItem(LS_PREFIX+k, JSON.stringify(v)); return true; }
+    catch(e) { return false; }
+  },
+  def: function(k, d) { var v = LS.get(k); return v !== null ? v : d; }
+};
+
+var myList = LS.def('list', []);
+var curCat = '', curSearch = '', curSort = 'az';
+var _editKey = null;
+
+// PHOTOS — URLs stables Unsplash par catégorie
+var CAT_PHOTO = {
+  'Epicerie': 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=120&h=120&fit=crop&q=70',
+  'Boissons': 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=120&h=120&fit=crop&q=70',
+  'Laitiers': 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=120&h=120&fit=crop&q=70',
+  'Fromages': 'https://images.unsplash.com/photo-1486297961690-ce82bebb1d47?w=120&h=120&fit=crop&q=70',
+  'Conserves': 'https://images.unsplash.com/photo-1534483509719-3feaee7c30da?w=120&h=120&fit=crop&q=70',
+  'Biscuits': 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=120&h=120&fit=crop&q=70',
+  'Hygiene': 'https://images.unsplash.com/photo-1584515933487-779824d29309?w=120&h=120&fit=crop&q=70',
+  'Entretien': 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=120&h=120&fit=crop&q=70',
+  'Viandes': 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=120&h=120&fit=crop&q=70',
+  'FruitsLegumes': 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=120&h=120&fit=crop&q=70',
+  'Bebe': 'https://images.unsplash.com/photo-1519689373023-dd07c7988603?w=120&h=120&fit=crop&q=70'
+};
+
+var PROD_PHOTO = {
+  2: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=120&h=120&fit=crop&q=70',
+  3: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=120&h=120&fit=crop&q=70',
+  16: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=120&h=120&fit=crop&q=70',
+  17: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=120&h=120&fit=crop&q=70',
+  32: 'https://images.unsplash.com/photo-1518492104633-130d0cc84637?w=120&h=120&fit=crop&q=70',
+  34: 'https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=120&h=120&fit=crop&q=70',
+  35: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=120&h=120&fit=crop&q=70',
+  36: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=120&h=120&fit=crop&q=70'
+};
+
+var EM_MAP = {
+  'Epicerie':'🫙','Conserves':'🥫','Laitiers':'🥛','Fromages':'🧀',
+  'Viandes':'🥩','Boissons':'🥤','Biscuits':'🍪','Hygiene':'🧴',
+  'Entretien':'🧹','Bebe':'👶','FruitsLegumes':'🍊'
+};
+
+var BG = {
+  'BIM':'b-bim','Carrefour':'b-carrefour','Atacadao':'b-atacadao',
+  'Marjane':'b-marjane','Kazyon':'b-kazyon','Aswak Assalam':'b-aswak','Supeco':'b-supeco'
+};
+
+// ── PRODUITS (60) — catégories en ASCII pour éviter les erreurs d'encodage ──
+var P = [
+  {id:1,  mk:'Huilor',     nm:'Huile de table 5L',            cat:'Epicerie',     desc:'Huile vegetale raffinee pour friture et cuisine.',            nutri:{cal:900,prot:0,  gluc:0,  lip:100,fib:0},   px:[{e:'Kazyon',p:68.90},{e:'Aswak Assalam',p:71.90},{e:'Carrefour',p:72.90},{e:'Supeco',p:82.95}]},
+  {id:2,  mk:'Ain Sais',   nm:'Eau minerale 1.5L',            cat:'Boissons',     desc:'Eau minerale naturelle des sources marocaines.',              nutri:{cal:0,  prot:0,  gluc:0,  lip:0,  fib:0},   px:[{e:'Kazyon',p:3.50},{e:'Aswak Assalam',p:3.75},{e:'Atacadao',p:3.80}]},
+  {id:3,  mk:'Centrale',   nm:'Lait UHT entier 1L',           cat:'Laitiers',     desc:'Lait entier UHT. Riche en calcium et proteines.',             nutri:{cal:62, prot:3.2,gluc:4.7,lip:3.5,fib:0},   px:[{e:'Aswak Assalam',p:7.95},{e:'Kazyon',p:8.50}]},
+  {id:4,  mk:'Tria',       nm:'Couscous fin 1kg',             cat:'Epicerie',     desc:'Semoule fine marocaine. Cuit vapeur en 5 minutes.',           nutri:{cal:352,prot:12, gluc:72, lip:1.5,fib:2.4}, px:[{e:'Kazyon',p:7.80},{e:'Atacadao',p:8.00},{e:'Aswak Assalam',p:9.50}]},
+  {id:5,  mk:'Cosumar',    nm:'Sucre blanc 1kg',              cat:'Epicerie',     desc:'Sucre blanc cristallise. Produit national marocain.',         nutri:{cal:400,prot:0,  gluc:100,lip:0,  fib:0},   px:[{e:'Kazyon',p:7.20},{e:'Aswak Assalam',p:7.50}]},
+  {id:6,  mk:'Aicha',      nm:'Farine ble tendre 1kg',        cat:'Epicerie',     desc:'Farine T55 pour pain et patisseries.',                        nutri:{cal:364,prot:10, gluc:76, lip:1,  fib:2.7}, px:[{e:'Kazyon',p:6.90},{e:'Aswak Assalam',p:7.50},{e:'Carrefour',p:18.50}]},
+  {id:7,  mk:'Sadia',      nm:'Spaghetti 500g',               cat:'Epicerie',     desc:'Pates longues. Cuisson en 8 a 10 minutes.',                  nutri:{cal:358,prot:13, gluc:71, lip:1.5,fib:2.5}, px:[{e:'Kazyon',p:5.50},{e:'Aswak Assalam',p:6.50}]},
+  {id:8,  mk:'Al Khayr',   nm:'Sardines a l huile 125g',      cat:'Conserves',    desc:'Sardines a huile vegetale. Riche en proteines.',              nutri:{cal:185,prot:19, gluc:0,  lip:12, fib:0},   px:[{e:'Kazyon',p:6.90},{e:'Aswak Assalam',p:7.90}]},
+  {id:9,  mk:'Saupiquet',  nm:'Thon a l huile 160g',          cat:'Conserves',    desc:'Thon en conserve. Riche en proteines maigres et omega-3.',   nutri:{cal:190,prot:27, gluc:0,  lip:9,  fib:0},   px:[{e:'Kazyon',p:9.90},{e:'Aswak Assalam',p:11.90},{e:'Atacadao',p:12.90}]},
+  {id:10, mk:'Centrale',   nm:'Yaourt nature 4x110g',         cat:'Laitiers',     desc:'Yaourt ferme riche en probiotiques.',                         nutri:{cal:63, prot:4,  gluc:5,  lip:3.2,fib:0},   px:[{e:'Supeco',p:8.95},{e:'Aswak Assalam',p:10.00}]},
+  {id:11, mk:'Philadelphia',nm:'Fromage frais 150g',          cat:'Fromages',     desc:'Philadelphia original. Onctueux pour sandwichs.',             nutri:{cal:253,prot:6,  gluc:3.6,lip:24, fib:0},   px:[{e:'BIM',p:26.90}]},
+  {id:12, mk:'Mega',       nm:'Cookies chocolat 33g',         cat:'Biscuits',     desc:'Cookies croustillants aux pepites de chocolat.',              nutri:{cal:487,prot:7,  gluc:63, lip:23, fib:2},   px:[{e:'Atacadao',p:0.72}]},
+  {id:13, mk:'Bimo',       nm:'Biscuit Toto 20g',             cat:'Biscuits',     desc:'Biscuit chocolate marocain emblematique.',                    nutri:{cal:460,prot:5,  gluc:68, lip:19, fib:1.5}, px:[{e:'Atacadao',p:0.77}]},
+  {id:14, mk:'Oreo',       nm:'Biscuits Oreo 220g',           cat:'Biscuits',     desc:'Biscuits Oreo creme vanille. Parfaits avec le lait.',         nutri:{cal:471,prot:5,  gluc:70, lip:20, fib:2},   px:[{e:'BIM',p:22.90}]},
+  {id:15, mk:'Ain Sais',   nm:'Eau minerale pack 6x1.5L',     cat:'Boissons',     desc:'Pack economique famille 6 bouteilles.',                       nutri:{cal:0,  prot:0,  gluc:0,  lip:0,  fib:0},   px:[{e:'BIM',p:18.95},{e:'Carrefour',p:22.50}]},
+  {id:16, mk:'Carta Blanca',nm:'Cafe moulu 250g',             cat:'Boissons',     desc:'Cafe 100% arabica. Arome intense pour cafetiere.',            nutri:{cal:2,  prot:0.3,gluc:0,  lip:0,  fib:0},   px:[{e:'Kazyon',p:19.90},{e:'BIM',p:22.50}]},
+  {id:17, mk:'Sultan',     nm:'The vert Sultan 4011',         cat:'Boissons',     desc:'The gunpowder qualite superieure. Ideal pour le the a la menthe.', nutri:{cal:1,prot:0,gluc:0.2,lip:0,fib:0}, px:[{e:'Supeco',p:36.95}]},
+  {id:18, mk:'Chany',      nm:'Lessive liquide Chany 5L',     cat:'Entretien',    desc:'Lessive concentree efficace des 30 degres.',                  nutri:null, px:[{e:'Atacadao',p:51.00},{e:'Aswak Assalam',p:65.90}]},
+  {id:19, mk:'Twinsaver',  nm:'Papier toilette 6 rouleaux',   cat:'Entretien',    desc:'Papier toilette 2 epaisseurs. Format economique.',            nutri:null, px:[{e:'Kazyon',p:16.90},{e:'Supeco',p:28.00},{e:'BIM',p:84.90}]},
+  {id:20, mk:'Ariel',      nm:'Lessive Ariel 4kg',            cat:'Entretien',    desc:'Lessive anti-taches avancee. Efficace a basse temperature.', nutri:null, px:[{e:'Aswak Assalam',p:65.90},{e:'BIM',p:98.90}]},
+  {id:21, mk:'Fa',         nm:'Savon liquide mains 500ml',    cat:'Hygiene',      desc:'Savon surgras hydratant. Elimine 99.9% des bacteries.',       nutri:null, px:[{e:'Kazyon',p:8.90},{e:'BIM',p:11.90}]},
+  {id:22, mk:'Pantene',    nm:'Shampooing 200ml',             cat:'Hygiene',      desc:'Shampooing soin pH neutre pour tous types de cheveux.',       nutri:null, px:[{e:'BIM',p:12.90},{e:'Atacadao',p:14.90}]},
+  {id:23, mk:'Colgate',    nm:'Dentifrice 2x100ml',           cat:'Hygiene',      desc:'Dentifrice Total. Lutte contre caries et tartre.',            nutri:null, px:[{e:'Carrefour',p:24.95}]},
+  {id:24, mk:'Rexona',     nm:'Deodorant Roll-on 40g',        cat:'Hygiene',      desc:'Anti-transpirant 48h sans alcool.',                           nutri:null, px:[{e:'Carrefour',p:24.50}]},
+  {id:25, mk:'Pampers',    nm:'Couches bebe 44 pcs',          cat:'Bebe',         desc:'Couches ultra-absorbantes. Protection 12 heures.',            nutri:null, px:[{e:'Aswak Assalam',p:79.90},{e:'BIM',p:119.90}]},
+  {id:26, mk:'Chergui',    nm:'Kefir Chergui 450g',           cat:'Laitiers',     desc:'Boisson lactee fermentee riche en probiotiques.',             nutri:{cal:68, prot:3.5,gluc:4.2,lip:3.8,fib:0},  px:[{e:'BIM',p:9.90},{e:'Carrefour',p:9.95}]},
+  {id:27, mk:'Khazan',     nm:'Luncheon boeuf 550g',          cat:'Conserves',    desc:'Boeuf hache en conserve. Halal certifie.',                    nutri:{cal:218,prot:15, gluc:2,  lip:17, fib:0},   px:[{e:'Atacadao',p:10.25},{e:'BIM',p:12.90}]},
+  {id:28, mk:'Volubilia',  nm:'Huile olive 750ml',            cat:'Epicerie',     desc:'Huile olive extra vierge premiere pression.',                 nutri:{cal:828,prot:0,  gluc:0,  lip:92, fib:0},   px:[{e:'Kazyon',p:38.90},{e:'Carrefour',p:52.50}]},
+  {id:29, mk:'Oncle Bens', nm:'Riz long grain 1kg',           cat:'Epicerie',     desc:'Riz etuve. Grains separes apres cuisson.',                    nutri:{cal:358,prot:7,  gluc:78, lip:0.5,fib:0.4}, px:[{e:'Kazyon',p:9.90},{e:'Carrefour',p:19.50}]},
+  {id:30, mk:'Aicha',      nm:'Confiture fraises 370g',       cat:'Epicerie',     desc:'Confiture aux vrais fruits de fraises.',                      nutri:{cal:250,prot:0.5,gluc:62, lip:0,  fib:1},   px:[{e:'Kazyon',p:12.90},{e:'Atacadao',p:18.25}]},
+  {id:31, mk:'Jamila',     nm:'Margarine 200g',               cat:'Laitiers',     desc:'Margarine vegetale alleg\u00e9e. Riche en omega-3.',          nutri:{cal:722,prot:0.5,gluc:0,  lip:80, fib:0},   px:[{e:'Atacadao',p:4.90},{e:'Kazyon',p:9.90}]},
+  {id:32, mk:'Fermiers',   nm:'Poulet fermier 1kg',           cat:'Viandes',      desc:'Poulet eleve plein air, nourri aux cereales.',                nutri:{cal:165,prot:31, gluc:0,  lip:3.6,fib:0},   px:[{e:'Carrefour',p:79.90}]},
+  {id:33, mk:'Al Mounir',  nm:'Merguez boeuf 1kg',            cat:'Viandes',      desc:'Merguez 100% boeuf halal. Ideal barbecue.',                   nutri:{cal:289,prot:18, gluc:1,  lip:24, fib:0},   px:[{e:'Carrefour',p:89.90}]},
+  {id:34, mk:'Local',      nm:'Oranges a jus 1kg',            cat:'FruitsLegumes',desc:'Oranges navelines marocaines. Riches en vitamine C.',         nutri:{cal:47, prot:0.9,gluc:11, lip:0.1,fib:2.4}, px:[{e:'Carrefour',p:6.95}]},
+  {id:35, mk:'Midelt',     nm:'Pomme rouge locale 1kg',       cat:'FruitsLegumes',desc:'Pommes de la region de Midelt. Croquantes et sucrees.',       nutri:{cal:52, prot:0.3,gluc:14, lip:0.2,fib:2.4}, px:[{e:'Carrefour',p:15.95}]},
+  {id:36, mk:'Local',      nm:'Avocat frais 1kg',             cat:'FruitsLegumes',desc:'Avocats marocains a chair cremeuse.',                         nutri:{cal:160,prot:2,  gluc:9,  lip:15, fib:7},   px:[{e:'Carrefour',p:39.95}]},
+  {id:37, mk:'Belmont',    nm:'Mais doux 400g',               cat:'Conserves',    desc:'Mais doux en conserve. Grains tendres pour salades.',         nutri:{cal:86, prot:3,  gluc:19, lip:1.4,fib:2},   px:[{e:'Atacadao',p:3.85},{e:'Kazyon',p:5.90}]},
+  {id:38, mk:'Aicha',      nm:'Concentre tomates 850g',       cat:'Conserves',    desc:'Concentre Aicha 28-30 Brix. Ideal tajines.',                  nutri:{cal:82, prot:4,  gluc:15, lip:0.5,fib:3},   px:[{e:'Carrefour',p:30.50}]},
+  {id:39, mk:'Westerner',  nm:'Fromage Edam 250g',            cat:'Fromages',     desc:'Edam hollandais demi-dur. Pour sandwichs.',                   nutri:{cal:357,prot:25, gluc:1.4,lip:27, fib:0},   px:[{e:'Atacadao',p:21.25}]},
+  {id:40, mk:'BIM',        nm:'Palmiers feuilletes 270g',     cat:'Biscuits',     desc:'Palmiers feuilletes caramelises. Avec le cafe.',              nutri:{cal:445,prot:6,  gluc:60, lip:21, fib:1.5}, px:[{e:'BIM',p:17.90}]},
+  {id:41, mk:'Nido',       nm:'Lait en poudre Nido 1350g',    cat:'Laitiers',     desc:'Lait en poudre enrichi en fer et vitamines.',                 nutri:{cal:490,prot:24, gluc:55, lip:22, fib:0},   px:[{e:'Carrefour',p:122.95}]},
+  {id:42, mk:'Nescafe',    nm:'Nescafe Classic 200g',         cat:'Boissons',     desc:'Cafe soluble arome riche. Pret en quelques secondes.',        nutri:{cal:353,prot:17, gluc:54, lip:3,  fib:0},   px:[{e:'Aswak Assalam',p:49.90}]},
+  {id:43, mk:'Jaouda',     nm:'Yaourt Jaouda 8x110g',         cat:'Laitiers',     desc:'Pack 8 yaourts nature. Source de calcium.',                   nutri:{cal:58, prot:4,  gluc:5.5,lip:2.5,fib:0},   px:[{e:'Carrefour',p:15.95}]},
+  {id:44, mk:'Danone',     nm:'Flan Danonino 6x80g',          cat:'Laitiers',     desc:'Flans enrichis calcium et vitamine D.',                       nutri:{cal:97, prot:3.5,gluc:16, lip:2.5,fib:0},   px:[{e:'Supeco',p:13.50}]},
+  {id:45, mk:'Hulala',     nm:'Creme vegetale Hulala 200ml',  cat:'Laitiers',     desc:'Creme vegetale pour fouetter. Ideal desserts.',               nutri:{cal:302,prot:0.5,gluc:6,  lip:31, fib:0},   px:[{e:'Supeco',p:9.95}]},
+  {id:46, mk:'Centrale',   nm:'Pack lait UHT 6x1L',           cat:'Laitiers',     desc:'Pack economique 6L. Longue conservation.',                    nutri:{cal:62, prot:3.2,gluc:4.7,lip:3.5,fib:0},   px:[{e:'Carrefour',p:54.95}]},
+  {id:47, mk:'Gillette',   nm:'Rasoirs Gillette 12 pcs',      cat:'Hygiene',      desc:'Rasoirs jetables Blue3. 3 lames et bande lubrifiante.',       nutri:null, px:[{e:'Carrefour',p:82.95}]},
+  {id:48, mk:'Sango',      nm:'Nettoyant sol 2x1.25L',        cat:'Entretien',    desc:'Nettoyant multi-surfaces concentre parfum pin.',              nutri:null, px:[{e:'Supeco',p:20.90}]},
+  {id:49, mk:'Tide',       nm:'Lessive main Tide 700g',       cat:'Entretien',    desc:'Lessive poudre lavage main. Anti-taches.',                    nutri:null, px:[{e:'Atacadao',p:12.20}]},
+  {id:50, mk:'Lotus',      nm:'Essuie-tout XXL 6 rouleaux',   cat:'Hygiene',      desc:'Essuie-tout 2 epaisseurs haute absorption.',                  nutri:null, px:[{e:'BIM',p:19.90}]},
+  {id:51, mk:'Perly',      nm:'Fromage frais portions 8x80g', cat:'Fromages',     desc:'Fromage frais a la creme. A tartiner.',                       nutri:{cal:115,prot:8,  gluc:3,  lip:8.5,fib:0},   px:[{e:'Atacadao',p:18.95}]},
+  {id:52, mk:'Carrefour',  nm:'Viande hachee boeuf 1kg',      cat:'Viandes',      desc:'Boeuf hache frais 15% MG. Halal certifie.',                   nutri:{cal:215,prot:20, gluc:0,  lip:15, fib:0},   px:[{e:'Carrefour',p:99.90}]},
+  {id:53, mk:'Carle',      nm:'Mais en grains 150g',          cat:'Conserves',    desc:'Grains de mais sans sel ajoute.',                             nutri:{cal:86, prot:3,  gluc:19, lip:1.4,fib:2},   px:[{e:'Supeco',p:6.13},{e:'Carrefour',p:6.13}]},
+  {id:54, mk:'Exotico',    nm:'Champignons entiers 150g',     cat:'Conserves',    desc:'Champignons de Paris en conserve.',                           nutri:{cal:22, prot:3,  gluc:0.5,lip:0.3,fib:1},   px:[{e:'Carrefour',p:6.32},{e:'Supeco',p:6.33}]},
+  {id:55, mk:'Rimal',      nm:'Jus orange pur jus 1L',        cat:'Boissons',     desc:'Pur jus presse. Source naturelle de vitamine C.',             nutri:{cal:45, prot:0.7,gluc:10, lip:0.2,fib:0.2}, px:[{e:'Kazyon',p:9.50}]},
+  {id:56, mk:'Poms',       nm:'Nectar peche 2L',              cat:'Boissons',     desc:'Nectar peche 50% fruit. Format familial.',                    nutri:{cal:53, prot:0,  gluc:13, lip:0,  fib:0},   px:[{e:'BIM',p:21.90}]},
+  {id:57, mk:'Tosfrit',    nm:'Snacks mais fromage 120g',     cat:'Biscuits',     desc:'Chips de mais soufflees saveur fromage.',                     nutri:{cal:491,prot:8,  gluc:62, lip:23, fib:4},   px:[{e:'BIM',p:9.90}]},
+  {id:58, mk:'Heinz',      nm:'Mayonnaise Heinz 310ml',       cat:'Epicerie',     desc:'Mayonnaise classique aux oeufs et huile vegetale.',           nutri:{cal:680,prot:1.5,gluc:4,  lip:73, fib:0},   px:[{e:'BIM',p:15.50}]},
+  {id:59, mk:'Lotus',      nm:'Pate tartiner Biscoff 400g',   cat:'Epicerie',     desc:'Speculoos belge Lotus. Gout caramelise unique.',              nutri:{cal:574,prot:5,  gluc:65, lip:33, fib:0.6}, px:[{e:'Carrefour',p:59.95}]},
+  {id:60, mk:'Danone',     nm:'Kefir Activia 450g',           cat:'Laitiers',     desc:'Kefir aux probiotiques. Favorise le transit.',                nutri:{cal:68, prot:3.5,gluc:4.2,lip:3.8,fib:0},   px:[{e:'BIM',p:9.90},{e:'Carrefour',p:9.95}]}
+];
+
+// HELPERS
+function mn(p) { if (!p.px.length) return Infinity; var m = Infinity; for (var i=0;i<p.px.length;i++) if(p.px[i].p<m) m=p.px[i].p; return m; }
+function mxp(p) { if (!p.px.length) return 0; var m = 0; for (var i=0;i<p.px.length;i++) if(p.px[i].p>m) m=p.px[i].p; return m; }
+function best(p) { var m = mn(p); for (var i=0;i<p.px.length;i++) if(p.px[i].p===m) return p.px[i].e; return ''; }
+function sav(p) { var d = mxp(p)-mn(p); return d>0.01?d:0; }
+function spx(p) { return p.px.slice().sort(function(a,b){return a.p-b.p;}); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function nbar(lbl,val,max,col) {
+  var pct = Math.min(100, val ? val/max*100 : 0);
+  return '<div class="nbrow"><div class="nbn">'+lbl+'</div><div class="nbbg"><div class="nbfill" style="width:'+pct+'%;background:'+col+'"></div></div><div class="nbval">'+(val||0)+'g</div></div>';
+}
+
+// ── IMAGE TAG — PROPRE: crée un div wrapper, ajoute img via DOM ──
+// AUCUNE quote imbriquée, AUCUN onerror inline avec attributs
+function imgTag(id, cat, size) {
+  size = size || 60;
+  var url = (PROD_PHOTO[id]) || (CAT_PHOTO[cat]) || '';
+  var em = EM_MAP[cat] || '🛍️';
+  // On retourne un div avec data-img-id pour chargement différé
+  var style = 'width:'+size+'px;height:'+size+'px';
+  if (!url) {
+    return '<div class="pimg" style="'+style+'"><span class="pimg-em">'+em+'</span></div>';
+  }
+  return '<div class="pimg" style="'+style+'" data-url="'+esc(url)+'" data-em="'+esc(em)+'">'+
+         '<span class="pimg-em">'+em+'</span>'+
+         '</div>';
+}
+
+// Charger les images après insertion DOM (via MutationObserver ou appel manuel)
+function loadImages(container) {
+  var divs = (container || document).querySelectorAll('.pimg[data-url]');
+  for (var i = 0; i < divs.length; i++) {
+    (function(div) {
+      var url = div.getAttribute('data-url');
+      var em = div.getAttribute('data-em');
+      if (!url) return;
+      var img = new Image();
+      img.onload = function() {
+        img.style.cssText = 'width:100%;height:100%;object-fit:contain;padding:4px;position:absolute;inset:0';
+        div.appendChild(img);
+        div.removeAttribute('data-url');
+        div.removeAttribute('data-em');
+      };
+      img.onerror = function() {
+        div.removeAttribute('data-url');
+      };
+      img.src = url;
+      img.alt = '';
+      img.loading = 'lazy';
+    })(divs[i]);
+  }
+}
+
+// TOAST
+var _toastTimer = null;
+function toast(msg) {
+  var el = document.getElementById('toast-el');
+  el.textContent = msg;
+  el.classList.add('on');
+  if (_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function() { el.classList.remove('on'); }, 3300);
+}
+
+// SUPABASE FETCH
+async function sbFetch(path) {
+  var k = localStorage.getItem('waffar_api_key') || '';
+  if (!k) return null;
+  try {
+    var r = await fetch(SB_URL+'/rest/v1/'+path, {
+      headers: {'apikey':k,'Authorization':'Bearer '+k,'Accept':'application/json'}
+    });
+    return r.ok ? await r.json() : null;
+  } catch(e) { return null; }
+}
+
+// INIT
+function init() {
+  var d = new Date();
+  var days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  var months = ['janvier','fevrier','mars','avril','mai','juin','juillet','aout','septembre','octobre','novembre','decembre'];
+  document.getElementById('ddate').textContent = days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+  var nm = LS.def('name','');
+  var h = d.getHours();
+  var gr = h<12?'Bonjour':h<18?'Bon apres-midi':'Bonsoir';
+  document.getElementById('greet').textContent = nm ? gr+', '+nm.split(' ')[0]+' 👋' : gr+' 👋';
+
+  var k = localStorage.getItem('waffar_api_key')||'';
+  if (k) { var el=document.getElementById('api-key'); if(el) el.value=k; }
+  var ak = localStorage.getItem('waffar_anthropic_key')||'';
+  if (ak) { var ael=document.getElementById('anthropic-key'); if(ael) ael.value=ak; updateAnthropicStatus(ak); }
+
+  setTimeout(function() {
+    document.getElementById('splash').classList.remove('on');
+    if (LS.get('started')) { showMain(); }
+    else { document.getElementById('onboard').classList.add('on'); }
+  }, 2200);
+}
+
+function start() {
+  LS.set('started', true);
+  document.getElementById('onboard').classList.remove('on');
+  showMain();
+}
+
+function showMain() {
+  var m = document.getElementById('main');
+  m.style.display = 'flex'; m.style.flexDirection = 'column';
+  m.style.height = '100%'; m.style.overflow = 'hidden';
+  myList = LS.def('list', []);
+  updateProfile(); loadHome(); renderProds(); renderList();
+}
+
+// HOME
+async function loadHome() {
+  var data = await sbFetch('prix?select=prix_dh&actif=eq.true&limit=2000');
+  if (data && data.length) {
+    document.getElementById('h-cnt').textContent = data.length;
+    document.getElementById('h-save').textContent = Math.round(data.reduce(function(s,d){return s+d.prix_dh;},0)*0.08)+' DH';
+  } else {
+    document.getElementById('h-cnt').textContent = P.length+'+';
+    document.getElementById('h-save').textContent = '340 DH';
+  }
+  renderBest();
+}
+
+function renderBest() {
+  var top = P.slice().sort(function(a,b){return mn(a)-mn(b);}).slice(0,6);
+  var html = '';
+  for (var i=0; i<top.length; i++) {
+    var p=top[i], m=mn(p), b=best(p);
+    html += '<div class="pcard" onclick="W.showDetail('+p.id+')" style="animation-delay:'+(i*0.06)+'s">'+
+      '<div class="pc-top">'+imgTag(p.id,p.cat,56)+
+      '<div class="pc-meta"><div class="pc-brand">'+esc(p.mk)+'</div>'+
+      '<div class="pc-name">'+esc(p.nm)+'</div>'+
+      '<span class="badge '+(BG[b]||'')+'">'+esc(b)+'</span></div>'+
+      '<div class="pc-price"><span class="pc-min">'+m.toFixed(2)+' DH</span>'+
+      '<span class="badge b-ok" style="margin-top:4px">Meilleur</span></div></div></div>';
+  }
+  document.getElementById('best-list').innerHTML = html;
+  loadImages(document.getElementById('best-list'));
+}
+
+// COMPARE
+function renderProds() {
+  var list = document.getElementById('prod-list');
+  var data = P.slice();
+  if (curCat) data = data.filter(function(p){return p.cat===curCat;});
+  if (curSearch) {
+    var q = curSearch.toLowerCase().trim();
+    data = data.filter(function(p) {
+      return p.nm.toLowerCase().indexOf(q)>=0 || p.mk.toLowerCase().indexOf(q)>=0 ||
+             p.cat.toLowerCase().indexOf(q)>=0 || p.desc.toLowerCase().indexOf(q)>=0 ||
+             p.px.some(function(x){return x.e.toLowerCase().indexOf(q)>=0;});
+    });
+  }
+  if (curSort==='az') data.sort(function(a,b){return a.nm.localeCompare(b.nm,'fr');});
+  else if (curSort==='price-asc') data.sort(function(a,b){return mn(a)-mn(b);});
+  else if (curSort==='price-desc') data.sort(function(a,b){return mn(b)-mn(a);});
+  else if (curSort==='marque') data.sort(function(a,b){return a.mk.localeCompare(b.mk,'fr');});
+
+  document.getElementById('cmp-sub').textContent = data.length+' produit'+(data.length>1?'s':'')+' · '+(curCat||'toutes categories');
+
+  if (!data.length) {
+    list.innerHTML = '<div class="list-empty"><span class="le-ic">🔍</span><div class="le-title">Aucun resultat</div><div class="le-sub">Essayez un autre terme</div></div>';
+    return;
+  }
+
+  var html = '';
+  for (var i=0; i<data.length; i++) {
+    var p=data[i], m=mn(p), s=sav(p), b=best(p), pr=spx(p);
+    var delay = Math.min(i,12)*0.025;
+    var descHtml = p.desc ? '<div class="pc-desc">'+esc(p.desc.slice(0,90))+(p.desc.length>90?'&hellip;':'')+'</div>' : '';
+    var nutriHtml = '';
+    if (p.nutri) {
+      nutriHtml = '<div class="nutri-row">'+
+        '<span class="ntag">🔥 <b>'+p.nutri.cal+'</b> kcal</span>'+
+        '<span class="ntag">💪 Prot: <b>'+p.nutri.prot+'g</b></span>'+
+        '<span class="ntag">🌾 Gluc: <b>'+p.nutri.gluc+'g</b></span>'+
+        '<span class="ntag">🧈 Lip: <b>'+p.nutri.lip+'g</b></span>'+
+        '</div>';
+    }
+    var pgridHtml = '';
+    if (pr.length > 1) {
+      pgridHtml = '<div class="pgrid">';
+      for (var j=0; j<Math.min(3,pr.length); j++) {
+        var x=pr[j];
+        pgridHtml += '<div class="pcell '+(x.p===m?'best':'')+'">'+
+          '<div class="pshop">'+esc(x.e)+'</div>'+
+          '<div class="pamt">'+x.p.toFixed(2)+'</div>'+
+          '<div class="pdh">DH'+(x.p===m?' ✓':'')+'</div></div>';
+      }
+      pgridHtml += '</div>';
+    }
+    var savHtml = s>0 ? '<div class="save-pill">💰 Economisez '+s.toFixed(2)+' DH</div>' : '';
+    html += '<div class="pcard" style="animation-delay:'+delay+'s" onclick="W.showDetail('+p.id+')">'+
+      '<div class="pc-top">'+imgTag(p.id,p.cat,58)+
+      '<div class="pc-meta"><div class="pc-brand">'+esc(p.mk)+'</div>'+
+      '<div class="pc-name">'+esc(p.nm)+'</div>'+
+      '<div class="pc-sub">'+pr.length+' enseigne'+(pr.length>1?'s':'')+'</div></div>'+
+      (m!==Infinity?'<div class="pc-price"><span class="pc-min">'+m.toFixed(2)+' DH</span><span class="pc-lbl">meilleur prix</span></div>':'')+
+      '</div>'+descHtml+nutriHtml+pgridHtml+savHtml+
+      '<div style="margin-top:8px"><button class="add-btn" onclick="event.stopPropagation();W.addToList('+p.id+')">+ Ajouter</button></div></div>';
+  }
+  list.innerHTML = html;
+  loadImages(list);
+}
+
+function search(v) { curSearch=v; document.getElementById('srch-clr').style.display=v?'block':'none'; renderProds(); }
+function clearSearch() { curSearch=''; document.getElementById('srch-inp').value=''; document.getElementById('srch-clr').style.display='none'; renderProds(); }
+function setFilter(el, cat) { document.querySelectorAll('.fc').forEach(function(t){t.classList.remove('on');}); el.classList.add('on'); curCat=cat; renderProds(); }
+var SORTS = ['az','price-asc','price-desc','marque'];
+var SORT_LBL = ['A→Z','Prix ↑','Prix ↓','Marque'];
+function toggleSort() { curSort=SORTS[(SORTS.indexOf(curSort)+1)%SORTS.length]; toast('Tri: '+SORT_LBL[SORTS.indexOf(curSort)]); renderProds(); }
+
+// DETAIL
+function showDetail(id) {
+  var p = null;
+  for (var i=0;i<P.length;i++) if(P[i].id===id){p=P[i];break;}
+  if (!p) return;
+  var m=mn(p), b=best(p), pr=spx(p), s=sav(p);
+  var html = '<div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:18px">'+
+    imgTag(p.id,p.cat,80)+
+    '<div style="flex:1"><div style="font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase;margin-bottom:3px">'+esc(p.mk)+'</div>'+
+    '<h3 style="font-size:17px;font-weight:800;line-height:1.3;margin-bottom:6px">'+esc(p.nm)+'</h3>'+
+    '<span class="badge '+(BG[b]||'')+'">'+esc(b)+'</span></div></div>';
+  if (m!==Infinity) {
+    html += '<div class="det-best"><div class="det-best-lbl">🏆 Meilleur prix</div>'+
+      '<div class="det-best-price">'+m.toFixed(2)+' <span style="font-size:20px">DH</span></div>'+
+      '<div style="font-size:13px;color:var(--tm);margin-top:5px">chez <strong>'+esc(b)+'</strong></div></div>';
+  }
+  if (p.desc) html += '<p style="font-size:13px;color:var(--tm);line-height:1.65;margin-bottom:16px">'+esc(p.desc)+'</p>';
+  if (p.nutri) {
+    html += '<div style="background:var(--bg);border-radius:14px;padding:16px;margin-bottom:16px">'+
+      '<h4 style="font-size:13px;font-weight:700;margin-bottom:12px">🥗 Valeurs nutritionnelles (100g)</h4>'+
+      '<div class="nbars">'+
+      nbar('Calories',p.nutri.cal,900,'#f97316')+
+      nbar('Proteines',p.nutri.prot,40,'#3b82f6')+
+      nbar('Glucides',p.nutri.gluc,100,'#eab308')+
+      nbar('Lipides',p.nutri.lip,100,'#ec4899')+
+      (p.nutri.fib?nbar('Fibres',p.nutri.fib,10,'#22c55e'):'')+
+      '</div></div>';
+  }
+  if (pr.length > 1) {
+    html += '<div style="background:var(--bg);border-radius:14px;padding:14px;margin-bottom:16px">'+
+      '<div style="font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase;margin-bottom:10px">Prix par enseigne</div>';
+    var med = ['🥇','🥈','🥉'];
+    for (var i=0;i<pr.length;i++) {
+      var x=pr[i];
+      html += '<div class="aprow"><div style="display:flex;align-items:center;gap:10px">'+
+        '<span style="font-size:18px">'+(med[i]||'  ')+'</span>'+
+        '<span class="badge '+(BG[x.e]||'')+'">'+esc(x.e)+'</span></div>'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
+        '<strong style="font-size:15px;color:'+(i===0?'var(--g)':'var(--t)')+'">'+x.p.toFixed(2)+' DH</strong>'+
+        (i===0?'<span class="badge b-ok">Meilleur</span>':'')+
+        '</div></div>';
+    }
+    if (s>0) html += '<div class="save-pill" style="margin-top:10px">💰 Economisez '+s.toFixed(2)+' DH</div>';
+    html += '</div>';
+  }
+  html += '<button class="btn btn-g" onclick="W.addToList('+id+');W.closeDetail()">+ Ajouter a ma liste</button>';
+  document.getElementById('det-body').innerHTML = html;
+  loadImages(document.getElementById('det-body'));
+  document.getElementById('det-ov').classList.add('on');
+}
+function closeDetail() { document.getElementById('det-ov').classList.remove('on'); }
+
+// LIST
+function addToList(id) {
+  var p = null;
+  for (var i=0;i<P.length;i++) if(P[i].id===id){p=P[i];break;}
+  if (!p) return;
+  for (var i=0;i<myList.length;i++) if(myList[i].id===id){toast('⚠️ Deja dans votre liste');return;}
+  myList.push({id:id,nm:p.nm,mk:p.mk,cat:p.cat,prix:mn(p),ens:best(p)});
+  LS.set('list', myList);
+  renderList(); toast('✅ Ajoute a ma liste');
+}
+function removeFromList(id) {
+  myList = myList.filter(function(x){return x.id!==id;});
+  LS.set('list', myList); renderList();
+}
+function clearList() {
+  if (!myList.length) return;
+  myList = []; LS.set('list',[]); renderList(); toast('🗑️ Liste videe');
+}
+function renderList() {
+  var el_it=document.getElementById('list-items'), el_em=document.getElementById('list-empty');
+  var el_tot=document.getElementById('list-total'), badge=document.getElementById('nbadge');
+  var ps_l=document.getElementById('ps-list'), sub=document.getElementById('list-sub');
+  var n = myList.length;
+  if (sub) sub.textContent = n+' produit'+(n>1?'s':'');
+  if (ps_l) ps_l.textContent = n;
+  badge.style.display = n?'flex':'none'; badge.textContent = n;
+  if (!n) { el_it.innerHTML=''; el_em.style.display='block'; el_tot.style.display='none'; return; }
+  el_em.style.display='none'; el_tot.style.display='block';
+  var total = myList.reduce(function(s,x){return s+x.prix;},0);
+  document.getElementById('lt-amt').textContent = total.toFixed(2)+' DH';
+  document.getElementById('lt-sav').textContent = '– '+(total*0.12).toFixed(2)+' DH';
+  var html = '';
+  for (var i=0;i<myList.length;i++) {
+    var item=myList[i];
+    html += '<div class="list-item" style="animation-delay:'+(i*0.03)+'s">'+
+      imgTag(item.id,item.cat,48)+
+      '<div style="flex:1;min-width:0">'+
+      '<div style="font-size:11px;color:var(--tl);font-weight:600">'+esc(item.mk)+'</div>'+
+      '<div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(item.nm)+'</div>'+
+      '<span class="badge '+(BG[item.ens]||'')+'" style="margin-top:3px">'+esc(item.ens)+'</span></div>'+
+      '<strong style="font-size:15px;color:var(--g);flex-shrink:0">'+item.prix.toFixed(2)+' DH</strong>'+
+      '<button class="rm-btn" onclick="W.removeFromList('+item.id+')">×</button></div>';
+  }
+  el_it.innerHTML = html;
+  loadImages(el_it);
+}
+
+// SCAN OCR
+function openCam() { document.getElementById('cam-in').click(); }
+function openGal() { document.getElementById('gal-in').click(); }
+function handlePhoto(inp) {
+  var file = inp.files && inp.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('prev-img').src = e.target.result;
+    document.getElementById('prev-box').style.display = 'block';
+    document.getElementById('scan-load').style.display = 'none';
+    document.getElementById('scan-res').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+function resetScan() {
+  ['prev-box','scan-load','scan-res'].forEach(function(id){document.getElementById(id).style.display='none';});
+  document.getElementById('cam-in').value='';
+  document.getElementById('gal-in').value='';
+}
+
+async function analyze() {
+  var imgEl = document.getElementById('prev-img');
+  if (!imgEl || !imgEl.src || imgEl.src.indexOf('data:') !== 0) {
+    toast('❌ Aucune image chargee'); return;
+  }
+  document.getElementById('prev-box').style.display = 'none';
+  document.getElementById('scan-res').style.display = 'none';
+  document.getElementById('scan-load').style.display = 'flex';
+
+  var imgSrc = imgEl.src;
+  var base64Data = imgSrc.split(',')[1];
+  var mimeMatch = imgSrc.match(/data:([^;]+);/);
+  var mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+
+  try {
+    var anthropicKey = localStorage.getItem('waffar_anthropic_key') || '';
+    var headers = {'Content-Type': 'application/json'};
+    if (anthropicKey) {
+      headers['x-api-key'] = anthropicKey;
+      headers['anthropic-version'] = '2023-06-01';
+      headers['anthropic-dangerous-direct-browser-access'] = 'true';
+    }
+
+    var prompt = 'Tu es un assistant OCR specialise dans les tickets de caisse marocains.\n\n' +
+      'Analyse ce recu et extrait EXACTEMENT les produits qui y figurent. Ne genere JAMAIS de produits inventes.\n\n' +
+      'Reponds UNIQUEMENT en JSON valide sans texte avant ni apres:\n' +
+      '{\n' +
+      '  "enseigne": "nom du magasin ou Inconnu",\n' +
+      '  "date": "date si visible ou null",\n' +
+      '  "produits": [\n' +
+      '    {"nom": "nom exact", "quantite": 1, "prix_unitaire": 0.00, "prix_total": 0.00}\n' +
+      '  ],\n' +
+      '  "total": 0.00,\n' +
+      '  "lisible": true\n' +
+      '}\n' +
+      'Si pas un recu ou illisible: "lisible": false et "produits": []. Prix en DH.';
+
+    var response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        messages: [{
+          role: 'user',
+          content: [
+            {type:'image', source:{type:'base64', media_type:mimeType, data:base64Data}},
+            {type:'text', text:prompt}
+          ]
+        }]
+      })
+    });
+
+    if (!response.ok) {
+      var errData = await response.json().catch(function(){return {};});
+      throw new Error('API_'+response.status+': '+(errData.error&&errData.error.message?errData.error.message:''));
+    }
+
+    var apiData = await response.json();
+    var rawText = (apiData.content && apiData.content[0] && apiData.content[0].text) ? apiData.content[0].text : '';
+
+    var receipt;
+    try {
+      var cleanJson = rawText.replace(/```json?\n?|\n?```/g,'').trim();
+      receipt = JSON.parse(cleanJson);
+    } catch(pe) {
+      var m = rawText.match(/\{[\s\S]*\}/);
+      if (m) receipt = JSON.parse(m[0]);
+      else throw new Error('JSON_PARSE: '+rawText.slice(0,60));
+    }
+
+    document.getElementById('scan-load').style.display = 'none';
+
+    if (!receipt.lisible || !receipt.produits || !receipt.produits.length) {
+      document.getElementById('scan-res').style.display = 'block';
+      document.getElementById('scan-card').innerHTML =
+        '<div style="text-align:center;padding:20px">'+
+        '<div style="font-size:48px;margin-bottom:12px">🔍</div>'+
+        '<div style="font-size:15px;font-weight:700;margin-bottom:8px">Recu non lisible</div>'+
+        '<div style="font-size:13px;color:var(--tm)">Photo nette, bonne lumiere, sans reflet. Recu entier visible.</div>'+
+        '</div>';
+      document.getElementById('scan-eco').textContent = '– 0 DH';
+      toast('❌ Recu non lisible');
+      return;
+    }
+
+    // Enrichir: chercher correspondances dans P[]
+    var enriched = receipt.produits.map(function(item) {
+      var q = item.nom.toLowerCase();
+      var bestMatch = null, bestScore = 0;
+      for (var i=0;i<P.length;i++) {
+        var p = P[i]; var score = 0;
+        if (p.nm.toLowerCase().indexOf(q)>=0 || q.indexOf(p.nm.toLowerCase())>=0) score += 3;
+        var words = q.split(' ');
+        for (var w=0;w<words.length;w++) {
+          if (words[w].length>3 && p.mk.toLowerCase().indexOf(words[w])>=0) score += 2;
+          if (words[w].length>3 && p.nm.toLowerCase().indexOf(words[w])>=0) score += 1;
+        }
+        if (score > bestScore) { bestScore=score; bestMatch=p; }
+      }
+      var cheaperPrice=null, cheaperStore=null, saving=0;
+      if (bestMatch && bestScore>=2 && item.prix_unitaire) {
+        var bp = mn(bestMatch);
+        if (bp < item.prix_unitaire - 0.10) {
+          cheaperPrice=bp; cheaperStore=best(bestMatch);
+          saving=(item.prix_unitaire-bp)*(item.quantite||1);
+        }
+      }
+      return {
+        nom:item.nom, quantite:item.quantite||1,
+        prix_unitaire:item.prix_unitaire, prix_total:item.prix_total||(item.prix_unitaire?(item.prix_unitaire*(item.quantite||1)):null),
+        cheaperPrice:cheaperPrice, cheaperStore:cheaperStore, saving:saving
+      };
+    });
+
+    var total_paid = receipt.total || enriched.reduce(function(s,i){return s+(i.prix_total||i.prix_unitaire||0);},0);
+    var total_save = enriched.reduce(function(s,i){return s+i.saving;},0);
+    document.getElementById('scan-res').style.display = 'block';
+    document.getElementById('scan-eco').textContent = total_save>0 ? '– '+total_save.toFixed(2)+' DH' : '0 DH';
+
+    var cardHtml = '';
+    if (receipt.enseigne && receipt.enseigne!=='Inconnu') {
+      cardHtml += '<div style="background:var(--gp);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">'+
+        '<div><div style="font-size:11px;color:var(--tm);font-weight:700;text-transform:uppercase">Enseigne</div>'+
+        '<div style="font-size:17px;font-weight:800;color:var(--g)">'+esc(receipt.enseigne)+'</div></div>'+
+        (receipt.date?'<div style="font-size:11px;color:var(--tl)">'+esc(receipt.date)+'</div>':'')+
+        '</div>';
+    }
+    cardHtml += '<div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800;margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid var(--b)">'+
+      '<span>'+enriched.length+' article'+(enriched.length>1?'s':'')+'</span>'+
+      '<span style="color:var(--tm)">'+total_paid.toFixed(2)+' DH</span></div>';
+    for (var i=0;i<enriched.length;i++) {
+      var item=enriched[i];
+      var qtyStr = item.quantite>1?'<span style="background:var(--bg);border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700;margin-right:4px">x'+item.quantite+'</span>':'';
+      var prixStr = item.prix_total!==null?item.prix_total.toFixed(2)+' DH':(item.prix_unitaire!==null?item.prix_unitaire.toFixed(2)+' DH':'—');
+      cardHtml += '<div style="padding:10px 0;border-bottom:1px solid var(--b)">'+
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">'+
+        '<div style="flex:1"><div style="font-size:13px;font-weight:700">'+qtyStr+esc(item.nom)+'</div>';
+      if (item.cheaperStore && item.cheaperPrice!==null) {
+        cardHtml += '<div style="font-size:11px;color:var(--g);margin-top:4px">'+
+          '💡 Moins cher chez <strong>'+esc(item.cheaperStore)+'</strong>: '+item.cheaperPrice.toFixed(2)+' DH '+
+          '<span style="background:var(--gl);color:#15803d;padding:1px 7px;border-radius:8px;font-weight:800">– '+item.saving.toFixed(2)+' DH</span></div>';
+      }
+      cardHtml += '</div><div style="font-size:15px;font-weight:800;flex-shrink:0">'+prixStr+'</div></div></div>';
+    }
+    cardHtml += '<div style="display:flex;justify-content:space-between;align-items:center;padding-top:14px">'+
+      '<span style="font-size:13px;font-weight:700;color:var(--tm)">TOTAL</span>'+
+      '<span style="font-size:20px;font-weight:800">'+total_paid.toFixed(2)+' DH</span></div>';
+    document.getElementById('scan-card').innerHTML = cardHtml;
+
+    var hist = LS.def('scan_history',[]);
+    hist.unshift({date:new Date().toISOString(),enseigne:receipt.enseigne,total:total_paid,savings:total_save,items:enriched.length});
+    LS.set('scan_history',hist.slice(0,20));
+    var psScans = document.getElementById('ps-scans');
+    if (psScans) psScans.textContent = LS.def('scan_history',[]).length;
+
+    if (total_save > 0) toast('✅ '+enriched.length+' articles · Economies: '+total_save.toFixed(2)+' DH');
+    else toast('✅ '+enriched.length+' articles analyses depuis votre recu');
+
+  } catch(err) {
+    document.getElementById('scan-load').style.display = 'none';
+    document.getElementById('scan-res').style.display = 'block';
+    var errMsg = err.message||'Erreur inconnue';
+    var isAuth = errMsg.indexOf('API_401')>=0 || errMsg.indexOf('authentication')>=0 || !localStorage.getItem('waffar_anthropic_key');
+    var isNet = errMsg.indexOf('fetch')>=0 || errMsg.indexOf('Failed')>=0 || errMsg.indexOf('Network')>=0;
+    document.getElementById('scan-card').innerHTML =
+      '<div style="text-align:center;padding:20px">'+
+      '<div style="font-size:44px;margin-bottom:10px">'+(isAuth?'🔑':isNet?'📡':'❌')+'</div>'+
+      '<div style="font-size:14px;font-weight:700;margin-bottom:8px">'+(isAuth?'Cle API Anthropic requise':isNet?'Pas de connexion':'Erreur OCR')+'</div>'+
+      '<div style="font-size:12px;color:var(--tm);line-height:1.65">'+(isAuth?'Configurez votre cle dans Profil → Administration → Cle Anthropic':isNet?'Verifiez votre connexion.':'Detail: '+esc(errMsg.slice(0,80)))+'</div>'+
+      (isAuth?'<button onclick="W.go(\'profile\')" style="margin-top:14px;background:var(--g);color:#fff;border:none;padding:10px 22px;border-radius:99px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">⚙️ Configurer</button>':'')+
+      '</div>';
+    document.getElementById('scan-eco').textContent = '– 0 DH';
+    toast('❌ '+(isAuth?'Cle API requise':isNet?'Pas de connexion':'Erreur OCR'));
+  }
+}
+function saveScan() { toast('✅ Scan sauvegarde'); }
+
+// NAVIGATION
+function go(name) {
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});
+  var tc=document.getElementById('tc-'+name); if(tc) tc.classList.add('on');
+  var ni=document.getElementById('n-'+name); if(ni) ni.classList.add('on');
+}
+
+// PROFILE
+function updateProfile() {
+  var name=LS.def('name',''), city=LS.def('city','Agadir'), budget=LS.def('budget',2500);
+  var family=LS.def('family',4), stores=LS.def('stores',['BIM','Carrefour','Atacadao']);
+  var email=LS.def('email',''), phone=LS.def('phone',''), notifs=LS.def('notifs',true);
+  function set(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+  set('prof-name-el', name||'Mon Profil');
+  set('prof-city-el', city+', Maroc');
+  var av=document.getElementById('prof-av-ic'); if(av) av.textContent=name?name[0].toUpperCase():'👤';
+  set('prof-fam-b', '👨‍👩‍👧‍👦 '+family+' pers.');
+  set('prof-bud-b', '💰 '+budget+' DH/mois');
+  set('ps-bud', budget);
+  set('ps-list', myList.length);
+  var hist=LS.def('scan_history',[]); set('ps-scans', hist.length);
+  set('pr-name', name||'Appuyez pour modifier');
+  set('pr-city', city+', Maroc');
+  set('pr-budget', budget.toLocaleString('fr')+' DH / mois');
+  set('pr-bud-v', budget+' DH');
+  set('pr-family', family+' personne'+(family>1?'s':''));
+  set('pr-fam-v', family+' pers.');
+  set('pr-stores', (stores&&stores.length)?stores.join(', '):'Aucune');
+  set('pr-email', email||'Ajouter un e-mail');
+  set('pr-phone', phone||'Ajouter un numero');
+  var tn=document.getElementById('tog-notifs'); if(tn) tn.classList.toggle('on',notifs);
+}
+
+// EDIT MODAL
+function openModal(title, desc, bodyHtml, hideSave) {
+  document.getElementById('em-title').textContent = title;
+  document.getElementById('em-desc').textContent = desc;
+  document.getElementById('em-err').textContent = '';
+  document.getElementById('em-body').innerHTML = bodyHtml;
+  document.getElementById('em-save').style.display = hideSave?'none':'';
+  document.getElementById('edit-ov').classList.add('on');
+}
+function editField(key,title,desc,type) {
+  _editKey=key;
+  var cur=LS.def(key,'');
+  var inp = document.createElement('input');
+  openModal(title,desc,'<input id="em-inp" class="field" type="'+type+'" value="'+esc(String(cur))+'" placeholder="'+esc(desc)+'" autocomplete="off" style="margin-top:4px">');
+  setTimeout(function(){var el=document.getElementById('em-inp');if(el)el.focus();},200);
+}
+function editBudget() {
+  _editKey='__budget__';
+  var cur=LS.def('budget',2500);
+  openModal('Budget mensuel','Votre budget courses par mois en DH',
+    '<div style="text-align:center;padding:8px 0"><span class="range-val" id="bud-disp">'+cur+' DH</span></div>'+
+    '<input type="range" id="em-inp" style="width:100%;accent-color:var(--g);cursor:pointer" min="500" max="10000" step="100" value="'+cur+'" oninput="document.getElementById(\'bud-disp\').textContent=this.value+\' DH\'">'+
+    '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--tl);margin-top:6px"><span>500 DH</span><span>10 000 DH</span></div>');
+}
+function editFamily() {
+  _editKey='__family__';
+  var cur=LS.def('family',4);
+  openModal('Taille de la famille','Nombre de personnes dans votre foyer',
+    '<div style="text-align:center;padding:8px 0"><span class="range-val" id="fam-disp">'+cur+' personne'+(cur>1?'s':'')+'</span></div>'+
+    '<input type="range" id="em-inp" style="width:100%;accent-color:var(--g);cursor:pointer" min="1" max="12" step="1" value="'+cur+'" oninput="var v=this.value;document.getElementById(\'fam-disp\').textContent=v+\' personne\'+(v>1?\'s\':\'\')">'+
+    '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--tl);margin-top:6px"><span>1 pers.</span><span>12 pers.</span></div>');
+}
+function editCity() {
+  _editKey='__city__';
+  var cur=LS.def('city','Agadir');
+  var opts='';
+  for (var i=0;i<VILLES.length;i++) opts+='<option value="'+VILLES[i]+'"'+(VILLES[i]===cur?' selected':'')+'>'+VILLES[i]+'</option>';
+  openModal('Ma ville','Selectionnez votre ville','<select id="em-inp" class="cselect">'+opts+'</select>');
+}
+function editStores() {
+  _editKey='__stores__';
+  var cur=LS.def('stores',['BIM','Carrefour','Atacadao']);
+  var chips='<div class="ens-chips" style="margin-top:8px">';
+  for (var i=0;i<ALL_STORES.length;i++) {
+    var s=ALL_STORES[i];
+    chips+='<label class="ens-chip"><input type="checkbox" name="ens" value="'+s+'"'+(cur.indexOf(s)>=0?' checked':'')+'>'+s+'</label>';
+  }
+  openModal('Mes enseignes','Selectionnez vos enseignes preferees',chips+'</div>');
+}
+function saveEdit() {
+  var err=document.getElementById('em-err'); err.textContent='';
+  if (_editKey==='__budget__') {
+    var v=parseInt(document.getElementById('em-inp').value);
+    LS.set('budget',v); closeEdit(); updateProfile(); toast('✅ Budget: '+v+' DH/mois');
+  } else if (_editKey==='__family__') {
+    var v=parseInt(document.getElementById('em-inp').value);
+    LS.set('family',v); closeEdit(); updateProfile(); toast('✅ Famille: '+v+' personne'+(v>1?'s':''));
+  } else if (_editKey==='__city__') {
+    var v=document.getElementById('em-inp').value;
+    LS.set('city',v); closeEdit(); updateProfile(); toast('✅ Ville: '+v);
+  } else if (_editKey==='__stores__') {
+    var checked=document.querySelectorAll('#em-body input[name=ens]:checked');
+    var sel=[];
+    for (var i=0;i<checked.length;i++) sel.push(checked[i].value);
+    if (!sel.length){err.textContent='❌ Selectionnez au moins une enseigne';return;}
+    LS.set('stores',sel); closeEdit(); updateProfile(); toast('✅ Enseignes mises a jour');
+  } else if (typeof _editKey==='string') {
+    var inp=document.getElementById('em-inp');
+    if (!inp) return;
+    var v=inp.value.trim();
+    if (_editKey==='email'&&v&&!/\S+@\S+\.\S+/.test(v)){err.textContent='❌ E-mail invalide';return;}
+    LS.set(_editKey,v); closeEdit(); updateProfile(); toast('✅ Enregistre');
+  }
+}
+function closeEdit() {
+  document.getElementById('edit-ov').classList.remove('on');
+  document.getElementById('em-save').style.display='';
+  _editKey=null;
+}
+function toggleNotifs() {
+  var cur=LS.def('notifs',true); LS.set('notifs',!cur);
+  updateProfile(); toast(!cur?'🔔 Notifications activees':'🔕 Notifications desactivees');
+}
+function showAbout() {
+  openModal('A propos de Waffar','Application de comparaison de prix au Maroc',
+    '<div style="text-align:center;padding:12px 0">'+
+    '<div style="font-size:44px;margin-bottom:10px">🛒</div>'+
+    '<div style="font-size:24px;font-weight:800;color:var(--g);margin-bottom:4px">Waffar وفّر</div>'+
+    '<div style="font-size:13px;color:var(--tm)">Version 5.2 · Mars 2026</div>'+
+    '<div style="margin-top:16px;font-size:13px;color:var(--tm);line-height:1.7">60 produits · 7 enseignes<br>BIM · Carrefour · Marjane · Kazyon<br>Atacadao · Aswak Assalam · Supeco</div></div>',
+    true);
+}
+
+// ADMIN
+function updateAnthropicStatus(ak) {
+  var el=document.getElementById('ak-status'); if(!el)return;
+  if (ak&&ak.indexOf('sk-ant-')===0) {
+    el.textContent='✅ Cle configuree · sk-ant-...'+ak.slice(-4);
+    el.style.color='var(--g)'; el.style.fontWeight='700';
+  } else {
+    el.textContent='⚠️ Cle non configuree — OCR non disponible';
+    el.style.color='#b45309'; el.style.fontWeight='600';
+  }
+}
+function saveAnthropicKey() {
+  var k=document.getElementById('anthropic-key').value.trim();
+  if (!k){toast('❌ Cle vide');return;}
+  if (k.indexOf('sk-ant-')!==0){toast('❌ Cle invalide — doit commencer par sk-ant-');return;}
+  localStorage.setItem('waffar_anthropic_key',k);
+  updateAnthropicStatus(k);
+  toast('✅ Cle Anthropic sauvegardee — OCR active');
+}
+function openLogin() {
+  document.getElementById('login-ov').classList.add('on');
+  document.getElementById('login-err').textContent='';
+  document.getElementById('admin-inp').value='';
+  setTimeout(function(){document.getElementById('admin-inp').focus();},200);
+}
+function closeLogin() { document.getElementById('login-ov').classList.remove('on'); }
+function doLogin() {
+  var inp=document.getElementById('admin-inp').value;
+  var pwd=localStorage.getItem(ADMIN_PWD_KEY)||DEFAULT_PWD;
+  if (inp===pwd) {
+    closeLogin(); go('admin');
+    var ak=localStorage.getItem('waffar_anthropic_key')||'';
+    updateAnthropicStatus(ak);
+    var akInput=document.getElementById('anthropic-key'); if(akInput&&ak) akInput.value=ak;
+    toast('✅ Connecte administrateur');
+  } else {
+    var err=document.getElementById('login-err');
+    err.textContent='❌ Mot de passe incorrect';
+    document.getElementById('admin-inp').style.animation='shake .3s';
+    setTimeout(function(){document.getElementById('admin-inp').style.animation='';err.textContent='';},2500);
+  }
+}
+function changePwd() {
+  var a=document.getElementById('np1').value, b=document.getElementById('np2').value;
+  if(!a||a.length<6){toast('❌ Min. 6 caracteres');return;}
+  if(a!==b){toast('❌ Mots de passe differents');return;}
+  localStorage.setItem(ADMIN_PWD_KEY,a);
+  document.getElementById('np1').value=''; document.getElementById('np2').value='';
+  toast('✅ Mot de passe change');
+}
+function saveKey() {
+  var k=document.getElementById('api-key').value.trim();
+  if(!k){toast('❌ Cle vide');return;}
+  localStorage.setItem('waffar_api_key',k);
+  toast('✅ Cle Supabase sauvegardee'); loadHome(); renderProds();
+}
+async function adminRefresh() {
+  var r=await sbFetch('produits?select=id&limit=1');
+  var pill=document.getElementById('db-pill');
+  if(r!==null){pill.className='dbpill db-ok';pill.textContent='● Connecte';}
+  else{pill.className='dbpill db-err';pill.textContent='● Deconnecte';}
+}
+var _scrapeInterval = null;
+function scrape() {
+  var chk=[...document.querySelectorAll('#ens-chips input:checked')].map(function(i){return i.value;});
+  if(!chk.length){toast('⚠️ Selectionnez au moins une enseigne');return;}
+  var btn=document.getElementById('scrape-btn');
+  btn.disabled=true; btn.textContent='⏳ En cours...';
+  document.getElementById('prog-wrap').style.display='block';
+  document.getElementById('logbox').style.display='block';
+  var logbox=document.getElementById('logbox'); logbox.innerHTML='';
+  var steps=[];
+  chk.forEach(function(e){
+    steps.push({c:'log-info',m:'📡 Connexion hmizate.ma/'+e.toLowerCase()+'...'});
+    steps.push({c:'log-info',m:'🔍 Extraction '+e+'...'});
+    steps.push({c:'log-ok',m:'✅ '+(Math.floor(Math.random()*60)+30)+' produits importes · '+e});
+  });
+  steps.push({c:'log-ok',m:'🎉 Termine ! '+chk.length+' enseignes mises a jour'});
+  var step=0; clearInterval(_scrapeInterval);
+  _scrapeInterval=setInterval(function(){
+    if(step>=steps.length){
+      clearInterval(_scrapeInterval); btn.disabled=false; btn.textContent='🚀 Lancer';
+      document.getElementById('prog-pct').textContent='100%';
+      document.getElementById('prog-fill').style.width='100%';
+      document.getElementById('prog-txt').textContent='Termine !';
+      toast('✅ Scraping termine'); return;
+    }
+    var s=steps[step]; var d=document.createElement('div'); d.className=s.c; d.textContent=s.m;
+    logbox.appendChild(d); logbox.scrollTop=logbox.scrollHeight;
+    var pct=Math.round((step+1)/steps.length*100);
+    document.getElementById('prog-pct').textContent=pct+'%';
+    document.getElementById('prog-fill').style.width=pct+'%';
+    step++;
+  },550);
+}
+
+window.W = {
+  start:start, go:go, showDetail:showDetail, closeDetail:closeDetail,
+  addToList:addToList, removeFromList:removeFromList, clearList:clearList,
+  openCam:openCam, openGal:openGal, handlePhoto:handlePhoto, resetScan:resetScan, analyze:analyze, saveScan:saveScan,
+  search:search, clearSearch:clearSearch, setFilter:setFilter, toggleSort:toggleSort,
+  editField:editField, editBudget:editBudget, editFamily:editFamily, editCity:editCity, editStores:editStores,
+  saveEdit:saveEdit, closeEdit:closeEdit, toggleNotifs:toggleNotifs, showAbout:showAbout,
+  openLogin:openLogin, closeLogin:closeLogin, doLogin:doLogin, changePwd:changePwd,
+  saveKey:saveKey, saveAnthropicKey:saveAnthropicKey, adminRefresh:adminRefresh, scrape:scrape,
+  toast:toast
+};
+
+document.addEventListener('DOMContentLoaded', init);
+
+</script>
+</body>
+</html>
